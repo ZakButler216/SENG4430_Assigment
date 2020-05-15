@@ -1,3 +1,5 @@
+package main.java;
+
 public class Thing {
 
     private int num = 7;

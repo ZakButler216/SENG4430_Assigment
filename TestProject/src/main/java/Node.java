@@ -1,3 +1,5 @@
+package main.java;
+
 public class Node {
     private int data;
     private Node parent;
@@ -26,15 +28,15 @@ public class Node {
         return data;
     }
 
-    public void setParent(Tree_Test_Node parent) {
+    public void setParent(Node parent) {
         this.parent = parent;
     }
 
-    public void setLeft(Tree_Test_Node left) {
+    public void setLeft(Node left) {
         this.left = left;
     }
 
-    public void setRight(Tree_Test_Node right) {
+    public void setRight(Node right) {
         this.right = right;
     }
 

@@ -1,3 +1,5 @@
+package main.java;
+
 public class BST {
     private Node root;
     private int val;
@@ -77,7 +79,7 @@ public class BST {
         return root;
     }
 
-    public static void inorder(Tree_Test_Node root) {
+    public static void inorder(Node root) {
 
         // checking if the root is not null
         if (root != null) {

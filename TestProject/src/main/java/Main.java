@@ -1,3 +1,5 @@
+package main.java;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class Main {
 
-    private static final String filePath = "src\\main\\java\\RFC.java";
+    private static final String filePath = "src/test/java/Tree_TestData/src/main.java";
 
     private static List<String> readFileInList(String fileName)
     {
@@ -40,5 +42,8 @@ public class Main {
         //System.out.println("Response For a Class Results");
         RFC rfc = new RFC(cu);
         rfc.showResults();
+
+        Tree t = new Tree(cu);
+        t.result();
     }
 }
