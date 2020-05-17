@@ -1,5 +1,3 @@
-package main.java;
-
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
@@ -32,18 +30,20 @@ public class Main {
 
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
         List<String> lineList = readFileInList(filePath);
-        /*
-        System.out.println("Fog Index Results:");
+
         FogIndex fogIndex = new FogIndex(lineList);
-        fogIndex.showResults();
-
-        System.out.println("\n");
-         */
-        //System.out.println("Response For a Class Results");
         RFC rfc = new RFC(cu);
-        rfc.showResults();
-
         Tree t = new Tree(cu);
+
+        System.out.println("Fog Index Results:");
+        fogIndex.showResults();
+        System.out.println("\n");
+
+        System.out.println("Response For a Class Results");
+        rfc.showResults();
+        System.out.println("\n");
+
+        System.out.println("Depth of Tree/Inheritances Results");
         t.result();
     }
 }
