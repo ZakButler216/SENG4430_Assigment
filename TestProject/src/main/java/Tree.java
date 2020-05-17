@@ -23,9 +23,10 @@ public class Tree {
         javaContent = "";
         depth = 0;
 
-        setup();
+        //setup();
     }
 
+    /*
     public void setup() {
 
         //scanner for the question.
@@ -54,6 +55,7 @@ public class Tree {
         number = Integer.parseInt(scan.nextLine());
         numChildren = numOfChildren(tree.search(number, root));
     }
+     */
 
     //number of children
     public int numOfChildren(Node node) {

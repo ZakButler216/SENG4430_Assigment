@@ -12,14 +12,13 @@ import java.util.List;
 
 public class Main {
 
-    private static final String filePath = "src/test/java/Tree_TestData/src/main.java";
+    private static final String filePath = "src/main/java/TestThing.java";
 
-    private static List<String> readFileInList(String fileName)
-    {
+    private static List<String> readFileInList() {
         List<String> lineList = Collections.emptyList();
         try
         {
-            lineList = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+            lineList = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -29,11 +28,11 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
-        List<String> lineList = readFileInList(filePath);
+        List<String> lineList = readFileInList();
 
         FogIndex fogIndex = new FogIndex(lineList);
         RFC rfc = new RFC(cu);
-        Tree t = new Tree(cu);
+        //Tree t = new Tree(cu);
 
         System.out.println("Fog Index Results:");
         fogIndex.showResults();
@@ -43,7 +42,7 @@ public class Main {
         rfc.showResults();
         System.out.println("\n");
 
-        System.out.println("Depth of Tree/Inheritances Results");
-        t.result();
+        //System.out.println("Depth of Tree/Inheritances Results");
+        //t.result();
     }
 }
