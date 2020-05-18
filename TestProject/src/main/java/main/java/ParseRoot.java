@@ -83,14 +83,13 @@ public class ParseRoot {
         /**
          This subsection shows comment percentage for whole project
          */
-        System.out.println("Comment Percentage for all units:");
-        System.out.println(commentPercentage.getCommentPercentageForAllCompilationUnits(allCompilationUnits));
+        //System.out.println("Comment Percentage for all units:");
+        //System.out.println(commentPercentage.getCommentPercentageForAllCompilationUnits(allCompilationUnits));
 
 
         /**
-         This section gets a method and counts the amount of predicates in that method
+         This subsection chooses a compilation unit
          */
-
 
         //CompilationUnit cu = allCompilationUnits.get(0);
         //NodeList<TypeDeclaration<?>> allTypes = cu.getTypes();
@@ -115,6 +114,7 @@ public class ParseRoot {
         /**
          This subsection shows declaration type of all members in all types
          */
+
         /*
         for(int i=0;i<allMembers.size();i++) {
             System.out.println("Break");
@@ -154,8 +154,9 @@ public class ParseRoot {
                 System.out.println("Is a Type Declaration");
             }
         }
-
         */
+
+
 
 
         /**
