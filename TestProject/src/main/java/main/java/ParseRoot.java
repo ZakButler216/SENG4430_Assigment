@@ -43,7 +43,7 @@ public class ParseRoot {
         Path root = Paths.get(s2);
         ProjectRoot projectRoot = new SymbolSolverCollectionStrategy().collect(root);
 
-        for(int i =0;i<projectRoot.getSourceRoots().size();i++) {
+        for (int i = 0; i < projectRoot.getSourceRoots().size(); i++) {
 
             SourceRoot sourceRoot = projectRoot.getSourceRoots().get(i);
 
@@ -51,7 +51,7 @@ public class ParseRoot {
 
             List<CompilationUnit> compilationUnits = sourceRoot.getCompilationUnits();
 
-            for(int j = 0;j<compilationUnits.size();j++) {
+            for (int j = 0; j < compilationUnits.size(); j++) {
 
                 allCompilationUnits.add(compilationUnits.get(j));
             }
@@ -65,7 +65,6 @@ public class ParseRoot {
          This section utilizes CommentPercentage class to count comment percentage
          Tested all CommentPercentage methods, all accurate.
          */
-
 
 
         CommentPercentage commentPercentage = new CommentPercentage();
@@ -88,11 +87,9 @@ public class ParseRoot {
         System.out.println(commentPercentage.getCommentPercentageForAllCompilationUnits(allCompilationUnits));
 
 
-
         /**
          This section gets a method and counts the amount of predicates in that method
          */
-
 
 
         //CompilationUnit cu = allCompilationUnits.get(0);
@@ -161,7 +158,6 @@ public class ParseRoot {
         */
 
 
-
         /**
          This subsection gets all functions in compilation unit
          */
@@ -210,213 +206,7 @@ public class ParseRoot {
         System.out.println(aMethod);
         System.out.println("Conditional List size is:");
         System.out.println(ifList.size());
-        //System.out.println(ifList.get(0));
-
-
-         */
-
-
-
-
-        /*
-        NodeList<BodyDeclaration<?>> allMethods = new NodeList<>();
-        for(int i=0;i<allFunctions.size();i++) {
-            if(!allFunctions.get(i).isConstructorDeclaration()) {
-               allMethods.add(allFunctions.get(i));
-               System.out.println("Member added:");
-               System.out.println(allMembers.get(i));
-            }
-        }
-
-         */
-
-
-
-
-
-        /**
-         This section checks out building blocks
-         */
-       /* System.out.println("Class details is:");
-        VoidVisitor<?> classDetails = new ClassDetails();
-        classDetails.visit(allCompilationUnits.get(0),null);
-
-        System.out.println("Method details is:");
-        VoidVisitor<?> methodDetails = new MethodDetails();
-        methodDetails.visit(allCompilationUnits.get(0),null);
-
-        System.out.println("Methods called is:");
-        VoidVisitor<?> methodCall = new MethodCall();
-        methodCall.visit(allCompilationUnits.get(0),null);
-
-        System.out.println("Field details is:");
-        VoidVisitor<?> fieldDetails = new FieldDetails();
-        fieldDetails.visit(allCompilationUnits.get(0),null);
-
-        System.out.println("Variable details is:");
-        VoidVisitor<?> variableDetails = new VariableDetails();
-        variableDetails.visit(allCompilationUnits.get(0),null);
-
-        System.out.println("Type details is:");
-        VoidVisitor<?> typeDetails = new TypeDetails();
-        typeDetails.visit(allCompilationUnits.get(0),null);
 
         */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
-        Path rootTwo = Paths.get("C:\\Users\\Cliff\\IdeaProjects\\Software Quality Draft 5\\src");
-        Path rootThree = Paths.get("C:\\Users\\Cliff\\Documents\\GitHub\\Bank-System\\src");
-        SourceRoot sourceRoot = new SourceRoot(rootThree);
-        sourceRoot.tryToParse();
-        List<CompilationUnit> compilationUnits = sourceRoot.getCompilationUnits();
-        //System.out.println(compilationUnits.size());
-        System.out.println(compilationUnits.get(0).getChildNodes());
-         */
-
-
-
-        /*for(int i = 0;i<projectRoot.getSourceRoots().size();i++) {
-            projectRoot.getSourceRoots().get(i)
-        }*/
-
-
-        //System.out.println(projectRoot.getSourceRoots().get(0).toString());
-
-        //SourceRoot aSourceRoot = projectRoot.getSourceRoots().get(0);
-
-
-
     }
-
-
-    // public static String removeCommentHolders(String s) {
-
-    //   String removeOne = s.replaceAll("/\\*","");
-    // String removeTwo = removeOne.replaceAll("\\*/","");
-    // String removeThree = removeTwo.replaceAll("/\\*\\*","");
-    // String removeFour = removeThree.replaceAll("\\*","");
-    // String removeFive = removeFour.replaceAll("//","");
-
-    // return removeFive;
-
-    //}
-
-    private static class ClassDetails extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-
-            super.visit(n,arg);
-            System.out.println(n.getName());
-        }
-    }
-
-    private static class MethodDetails extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(MethodDeclaration n,Void arg ) {
-
-            super.visit(n,arg);
-            n.getName();
-
-
-        }
-
-
-    }
-
-    private static class MethodCall extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(MethodCallExpr n, Void arg) {
-
-            super.visit(n,arg);
-            System.out.println(n.getName());
-        }
-    }
-
-    private static class FieldDetails extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(FieldDeclaration n,Void arg) {
-
-            super.visit(n,arg);
-            System.out.println(n.getVariables());
-        }
-    }
-
-    private static class VariableDetails extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(VariableDeclarationExpr n,Void arg) {
-
-            super.visit(n,arg);
-            System.out.println(n.getVariables());
-        }
-    }
-
-    private static class TypeDetails extends  VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(TypeExpr n, Void arg) {
-            super.visit(n, arg);
-            System.out.println(n.getType());
-        }
-
-    }
-
-    /*
-        private static class CountCode extends VoidVisitorAdapter<Void> {
-
-            @Override
-            public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-                linesOfCode = 0;
-
-                super.visit(n, arg);
-
-                NodeList<BodyDeclaration<?>> membersList = n.getMembers();
-
-                for(int i=0;i<membersList.size();i++) {
-                    BodyDeclaration<?> member = membersList.get(i);
-                    String memberCode = member.toString();
-                    String[] codeContainer = memberCode.split("\n");
-
-                    for(int j=0;j<codeContainer.length;j++) {
-
-                        String commentMarkersRemoved = removeCommentMarkers(codeContainer[j]);
-
-                        if(!commentMarkersRemoved.isBlank()) {
-                            linesOfCode++;
-                            System.out.println(codeContainer[j]);
-                        }
-
-                    }
-                }
-
- */
-
 }
