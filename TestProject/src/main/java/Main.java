@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+//import main.java.Coupling.Coupling;
 
 public class Main {
 
@@ -45,5 +46,8 @@ public class Main {
 
         Tree t = new Tree(cu);
         t.result();
+
+        Coupling coupling = new Coupling(cu);
+        coupling.showResult();
     }
 }

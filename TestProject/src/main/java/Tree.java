@@ -33,7 +33,7 @@ public class Tree {
         //scanner for the question.
         Scanner scan = new Scanner(System.in);
 
-        javaContent = cu.getChildNodes();
+        javaContent = cu.getChildNodes().toString();
         if (javaContent.contains("insert")) {
             numNode++;
         }
