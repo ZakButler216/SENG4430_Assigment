@@ -11,11 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-//import main.java.Coupling.Coupling;
+import main.java.coupling.Coupling;
 
 public class Main {
 
-    private static final String filePath = "src/test/java/Tree_TestData/src/main.java";
+    private static final String filePath = "C:\\Users\\geeth\\OneDrive\\Documents\\SQ proj\\SENG4430_Assigment\\TestProject\\src\\main\\java\\coupling\\Coupling.java"; //"src/test/java/Tree_TestData/src/main.java";
 
     private static List<String> readFileInList(String fileName)
     {
@@ -41,13 +41,16 @@ public class Main {
         System.out.println("\n");
          */
         //System.out.println("Response For a Class Results");
+
+        /*
         RFC rfc = new RFC(cu);
         rfc.showResults();
 
         Tree t = new Tree(cu);
         t.result();
+        */
 
         Coupling coupling = new Coupling(cu);
-        coupling.showResult();
+        //coupling.showResult();
     }
 }

@@ -33,7 +33,7 @@ public class Tree {
         //scanner for the question.
         Scanner scan = new Scanner(System.in);
 
-        javaContent = cu.getChildNodes().toString();
+        javaContent = cu.getChildNodes().toString(); //toString for backwards compaibility
         if (javaContent.contains("insert")) {
             numNode++;
         }
