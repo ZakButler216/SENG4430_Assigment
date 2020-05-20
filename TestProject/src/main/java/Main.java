@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Main {
 
-    private static final String filePath = "src/main/java/TestThing.java";
+    private static final String filePath = "src/main/java/FogIndex.java";
 
     private static List<String> readFileInList() {
         List<String> lineList = Collections.emptyList();

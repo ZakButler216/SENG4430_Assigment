@@ -113,8 +113,29 @@ public class FogIndex {
         System.out.println("Complex word average: " + complexAverage);
         System.out.println("Word count: " + fWordCount);
         System.out.println("Complex word count: " + fComplexCount);
-        System.out.println("Length of longest line: " + fLongestLine);
         System.out.println("Total Line Count: " + lineCount);
+        System.out.println("Length of longest line: " + fLongestLine);
+        if(fLongestLine > 110){
+            System.out.println("Your lines of code should be less than 110 characters.");
+        }
         System.out.println("Fog Index: " + fogIndex);
+        int fogIndexInt = (int)fogIndex;
+        switch(fogIndexInt){
+            case 1: case 2: case 3: case 4: case 5:
+                System.out.println("Well done, your code is super readable.");
+                break;
+            case 6: case 7: case 8:
+                System.out.println("Good, your code is easily readable.");
+                break;
+            case 9: case 10: case 11: case 12:
+                System.out.println("Your code is readable.");
+                break;
+            case 13: case 14: case 15: case 16: case 17:
+                System.out.println("Your code might be difficult to read.");
+                break;
+            default:
+                System.out.println("Your code is is difficult to read, consider refactoring it.");
+                break;
+        }
     }
 }
