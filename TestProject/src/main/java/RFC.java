@@ -21,6 +21,9 @@ public class RFC {
     private final List<MethodDeclaration> otherClassesMethods;
     private int publicCount;
 
+    //A private class used to find the top level class for the file being tested
+    //The top level class in java should be the class the file is named for
+    //For example, the top level class of this file is RFC
     private static class MainClassFinder extends VoidVisitorAdapter<List<ClassOrInterfaceDeclaration>>{
         @Override
         public void visit(ClassOrInterfaceDeclaration cid, List<ClassOrInterfaceDeclaration> mainClass){
@@ -31,6 +34,9 @@ public class RFC {
         }
     }
 
+
+    //Method to find all the non top level classes
+    //These will mostly be private classes used only by the top level class
     private static class ClassFinder extends VoidVisitorAdapter<List<ClassOrInterfaceDeclaration>>{
         @Override
         public void visit(ClassOrInterfaceDeclaration cid, List<ClassOrInterfaceDeclaration> classes){
@@ -41,6 +47,7 @@ public class RFC {
         }
     }
 
+    //Finds all the method declarations in a class
     private static class MethodFinder extends VoidVisitorAdapter<List<MethodDeclaration>>{
         @Override
         public void visit(MethodDeclaration md, List<MethodDeclaration> methods){
@@ -49,6 +56,7 @@ public class RFC {
         }
     }
 
+    //
     private void setup (){
         VoidVisitor<List<ClassOrInterfaceDeclaration>> mainClassFinder = new MainClassFinder();
         mainClassFinder.visit(cu, otherClasses);
@@ -63,7 +71,8 @@ public class RFC {
         }
         for(int i=0; i<mainClassMethods.size(); i++){
             for (MethodDeclaration otherClassesMethod : otherClassesMethods) {
-                if (mainClassMethods.get(i).getDeclarationAsString().equals(otherClassesMethod.getDeclarationAsString())) {
+                if (mainClassMethods.get(i).getDeclarationAsString()
+                .equals(otherClassesMethod.getDeclarationAsString())) {
                     mainClassMethods.remove(i);
                 }
             }
@@ -75,6 +84,7 @@ public class RFC {
         }
     }
 
+    //Constructor that calls the set up method that does all the calculations needed
     RFC(CompilationUnit newCu){
         cu = newCu;
         otherClasses = new ArrayList<>();
@@ -85,6 +95,7 @@ public class RFC {
         setup();
     }
 
+    //Prints out the Response for the top level class
     public void showResults(){
         System.out.println("Response for Class " + mainClass.getNameAsString() + " is: " + publicCount);
   }
