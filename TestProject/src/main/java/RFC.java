@@ -56,8 +56,17 @@ public class RFC {
         }
     }
 
-    //
-    private void setup (){
+    //Calculates the Response for the Top level Class of the java class parsed in
+    //Creates an object used to find the main class
+    //Finds the main class, puts it in a list that will be reused later
+    //Sets the mainClass variable to the class found and sets the list to new list to be reused
+    //Creates an object to find other classes
+    //Finds the other classes and puts them in a list
+    //Next, finds all the methods in the top level class and puts them in a list
+    //Then finds all the classes in the sub classes and puts them in a list
+    //Removes the methods from the sub class from the list of the top level class' methods
+    //Counts how many public methods remain in the top level class, this number is the RFC
+    private void calcRFC (){
         VoidVisitor<List<ClassOrInterfaceDeclaration>> mainClassFinder = new MainClassFinder();
         mainClassFinder.visit(cu, otherClasses);
         mainClass = otherClasses.get(0);
@@ -84,7 +93,7 @@ public class RFC {
         }
     }
 
-    //Constructor that calls the set up method that does all the calculations needed
+    //Constructor that calls method that does all the calculations needed
     RFC(CompilationUnit newCu){
         cu = newCu;
         otherClasses = new ArrayList<>();
@@ -92,7 +101,7 @@ public class RFC {
         otherClassesMethods = new ArrayList<>();
         publicCount = 0;
 
-        setup();
+        calcRFC();
     }
 
     //Prints out the Response for the top level class
