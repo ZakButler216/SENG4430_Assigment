@@ -1,9 +1,11 @@
-package main.java.coupling;
+package metrics;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
@@ -14,17 +16,27 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Coupling
 {
+
+
+
+
     private final CompilationUnit cu;
     private String content;
 
@@ -32,10 +44,85 @@ public class Coupling
     {
         cu = newCu;
         content = cu.getChildNodes().toString();
-        findFieldVarType(cu);
-        findVarType(cu);
-        findMethodCallClass(cu);
-        printContent();
+        String[] str = new String[1];
+        str[0] = "";
+        try {
+            test();
+        } catch(Exception e) {}
+        //findFieldVarType(cu);
+        //findVarType(cu);
+        //findMethodCallClass(cu);
+        //printContent();
+    }
+
+    public static void test() throws IOException {
+        System.out.println("YOOOOOOOOOOOOOOOOO");
+
+        //Parses stuff
+        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
+
+        String s1 = "C:\\Users\\Cliff\\eclipse-workspace\\TestMultipleSourceRoots";
+        String s2 = "C:\\Users\\Cliff\\eclipse-workspace\\TestMultipleClasses";
+        String s3 = "C:\\Users\\Cliff\\eclipse-workspace\\TestSingleClass";
+        String s4 = "C:\\Users\\Cliff\\Documents\\GitHub\\Bank-System";
+        String s5 = "C:\\Users\\Cliff\\eclipse-workspace\\TestConditionals";
+
+        Path root = Paths.get(s5);
+        ProjectRoot projectRoot = new SymbolSolverCollectionStrategy().collect(root);
+
+        for(int i =0;i<projectRoot.getSourceRoots().size();i++) {
+
+            SourceRoot sourceRoot = projectRoot.getSourceRoots().get(i);
+
+            sourceRoot.tryToParse();
+
+            List<CompilationUnit> compilationUnits = sourceRoot.getCompilationUnits();
+
+            for(int j = 0;j<compilationUnits.size();j++) {
+
+                allCompilationUnits.add(compilationUnits.get(j));
+            }
+        }
+        CompilationUnit cu = allCompilationUnits.get(0);
+
+        //Start processing AST Tree
+        NodeList<TypeDeclaration<?>> allTypes = cu.getTypes();
+        NodeList<BodyDeclaration<?>> allMembers = allTypes.get(0).getMembers();
+
+        //Finds method call through nodes in AST Tree
+        System.out.println("Method Call: "+allTypes.get(0).findAll(MethodCallExpr.class));
+
+        //This is another way can find method call, through VoidVisitorAdaptor
+        //Tho it gives you less control over the variables
+        MethodCall mc = new MethodCall();
+        mc.visit(cu,null);
+
+        //Gets methods
+        NodeList<BodyDeclaration<?>> allMethods = new NodeList<>();
+        for(int i=0;i<allMembers.size();i++) {
+            if(allMembers.get(i).isMethodDeclaration()) {
+                allMethods.add(allMembers.get(i));
+
+            }
+        }
+
+        //Gets a method
+        MethodDeclaration aMethod = (MethodDeclaration) allMethods.get(1);
+
+        //Gets variables in the method
+        System.out.println("Variable Declaration in method: "+ aMethod.findAll(VariableDeclarationExpr.class));
+        //System.out.println(aMethod);
+
+    }
+
+    private static class MethodCall extends VoidVisitorAdapter<Void> {
+
+        @Override
+        public void visit(MethodCallExpr n, Void arg) {
+
+            super.visit(n,arg);
+            System.out.println(n.getName());
+        }
     }
 
     public void printContent()
@@ -45,6 +132,8 @@ public class Coupling
     }
 
     private static void findMethodCallClass(CompilationUnit cu) {
+
+
         cu.findAll(MethodCallExpr.class).forEach(m -> { //for each method call
             //System.out.println("Method Call: " + m);
             try {
@@ -74,7 +163,7 @@ public class Coupling
         cu.findAll(cType).forEach(v -> { //for each expression
             //System.out.println(printOut + v);
             v.getVariables().forEach(d -> { //for each declaration
-                System.out.print("Type: " + d.resolve().getType().asArrayType().getComponentType()); //arrays count as a different type
+                //System.out.print("Type: " + d.resolve().getType().asArrayType().getComponentType()); //arrays count as a different type
                 try {
                     if (d.getType().isArrayType()) { //array types are also reference types so check it first
                         ResolvedType arrType = d.resolve().getType().asArrayType().getComponentType();
