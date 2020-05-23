@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Main {
 
-    private static final String filePath = "src/main/java/FogIndex.java";
+    private static final String filePath = "src";
 
     private static List<String> readFileInList() {
         List<String> lineList = Collections.emptyList();
@@ -32,6 +32,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
 
+        /*
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
         List<String> lineList = readFileInList();
 
@@ -49,5 +50,15 @@ public class Main {
 
         //System.out.println("Depth of Tree/Inheritances Results");
         //t.result();
+         */
+
+
+        Parser p = new Parser();
+
+        List<CompilationUnit> cuList = p.getCompilationUnits(filePath);
+
+        for(CompilationUnit cu : cuList){
+            System.out.println(cu.getPrimaryTypeName());
+        }
     }
 }
