@@ -1,128 +1,36 @@
-package metrics;
+package main.java.coupling;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.javaparser.resolution.types.ResolvedType;
-import com.github.javaparser.symbolsolver.JavaSymbolSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithVariables;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
-import com.github.javaparser.utils.ProjectRoot;
-import com.github.javaparser.utils.SourceRoot;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.body.BodyDeclaration;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.javaparser.resolution.UnsolvedSymbolException;
+import com.github.javaparser.resolution.types.ResolvedType;
+import com.github.javaparser.ast.PackageDeclaration;
+import java.util.Optional;
 
 public class Coupling
 {
-
-
-
-
     private final CompilationUnit cu;
     private String content;
+    //private String rootPackage;
 
     public Coupling(CompilationUnit newCu)
     {
         cu = newCu;
         content = cu.getChildNodes().toString();
-        String[] str = new String[1];
-        str[0] = "";
-        try {
-            test();
-        } catch(Exception e) {}
-        //findFieldVarType(cu);
-        //findVarType(cu);
-        //findMethodCallClass(cu);
+        Optional<PackageDeclaration> rootPackage = cu.getPackageDeclaration();
+        System.out.println(rootPackage);/*
+
+        findFieldVarType(cu);
+        findVarType(cu);
+        findAllTypes(cu);
+        findMethodCallClass(cu);*/
         //printContent();
-    }
-
-    public static void test() throws IOException {
-        System.out.println("YOOOOOOOOOOOOOOOOO");
-
-        //Parses stuff
-        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
-
-        String s1 = "C:\\Users\\Cliff\\eclipse-workspace\\TestMultipleSourceRoots";
-        String s2 = "C:\\Users\\Cliff\\eclipse-workspace\\TestMultipleClasses";
-        String s3 = "C:\\Users\\Cliff\\eclipse-workspace\\TestSingleClass";
-        String s4 = "C:\\Users\\Cliff\\Documents\\GitHub\\Bank-System";
-        String s5 = "C:\\Users\\Cliff\\eclipse-workspace\\TestConditionals";
-
-        Path root = Paths.get(s5);
-        ProjectRoot projectRoot = new SymbolSolverCollectionStrategy().collect(root);
-
-        for(int i =0;i<projectRoot.getSourceRoots().size();i++) {
-
-            SourceRoot sourceRoot = projectRoot.getSourceRoots().get(i);
-
-            sourceRoot.tryToParse();
-
-            List<CompilationUnit> compilationUnits = sourceRoot.getCompilationUnits();
-
-            for(int j = 0;j<compilationUnits.size();j++) {
-
-                allCompilationUnits.add(compilationUnits.get(j));
-            }
-        }
-        CompilationUnit cu = allCompilationUnits.get(0);
-
-        //Start processing AST Tree
-        NodeList<TypeDeclaration<?>> allTypes = cu.getTypes();
-        NodeList<BodyDeclaration<?>> allMembers = allTypes.get(0).getMembers();
-
-        //Finds method call through nodes in AST Tree
-        System.out.println("Method Call: "+allTypes.get(0).findAll(MethodCallExpr.class));
-
-        //This is another way can find method call, through VoidVisitorAdaptor
-        //Tho it gives you less control over the variables
-        MethodCall mc = new MethodCall();
-        mc.visit(cu,null);
-
-        //Gets methods
-        NodeList<BodyDeclaration<?>> allMethods = new NodeList<>();
-        for(int i=0;i<allMembers.size();i++) {
-            if(allMembers.get(i).isMethodDeclaration()) {
-                allMethods.add(allMembers.get(i));
-
-            }
-        }
-
-        //Gets a method
-        MethodDeclaration aMethod = (MethodDeclaration) allMethods.get(1);
-
-        //Gets variables in the method
-        System.out.println("Variable Declaration in method: "+ aMethod.findAll(VariableDeclarationExpr.class));
-        //System.out.println(aMethod);
-
-    }
-
-    private static class MethodCall extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(MethodCallExpr n, Void arg) {
-
-            super.visit(n,arg);
-            System.out.println(n.getName());
-        }
     }
 
     public void printContent()
@@ -132,18 +40,24 @@ public class Coupling
     }
 
     private static void findMethodCallClass(CompilationUnit cu) {
-
-
         cu.findAll(MethodCallExpr.class).forEach(m -> { //for each method call
-            //System.out.println("Method Call: " + m);
+            System.out.println("Method Call: " + m);
+            /*if(m.toString().equals("v.getVariables()"))
+            {
+                m.resolve();
+                System.out.println("/Method Call: " + m + " " + m.resolve());
+            }*/
             try {
-                System.out.println("Class: " + m.resolve().getPackageName() + "." + m.resolve().getClassName()); //check package name to identify Java libraries
+                System.out.println("Class: " + m.resolve().getClass());
+                System.out.println("Class: " + m.resolve().getPackageName() + "." + m.resolve().getClassName() + " for " + m); //check package name to identify Java libraries
             } catch (UnsolvedSymbolException e) {
-                System.out.println("Unsolvable");
+                System.out.println("Method call unsolvable for " + m + "\n"); //for method calls made in lambda expr
+                //unsolvable
             } catch (UnsupportedOperationException e) {
-                System.out.println("wtf? " + e);
+                System.out.println("wtf? " + e); //v.getVariables
             } catch (RuntimeException e) {
                 System.out.println("y u do dis? " + e);
+                System.out.println("For: " + m);
             }
             System.out.println();
         });
@@ -161,7 +75,8 @@ public class Coupling
     // pass FieldDeclaration.class to find instance variables or VariableDeclarationExpr.class for local variables
     private static <T extends Node & NodeWithVariables<T>> void findVarTypeHelper(CompilationUnit cu, Class<T> cType, String printOut) {
         cu.findAll(cType).forEach(v -> { //for each expression
-            //System.out.println(printOut + v);
+            System.out.println(printOut + v);
+            //System.out.println(printOut + v.getVariables() + " " + v.getVariables().get(0).getType() + " " + v.getVariables().get(0).getType().getClass());
             v.getVariables().forEach(d -> { //for each declaration
                 //System.out.print("Type: " + d.resolve().getType().asArrayType().getComponentType()); //arrays count as a different type
                 try {
@@ -172,11 +87,16 @@ public class Coupling
                         }
                     } else if (d.getType().isReferenceType()) { //shouldn't be an array now
                         System.out.print(" (qualified name: " + d.resolve().getType().asReferenceType().getQualifiedName() + ")"); //qualified name includes both package and class name here
+                    } else if (d.getType().getClass().toString().equals("class com.github.javaparser.ast.type.PrimitiveType"))
+                    {
+                        System.out.print(" (qualified name: " + d.resolve().getType().toString() + ")");
+                    } else {
+                        System.out.println("Leaving out: " + v);
                     }
                 } catch (UnsolvedSymbolException e) {
-                    System.out.print("Unsolvable");
+                    System.out.print(printOut + " unsolvable for " + " " + v); //unsolvable
                 } catch (UnsupportedOperationException e) {
-                    System.out.print("\nwtf? " + e);
+                    System.out.print("\nfindVarTypeHelper wtf? " + printOut + " " + e);
                 }
                 System.out.println();
             });
