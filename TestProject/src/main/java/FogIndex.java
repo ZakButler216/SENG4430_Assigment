@@ -1,14 +1,21 @@
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 20/05/2020
+//Date last Modified: 24/05/2020
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class FogIndex {
 
+    private String fileName;           //name of the file being measured
     private double wordAveragePerLine; //average number of words per line
     private double complexAverage;     //average number of complex words for whole file
     private double fWordCount;         //final count of number of words
@@ -19,8 +26,9 @@ public class FogIndex {
 
 
     //Constructor that calls calculates all required metrics when called
-    FogIndex(List<String> list){
-        calcFogIndex(list);
+    FogIndex(File file) throws IOException {
+        calcFogIndex(file);
+        //System.out.println(file.getName());
     }
 
     //Calculates the fog index of the file
@@ -33,11 +41,15 @@ public class FogIndex {
     //Increments number of lines
     //After going through each line in the list of lines,
     //Calculates all values needed
-    private void calcFogIndex(List<String> list){
+    private void calcFogIndex(File file) throws IOException {
         double wordCount = 0;
         double complexCount = 0;
         double longestLine = 0;
-        for(String s: list)
+
+        FileReader fr = new FileReader(file);
+        List<String> lines = Files.readAllLines(Paths.get(String.valueOf(file)), StandardCharsets.UTF_8);
+
+        for(String s: lines)
         {
             if(s.length() != 0){
                 List<String> wordsList = lineToWords(s);
@@ -53,12 +65,13 @@ public class FogIndex {
                 }
             }
         }
-        wordAveragePerLine = wordCount/list.size();
+        fileName = file.getName();
+        wordAveragePerLine = wordCount/lines.size();
         complexAverage = complexCount/wordCount;
         fWordCount = wordCount;
         fComplexCount = complexCount;
         fLongestLine = longestLine;
-        lineCount = list.size();
+        lineCount = lines.size();
         fogIndex = 0.4*(wordAveragePerLine+(100*(complexCount/wordCount)));
     }
 
@@ -142,6 +155,7 @@ public class FogIndex {
 
     //Method to print out the results
     public void showResults(){
+        System.out.println("Fog Index Results for: " + fileName);
         System.out.println("Word average per line: " + wordAveragePerLine);
         System.out.println("Complex word average: " + complexAverage);
         System.out.println("Word count: " + fWordCount);
