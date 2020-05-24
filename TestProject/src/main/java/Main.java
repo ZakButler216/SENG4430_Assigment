@@ -30,5 +30,13 @@ public class Main {
             fi.showResults();
             System.out.println();
         }
+
+        List<RFC> rfcResults = new ArrayList<>();
+        for(CompilationUnit cu : cuList){
+            RFC rfc = new RFC(cu);
+            rfcResults.add(rfc);
+            rfc.showResults();
+            System.out.println();
+        }
     }
 }

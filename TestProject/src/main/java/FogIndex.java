@@ -25,14 +25,14 @@ public class FogIndex {
     private double fogIndex;           //The Fog Index for the file
 
 
-    //Constructor that calls calculates all required metrics when called
+    //Constructor that calls method that calculates all required metrics when called
     FogIndex(File file) throws IOException {
         calcFogIndex(file);
         //System.out.println(file.getName());
     }
 
     //Calculates the fog index of the file
-    //takes a list of strings where each string represents a line of the fine
+    //takes a file object and reads each line in the file into a string which is added to a list of strings
     //Breaks down each string into a  list of strings where each entry is a word
     //Adds size of list of words to total word count
     //Checks if each word is complex or not
