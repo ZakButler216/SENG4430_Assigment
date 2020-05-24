@@ -15,6 +15,9 @@ import java.util.List;
  */
 public class Generic {
 
+    /**
+     This method explores child nodes of a tree.
+     */
     public void exploreChildNodes(Node n) {
 
         //Process node
@@ -27,11 +30,17 @@ public class Generic {
 
     }
 
+    /**
+     This method prints the AST Tree of a Compilation Unit as Text Document.
+     */
     public void printASTTreeAsText(CompilationUnit cu) {
         YamlPrinter printer = new YamlPrinter(true);
         System.out.println(printer.output(cu));
     }
 
+    /**
+     This method prints the AST Tree of a Compilation Unit as XML.
+     */
     public void printASTTreeAsXML(CompilationUnit cu) {
         XmlPrinter printer = new XmlPrinter(true);
         System.out.println(printer.output(cu));

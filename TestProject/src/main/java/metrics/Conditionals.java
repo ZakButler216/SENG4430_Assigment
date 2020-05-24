@@ -1,22 +1,30 @@
 package metrics;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
+import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
+import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,7 +49,7 @@ public class Conditionals {
         String s4 = "C:\\Users\\Cliff\\Documents\\GitHub\\Bank-System";
         String s5 = "C:\\Users\\Cliff\\eclipse-workspace\\TestConditionals";
         String s6 = "C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases";
-        Path root = Paths.get(s6);
+        Path root = Paths.get(s2);
         ProjectRoot projectRoot = new SymbolSolverCollectionStrategy().collect(root);
 
         for(int i =0;i<projectRoot.getSourceRoots().size();i++) {
@@ -62,7 +70,7 @@ public class Conditionals {
         System.out.println("Amount of compilation units is:");
         System.out.println(allCompilationUnits.size());
 
-        CompilationUnit cu = allCompilationUnits.get(0);
+        CompilationUnit cu = allCompilationUnits.get(2);
         //System.out.println(cu.getTypes().get(0).getMembers());
 
         /**
@@ -75,7 +83,7 @@ public class Conditionals {
          */
         NodeList<BodyDeclaration<?>> allMembers = allTypes.get(0).getMembers();
         //FieldDeclaration aField = (FieldDeclaration) allTypes.get(0).getMembers().get(3);
-        TypeDeclaration aType = (TypeDeclaration) allTypes.get(0);
+        //TypeDeclaration aType = (TypeDeclaration) allTypes.get(0);
 
         /**
          Gets all functions of that compilation unit
@@ -107,58 +115,58 @@ public class Conditionals {
 
         //BodyDeclaration<?> aMethod = allMethods.get(12);
         MethodDeclaration aMethod = (MethodDeclaration) allMethods.get(0);
-        CyclomaticComplexity cyclomaticComplexity = new CyclomaticComplexity();
-        int cc = cyclomaticComplexity.findCCForAMethod(aMethod);
-        System.out.println(aMethod);
-        System.out.println("CC is "+cc);
+        //CyclomaticComplexity cyclomaticComplexity = new CyclomaticComplexity();
+        //int cc = cyclomaticComplexity.findCCForAMethod(aMethod);
+        //System.out.println(aMethod);
+        //System.out.println("CC is "+cc);
 
-        /**
-         This part shows all predicates
-         */
-        /*if(aMethod.findAll(IfStmt.class).size()>0) {
-            System.out.println("This method has "+aMethod.findAll(IfStmt.class).size()
-                    +" if statements.");
-            System.out.println("else if statement counts as if.");
-        }
+        List<MethodCallExpr> methodCallsList = aMethod.findAll(MethodCallExpr.class);
+        //System.out.println(methodCallsList.get(0).getChildNodes().get(0).findAll(MethodCallExpr.class));
 
-        if(aMethod.findAll(SwitchEntry.class).size()>0) {
-            System.out.println("This method has "+aMethod.findAll(SwitchEntry.class).size()
-                    +" total switch cases.");
-        }
+        MethodCallExpr callOne = methodCallsList.get(0).getChildNodes().get(0).findAll(MethodCallExpr.class).get(0);
+        //MethodCallExpr callTwo = methodCallsList.get(0).getChildNodes().get(1).findAll(MethodCallExpr.class).get(0);
+        //callOne.resolve();
+        System.out.println(methodCallsList.get(0).getChildNodes().get(1));
+        //System.out.println(callOne.fin);
 
-        if(aMethod.findAll(WhileStmt.class).size()>0) {
-            System.out.println("This method has "+aMethod.findAll(WhileStmt.class).size()
-                    +" while loops.");
-        }
+        //Optional<MethodDeclaration> caller = aMethod.findParent(MethodDeclaration.class)
 
-        if(aMethod.findAll(DoStmt.class).size()>0) {
-            System.out.println("This method has "+aMethod.findAll(DoStmt.class).size()
-                    +" do while loops.");
-        }
 
-        if(aMethod.findAll(ForStmt.class).size()>0) {
-            System.out.println("This method has "+aMethod.findAll(ForStmt.class).size()
-                    +" for loops.");
-        }
+        //CalculatorVisitor cv = new CalculatorVisitor();
 
-        if(aMethod.findAll(ForEachStmt.class).size()>0) {
-            System.out.println("This method has "+aMethod.findAll(ForEachStmt.class).size()
-                    +" for each loops.");
-        }
+        //cv.visit(callOne,);
 
-        if(aMethod.findAll(CatchClause.class).size()>0) {
-            System.out.println("This method has "+aMethod.findAll(CatchClause.class).size()
-                    +"catch statements.");
-        }
 
-        System.out.println("The Method is:");
-        System.out.println(aMethod);
 
-         */
-
+        //System.out.println(aMethod.resolve());
 
 
     }
+
+    static class CalculatorVisitor extends VoidVisitorAdapter<JavaParserFacade> {
+
+        @Override
+        public void visit(MethodCallExpr n, JavaParserFacade javaParserFacade) {
+
+            super.visit(n,javaParserFacade);
+            ResolvedMethodDeclaration test = javaParserFacade.solve(n).getCorrespondingDeclaration();
+            System.out.println(test);
+
+        }
+
+        /*
+        public void processJavaFile(File inputFile) throws FileNotFoundException {
+
+            CombinedTypeSolver typeSolver = new CombinedTypeSolver(new JavaParserTypeSolver(new File("C:\\Users\\Cliff\\eclipse-workspace\\TestMultipleClasses")));
+            typeSolver.add(new ReflectionTypeSolver());
+            CompilationUnit cu = JavaParser.
+
+        }
+
+         */
+    }
+
+
 
 
 

@@ -1,14 +1,10 @@
-package testcase;
+package comment_percentage;
 
 /**
- Test Criteria:
- Javadoc comments
- Line Comments
- Block Comments
- Comments with lines in them
- Comments without empty lines
+Test Case One
+
  */
-public class TestCaseCommentTypes {
+public class CP_TCOne_Main {
 
     private int number;
 
