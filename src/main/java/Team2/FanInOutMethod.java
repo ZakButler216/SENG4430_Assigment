@@ -30,7 +30,7 @@ public class FanInOutMethod {
             grade,
             recommendation;
 
-    ArrayList<String> calledMethodsList;//|NOTE: ASK THIS| do we skip same external method names?
+    ArrayList<String> calledMethodsList, callerList;//|NOTE: ASK THIS| do we skip same external method names?
 
     /////////////////////////////////////////////////( constructors )/////////////////////////////////////////////////
 
@@ -42,6 +42,7 @@ public class FanInOutMethod {
         recommendation = "";
 
         calledMethodsList = new ArrayList<>();
+        callerList = new ArrayList<>();
     }
     ////////////////////////////////////////////////////( getters )////////////////////////////////////////////////////
 
@@ -63,6 +64,10 @@ public class FanInOutMethod {
 
     public ArrayList<String> getCalledMethodsList() {
         return calledMethodsList;
+    }
+
+    public ArrayList<String> getCallerList() {
+        return callerList;
     }
 
     ////////////////////////////////////////////////////( setters )////////////////////////////////////////////////////
@@ -87,4 +92,7 @@ public class FanInOutMethod {
         this.calledMethodsList = calledMethodsList;
     }
 
+    public void setCallerList(ArrayList<String> callerList) {
+        this.callerList = callerList;
+    }
 }
