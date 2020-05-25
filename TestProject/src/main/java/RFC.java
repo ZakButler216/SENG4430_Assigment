@@ -1,7 +1,7 @@
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 20/05/2020
+//Date last Modified: 25/05/2020
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -58,6 +58,8 @@ public class RFC {
         }
     }
 
+
+    //Finds all method calls within a method declaration
     private static class MethodCallFinder extends VoidVisitorAdapter<List<MethodCallExpr>>{
         @Override
         public void visit(MethodCallExpr mc, List<MethodCallExpr> methods){
@@ -75,7 +77,10 @@ public class RFC {
     //Next, finds all the methods in the top level class and puts them in a list
     //Then finds all the classes in the sub classes and puts them in a list
     //Removes the methods from the sub class from the list of the top level class' methods
-    //Counts how many public methods remain in the top level class, this number is the RFC
+    //Counts how many public methods remain in the top level class
+    //Adds all the method calls in the public methods to a list
+    //The absolute value of the set of public methods, plus the methods called within those public methods
+    //Is the Response for a Class
     private void calcRFC (){
         VoidVisitor<List<ClassOrInterfaceDeclaration>> mainClassFinder = new MainClassFinder();
         mainClassFinder.visit(cu, otherClasses);
@@ -98,8 +103,8 @@ public class RFC {
         }
         MethodCallFinder mcf = new MethodCallFinder();
         for (MethodDeclaration mainClassMethod : mainClassMethods) {
-            mcf.visit(mainClassMethod, calledMethods);
             if (!mainClassMethod.isPrivate()) {
+                mcf.visit(mainClassMethod, calledMethods);
                 rfc++;
             }
         }
@@ -121,6 +126,15 @@ public class RFC {
     //Prints out the Response for the top level class
     public void showResults(){
         System.out.println("Response for Class " + mainClass.getNameAsString() + " is: " + rfc);
+        if(rfc <= 50){
+            System.out.println("The Response for this Class is under 50, that's great");
+        }else{
+            if(rfc <= 100){
+                System.out.println("The Response for this Class is between 50 and 100, this is okay, but not great.");
+            }else{
+                System.out.println("The Response for this Class is over 100, this is not good.");
+            }
+        }
   }
 }
 

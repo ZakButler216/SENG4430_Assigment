@@ -1,7 +1,7 @@
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 24/05/2020
+//Date last Modified: 25/05/2020
 
 import com.github.javaparser.ast.CompilationUnit;
 
@@ -22,7 +22,6 @@ public class Main {
         Parser p = new Parser();
         List<CompilationUnit> cuList = p.getCompilationUnits(directory);
 
-        /*
         List<FogIndex> fiResults = new ArrayList<>();
         for(File entry : fr.getFileList()) {
             FogIndex fi = new FogIndex(entry);
@@ -30,7 +29,6 @@ public class Main {
             fi.showResults();
             System.out.println();
         }
-         */
 
         List<RFC> rfcResults = new ArrayList<>();
         for(CompilationUnit cu : cuList){
