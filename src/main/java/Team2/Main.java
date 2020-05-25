@@ -13,7 +13,6 @@ import java.sql.SQLSyntaxErrorException;
 import java.util.Collections;
 import java.util.List;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
@@ -21,12 +20,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
 
@@ -59,23 +53,18 @@ public class Main {
             temp.setMethodName(md.getNameAsString());
             temp.setMethodBlock(md.toString());
 
-            //grade
-            //recommendation
-            //list of names of called methods. Find all method calls. Need to iterate
-            AtomicInteger mceCount = new AtomicInteger();
-
+            //prepare parser
             TypeSolver typeSolver = new ReflectionTypeSolver();
-
             JavaSymbolSolver symbolSolver = new JavaSymbolSolver(typeSolver);
             StaticJavaParser.getConfiguration().setSymbolResolver(symbolSolver);
 
             //parse input
             //add dummy class declaration to surround method coz it won't compile code with error
-            CompilationUnit cu2 = StaticJavaParser.parse("public class dummy {" + temp.getMethodBlock() + "}");
+            CompilationUnit cu2 = StaticJavaParser.parse("public class Dummy {" + temp.getMethodBlock() + "}");
 
-            //visit the method block and count method call
+            //visit each method
             cu2.findAll(MethodCallExpr.class).forEach(mce -> {
-                //save the method name to the ArrayList of method calls
+                //save the method name to the FanInMethod object's ArrayList of method calls
                 temp.getCalledMethodsList().add(mce.getNameAsString());
             });
 
@@ -105,7 +94,7 @@ public class Main {
 
         //////////////////////////////////////( Fan-in/out: starts )/////////////////////////////////////////
         //path
-        String s2 = "src";
+        String s2 = "src5";
         //array list of compilation units
         List<CompilationUnit> allCU;
 
@@ -114,12 +103,12 @@ public class Main {
 
         //initialise allCU
         allCU = rootParser.getCompilationUnits(s2);
-        System.out.println("allCU size = " + allCU.size());
 
         //iterate on each compilation units
         for(int i = 0; i < allCU.size(); i++){
             //now we want to separate each methods and save them in a FanInOutMethod object
-            //create visitor
+
+            //create visitor for normal methods
             VoidVisitor<?> methodVisitor = new MethodSplitter();
             methodVisitor.visit(allCU.get(i), null);
         }
