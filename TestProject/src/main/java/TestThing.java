@@ -22,5 +22,7 @@ public class TestThing {
 
     public void setWord(String word) {
         this.word = word;
+        this.getNum();
+        this.getWord();
     }
 }

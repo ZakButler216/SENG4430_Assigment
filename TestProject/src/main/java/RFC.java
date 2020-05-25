@@ -6,6 +6,7 @@
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -19,7 +20,8 @@ public class RFC {
     private List<ClassOrInterfaceDeclaration> otherClasses;
     private final List<MethodDeclaration> mainClassMethods;
     private final List<MethodDeclaration> otherClassesMethods;
-    private int publicCount;
+    private final List<MethodCallExpr> calledMethods;
+    private int rfc;
 
     //A private class used to find the top level class for the file being tested
     //The top level class in java should be the class the file is named for
@@ -48,11 +50,19 @@ public class RFC {
     }
 
     //Finds all the method declarations in a class
-    private static class MethodFinder extends VoidVisitorAdapter<List<MethodDeclaration>>{
+    private static class MethodDecFinder extends VoidVisitorAdapter<List<MethodDeclaration>>{
         @Override
         public void visit(MethodDeclaration md, List<MethodDeclaration> methods){
             super.visit(md, methods);
             methods.add(md);
+        }
+    }
+
+    private static class MethodCallFinder extends VoidVisitorAdapter<List<MethodCallExpr>>{
+        @Override
+        public void visit(MethodCallExpr mc, List<MethodCallExpr> methods){
+            super.visit(mc, methods);
+            methods.add(mc);
         }
     }
 
@@ -73,7 +83,7 @@ public class RFC {
         otherClasses = new ArrayList<>();
         VoidVisitor<List<ClassOrInterfaceDeclaration>> otherClassesFinder = new ClassFinder();
         otherClassesFinder.visit(cu, otherClasses);
-        VoidVisitor<List<MethodDeclaration>> methodFinder = new MethodFinder();
+        VoidVisitor<List<MethodDeclaration>> methodFinder = new MethodDecFinder();
         methodFinder.visit(mainClass, mainClassMethods);
         for (ClassOrInterfaceDeclaration otherClass : otherClasses) {
             methodFinder.visit(otherClass, otherClassesMethods);
@@ -86,11 +96,14 @@ public class RFC {
                 }
             }
         }
+        MethodCallFinder mcf = new MethodCallFinder();
         for (MethodDeclaration mainClassMethod : mainClassMethods) {
+            mcf.visit(mainClassMethod, calledMethods);
             if (!mainClassMethod.isPrivate()) {
-                publicCount++;
+                rfc++;
             }
         }
+        rfc = rfc + calledMethods.size();
     }
 
     //Constructor that calls method that does all the calculations needed
@@ -99,14 +112,15 @@ public class RFC {
         otherClasses = new ArrayList<>();
         mainClassMethods = new ArrayList<>();
         otherClassesMethods = new ArrayList<>();
-        publicCount = 0;
+        calledMethods = new ArrayList<>();
+        rfc = 0;
 
         calcRFC();
     }
 
     //Prints out the Response for the top level class
     public void showResults(){
-        System.out.println("Response for Class " + mainClass.getNameAsString() + " is: " + publicCount);
+        System.out.println("Response for Class " + mainClass.getNameAsString() + " is: " + rfc);
   }
 }
 

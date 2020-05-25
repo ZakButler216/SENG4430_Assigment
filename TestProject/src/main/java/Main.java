@@ -22,7 +22,7 @@ public class Main {
         Parser p = new Parser();
         List<CompilationUnit> cuList = p.getCompilationUnits(directory);
 
-
+        /*
         List<FogIndex> fiResults = new ArrayList<>();
         for(File entry : fr.getFileList()) {
             FogIndex fi = new FogIndex(entry);
@@ -30,6 +30,7 @@ public class Main {
             fi.showResults();
             System.out.println();
         }
+         */
 
         List<RFC> rfcResults = new ArrayList<>();
         for(CompilationUnit cu : cuList){
