@@ -25,7 +25,8 @@ import java.util.ArrayList;
 public class Main {
 
     private static final String filePath = "src/test/java/Tree_TestData/src/main.java";
-    private static List<FanInOutMethod> methodsList = new ArrayList<FanInOutMethod>();
+
+    private static List<FanInOutMethod> methodsList = new ArrayList<>();
 
     private static List<String> readFileInList(String fileName)
     {
@@ -39,8 +40,9 @@ public class Main {
         return lineList;
     }
 
+
     //Naneth: This inner class separates the methods of one class and puts the methods in a static array list
-    private static class MethodSplitter extends VoidVisitorAdapter<Void> {
+    public static class MethodSplitter extends VoidVisitorAdapter<Void> {
 
         @Override
         public void visit(MethodDeclaration md, Void arg){
@@ -73,6 +75,37 @@ public class Main {
         }
     }
 
+    //Naneth: This inner class separates the Java classes in the source
+    public static void classSplitter(String source){
+        //create a new parser
+        Parser rootParser = new Parser();
+
+        //array list of compilation units
+        //initialise allCU
+        List<CompilationUnit> allCU = rootParser.getCompilationUnits(source);
+
+        for(int i = 0; i < allCU.size(); i++){
+            //now we want to separate each methods and save them in a FanInOutMethod object
+
+            //create visitor for normal methods
+            VoidVisitor<?> methodVisitor = new Main.MethodSplitter();
+            methodVisitor.visit(allCU.get(i), null);
+        }
+    }
+
+    public static List<FanInOutMethod> getMethodsList() {
+        return methodsList;
+    }
+
+    /*Naneth:   This method is used for JUnit testing where the methodsList must be refreshed.
+    *           Don't transfer to classSplitter method, as more than one module uses the
+    *               methodsList array list.
+    * */
+    public static void clearMethodsList(){
+        //clear our methodsList
+        methodsList = new ArrayList<>();
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         /*
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
@@ -94,33 +127,18 @@ public class Main {
 
         //////////////////////////////////////( Fan-in/out: starts )/////////////////////////////////////////
         //path
-        String s2 = "src5";
-        //array list of compilation units
-        List<CompilationUnit> allCU;
+        String s1 = "srcEmptyNoFile";
 
-        //create a new parser
-        Parser rootParser = new Parser();
+        classSplitter(s1);
 
-        //initialise allCU
-        allCU = rootParser.getCompilationUnits(s2);
-
-        //iterate on each compilation units
-        for(int i = 0; i < allCU.size(); i++){
-            //now we want to separate each methods and save them in a FanInOutMethod object
-
-            //create visitor for normal methods
-            VoidVisitor<?> methodVisitor = new MethodSplitter();
-            methodVisitor.visit(allCU.get(i), null);
-        }
-
-        //*****************************( fan-out )*****************************//
+        //******************( fan-out )******************//
         //make new FanOut object
         FanOut fo = new FanOut();
 
         //execute fan out method of FanOut object
-        fo.calculateFanOut(methodsList);
+        List<Integer> result = fo.calculateFanOut(methodsList);
 
-        //*****************************( fan-in )*****************************//
+        //******************( fan-in )******************//
         //make new FanIn object
         FanIn fi = new FanIn();
 
