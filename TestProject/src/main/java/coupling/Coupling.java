@@ -60,6 +60,10 @@ public class Coupling
             coupledClasses.add(new HashSet<>());
             innerClasses.add(new HashSet<>());
         }
+        for(CompilationUnit comp: cuList)
+        {
+            findInnerClassParent(comp);
+        }
         //find file name
         if(rootPackage.isPresent()) {
             packages = true;
@@ -125,7 +129,7 @@ public class Coupling
             if(j!=maxCommonLevel && j!=maxCommonLevel-1)
                 minPath += ".";
         }
-        System.out.println("Min Path: " + minPath + " " + maxCommonLevel + " " + test.split("\\.").length + " " + test);
+        //System.out.println("Min Path: " + minPath + " " + maxCommonLevel + " " + test.split("\\.").length + " " + test);
 
 
         for(int i =0; i<cuList.size(); i++) //cuList.size() is param
@@ -153,7 +157,6 @@ public class Coupling
             findVarType(cu);
             findMethodCallClass(cu);
             findImports(cu);
-            findInnerClassParent(cu);
             findAllTypes = true;
             findAllTypes(cu);
             findAllTypes = false;
@@ -219,7 +222,7 @@ public class Coupling
 
     public void checkResolve(String className, String pkgName)
     {
-        if(className.equals("Coupling") && fileName.equals("Main"))
+        if(fileName.equals("LinkedList"))
         {
             System.out.println("FN: " + fileName);
             System.out.println("CN: " + className);
@@ -249,7 +252,9 @@ public class Coupling
                 {
                     if(comp.getPrimaryTypeName().toString().equals(className))
                     {
-                        incrementClass(i);
+                        incrementClass(index); //increment this class
+                        System.out.println("0");
+                        incrementClass(i); //increment that class
                         System.out.println("1");
                         break;
                     }
@@ -259,8 +264,6 @@ public class Coupling
         } else { //if packages
             if(!fileName.equals(className) && pkgName.contains(minPath)) //diff classes - diff class name and pkg name
             {
-                incrementClass(index); //increment this class
-                System.out.println("2");
                 for(int i =0; i<paths.size(); i++)
                 {
                     String str = paths.get(i).substring(paths.get(i).lastIndexOf('.')+1);
@@ -268,6 +271,8 @@ public class Coupling
                         System.out.println("2 str: " + str + " pkgN: " + pkgName + " classN " + className + " path: " + paths.get(i));*/
                     if(str.equals(className) && paths.get(i).contains(pkgName))
                     {
+                        incrementClass(index); //increment this class
+                        System.out.println("2");
                         incrementClass(i); //increment that class
                         System.out.println("3");
                         break;
@@ -277,14 +282,14 @@ public class Coupling
             {
                 if(!paths.get(index).substring(0, paths.get(index).lastIndexOf('.')).contains(pkgName) && pkgName.contains(minPath))
                 {
-                    incrementClass(index); //increment this class
-                    System.out.println("4 " + paths.get(index) + " | " + fileName);
-                    System.out.println("Checking resolve for: " + className + " | " + pkgName);
+                    //System.out.println("Checking resolve for: " + className + " | " + pkgName);
                     for(int i =0; i<paths.size(); i++)
                     {
                         String str = paths.get(i).substring(paths.get(i).lastIndexOf('.')+1);
                         if(str.equals(className) && paths.get(i).contains(pkgName))
                         {
+                            incrementClass(index); //increment this class
+                            System.out.println("4 " + paths.get(index) + " | " + fileName);
                             incrementClass(i); //increment that class
                             System.out.println("5");
                             break;
@@ -309,7 +314,7 @@ public class Coupling
 
     private void findMethodCallClass(CompilationUnit cu) {
         cu.findAll(MethodCallExpr.class).forEach(m -> { //for each method call
-            System.out.println("Method Call: " + m + " " + fileName); //uncomment
+            //System.out.println("Method Call: " + m + " " + fileName); //uncomment
             /*if(m.toString().equals("v.getVariables()"))
             {
                 m.resolve();
@@ -318,22 +323,26 @@ public class Coupling
             try {
                 //System.out.println("Class: " + m.resolve().getClass());
                 //System.out.println("Class: " + m.resolve().getPackageName() + "." + m.resolve().getClassName() + " for " + m); //check package name to identify Java libraries, uncomment
-                if(m.resolve().getPackageName().contains("."))
+                if(fileName.equals("LinkedList"))
+                {
+                    System.out.println("Class: " + m.resolve().getPackageName() + " . " + m.resolve().getClassName() + " for " + m);
+                }
+                if(m.resolve().getClassName().contains("."))
                 {
                     checkResolve(m.resolve().getPackageName()+"."+m.resolve().getClass()); //class is inner class
                 } else {
                     checkResolve(m.resolve().getClassName(), m.resolve().getPackageName()); //check coupling
                 }
             } catch (UnsolvedSymbolException e) {
-                System.out.println("Method call unsolvable for " + m + "\n"); //for method calls made in lambda expr
+                //System.out.println("Method call unsolvable for " + m + "\n"); //for method calls made in lambda expr
                 //unsolvable
             } catch (UnsupportedOperationException e) {
-                System.out.println("wtf? " + e); //v.getVariables
+                //System.out.println("wtf? " + e); //v.getVariables
             } catch (RuntimeException e) {
-                System.out.println("y u do dis? " + e);
-                System.out.println("For: " + m);
+                //System.out.println("y u do dis? " + e);
+                //System.out.println("For: " + m);
             }
-            System.out.println(); //uncomment
+            //System.out.println(); //uncomment
         });
     }
 
@@ -349,8 +358,8 @@ public class Coupling
     // pass FieldDeclaration.class to find instance variables or VariableDeclarationExpr.class for local variables
     private <T extends Node & NodeWithVariables<T>> void findVarTypeHelper(CompilationUnit cu, Class<T> cType, String printOut) {
         cu.findAll(cType).forEach(v -> { //for each expression
-            if(fileName.equals("Main"))
-                System.out.println("YOOOOOOOOOOOOOOOOOOOOOOOOOO " + printOut + v); //uncomment
+            //if(fileName.equals("Main"))
+                //System.out.println("YOOOOOOOOOOOOOOOOOOOOOOOOOO " + printOut + v); //uncomment
             //System.out.println(printOut + v.getVariables() + " " + v.getVariables().get(0).getType() + " " + v.getVariables().get(0).getType().getClass());
             v.getVariables().forEach(d -> { //for each declaration
                 //System.out.print("Type: " + d.resolve().getType().asArrayType().getComponentType()); //arrays count as a different type
@@ -358,30 +367,38 @@ public class Coupling
                     if (d.getType().isArrayType()) { //array types are also reference types so check it first
                         ResolvedType arrType = d.resolve().getType().asArrayType().getComponentType();
                         if (arrType.isReferenceType()) { //check in case it's an array of primitives
-                            System.out.println(" (qualified name: " + arrType.asReferenceType().getQualifiedName() + ")"); //this also gets rid of the array part, uncomment, qualified name = pkgname+classname
+                            //System.out.println(" (qualified name: " + arrType.asReferenceType().getQualifiedName() + ")"); //this also gets rid of the array part, uncomment, qualified name = pkgname+classname
+                            if(fileName.equals("LinkedList"))
+                            {
+                                System.out.println(" (qualified name: " + arrType.asReferenceType().getQualifiedName() + ")");
+                            }
                             checkResolve(arrType.asReferenceType().getQualifiedName()); //check coupling
                         }
                     } else if (d.getType().isReferenceType()) { //shouldn't be an array now
-                        if(fileName.equals("Main"))
-                            System.out.println("2YOOOOOOOOOOOOOOOOOOOOOOOOOO " + printOut + v); //uncomment
-                        System.out.println(" (qualified name: " + d.resolve().getType().asReferenceType().getQualifiedName() + ")"); //qualified name includes both package and class name here, uncomment
+                        //if(fileName.equals("Main"))
+                            //System.out.println("2YOOOOOOOOOOOOOOOOOOOOOOOOOO " + printOut + v); //uncomment
+                        //System.out.println(" (qualified name: " + d.resolve().getType().asReferenceType().getQualifiedName() + ")"); //qualified name includes both package and class name here, uncomment
+                        if(fileName.equals("LinkedList"))
+                        {
+                            System.out.println(" (qualified name: " + d.resolve().getType().asReferenceType().getQualifiedName() + ")");
+                        }
                         checkResolve(d.resolve().getType().asReferenceType().getQualifiedName()); //check coupling
-                        if(fileName.equals("Main"))
-                            System.out.println("3YOOOOOOOOOOOOOOOOOOOOOOOOOO " + printOut + v + " " + d.resolve().getType().asReferenceType().getQualifiedName()); //uncomment
+                        //if(fileName.equals("Main"))
+                            //System.out.println("3YOOOOOOOOOOOOOOOOOOOOOOOOOO " + printOut + v + " " + d.resolve().getType().asReferenceType().getQualifiedName()); //uncomment
                     } else if (d.getType().getClass().toString().equals("class com.github.javaparser.ast.type.PrimitiveType"))
                     {
-                        System.out.println(" (qualified name: " + d.resolve().getType().toString() + ")"); //uncomment
+                        //System.out.println(" (qualified name: " + d.resolve().getType().toString() + ")"); //uncomment
                     } else {
-                        System.out.println("Leaving out: " + v);
+                        //System.out.println("Leaving out: " + v);
                     }
                 } catch (UnsolvedSymbolException e) {
-                    System.out.print(printOut + " unsolvable for " + " " + v); //unsolvable
+                    //System.out.print(printOut + " unsolvable for " + " " + v); //unsolvable
                 } catch (UnsupportedOperationException e) {
-                    System.out.print("\nfindVarTypeHelper wtf? " + printOut + " " + e);
+                    //System.out.print("\nfindVarTypeHelper wtf? " + printOut + " " + e);
                 }
-                System.out.println(); //uncomment
+                //System.out.println(); //uncomment
             });
-            System.out.println(); //uncomment
+            //System.out.println(); //uncomment
         });
     }
 
@@ -392,16 +409,24 @@ public class Coupling
                     ResolvedType arrType = t.resolve().asArrayType().getComponentType();
                     if (arrType.isReferenceType()) { //check in case it's an array of primitives
                         //System.out.println(arrType.asReferenceType().getQualifiedName()); //this also gets rid of the array part, uncomment
+                        if(fileName.equals("LinkedList"))
+                        {
+                            System.out.println(arrType.asReferenceType().getQualifiedName());
+                        }
                         checkResolve(arrType.asReferenceType().getQualifiedName()); //check coupling
                     }
                 } else if (t.isReferenceType()) { //shouldn't be an array now
                     //System.out.println(t.resolve().asReferenceType().getQualifiedName()); //qualified name includes both package and class name here, uncomment
+                    if(fileName.equals("LinkedList"))
+                    {
+                        System.out.println(t.resolve().asReferenceType().getQualifiedName());
+                    }
                     checkResolve(t.resolve().asReferenceType().getQualifiedName()); //check coupling
                 }
             } catch (UnsolvedSymbolException e) {
-                System.out.println("Unsolvable: " + t);
+                //System.out.println("Unsolvable: " + t);
             } catch (UnsupportedOperationException e) {
-                System.out.println("\nwtf? " + e);
+                //System.out.println("\nwtf? " + e);
             }
         });
     }
@@ -411,9 +436,9 @@ public class Coupling
         cu.findAll(ImportDeclaration.class).forEach(i -> {
             //System.out.print(i.getName()); //uncomment
             if (i.isAsterisk()) {
-                System.out.print(" (package) " + i.getName()); //uncomment
+                //System.out.print(" (package) " + i.getName()); //uncomment
             }
-            System.out.println();
+            //System.out.println();
         });
     }
 
