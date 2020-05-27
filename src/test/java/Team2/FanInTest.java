@@ -42,24 +42,6 @@ class FanInTest {
     }
 
     /*
-     * This test is for an invalid assert test
-     * Should FAIL
-     * */
-    @Test
-    void testCalculateFanInInvalidAssert() {
-        //path
-        String s1 = "srcValid";
-
-        List<Integer> expected = new ArrayList<>();
-        expected.add(0);
-        expected.add(0);
-        expected.add(0);
-        expected.add(0);
-        expected.add(1);
-        doTest(s1, expected);
-    }
-
-    /*
      * This test is for an invalid test file
      * Should PASS
      * */
