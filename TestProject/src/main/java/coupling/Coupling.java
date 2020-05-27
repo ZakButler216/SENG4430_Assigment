@@ -156,8 +156,12 @@ public class Coupling
             findFieldVarType(cu);
             findVarType(cu);
             findMethodCallClass(cu);
-            findImports(cu);
             findAllTypes = true;
+            if(fileName.equals("Main"))
+            {
+                System.out.println("// " + coupledClasses.get(index));
+            }
+            findImports(cu);
             findAllTypes(cu);
             findAllTypes = false;
 /*
@@ -170,22 +174,36 @@ public class Coupling
 
     public void incrementClass(int i)
     {
+        Set<String> set = coupledClasses.get(index);
+        Set<String> set2 = coupledClasses.get(i);
         if(!findAllTypes)
         {
-            Set<String> set = coupledClasses.get(i);
-            if(!set.contains(paths.get(i)))
+            if(!paths.get(i).equals(paths.get(index)))// && !set2.contains(paths.get(index))) class being coupled isn't fileName
             {
-                set.add(paths.get(i));
+                if(!set.contains(paths.get(i)))
+                {
+                    set.add(paths.get(i));
+                }
+                if(!set2.contains(paths.get(index)))
+                {
+                    set2.add(paths.get(index));
+                }
             }
+            classCouple.set(i, classCouple.get(i)+1);
             /*if(fileName.equals("BST"))
                 Thread.dumpStack();*/
-            classCouple.set(i, classCouple.get(i)+1);
         } else { //if findAllTypes is being called
-            Set<String> set = coupledClasses.get(i);
-            if(!set.contains(paths.get(i)))
+            if(!paths.get(i).equals(paths.get(index)))// && !set2.contains(paths.get(index)))
             {
-                set.add(paths.get(i));
-                classCouple.set(i, classCouple.get(i)+1);
+                if(!set.contains(paths.get(i)))
+                {
+                    set.add(paths.get(i));
+                    classCouple.set(i, classCouple.get(i)+1);
+                }
+                if(!set2.contains(paths.get(index)))
+                {
+                    set2.add(paths.get(index));
+                }
             }
         }
     }
@@ -320,13 +338,13 @@ public class Coupling
                     checkResolve(m.resolve().getClassName(), m.resolve().getPackageName()); //check coupling
                 }
             } catch (UnsolvedSymbolException e) {
-                System.out.println("Method call unsolvable for " + m + "\n"); //for method calls made in lambda expr
+                //System.out.println("Method call unsolvable for " + m + "\n"); //for method calls made in lambda expr
                 //unsolvable
             } catch (UnsupportedOperationException e) {
-                System.out.println("wtf? " + e); //v.getVariables
+                //System.out.println("wtf? " + e); //v.getVariables
             } catch (RuntimeException e) {
-                System.out.println("y u do dis? " + e);
-                System.out.println("For: " + m);
+                //System.out.println("y u do dis? " + e);
+                //System.out.println("For: " + m);
             }
             //System.out.println(); //uncomment
         });
@@ -363,12 +381,12 @@ public class Coupling
                     {
                         //System.out.println(" (qualified name: " + d.resolve().getType().toString() + ")"); //uncomment
                     } else {
-                        System.out.println("Leaving out: " + v);
+                        //System.out.println("Leaving out: " + v);
                     }
                 } catch (UnsolvedSymbolException e) {
-                    System.out.print(printOut + " unsolvable for " + " " + v); //unsolvable
+                    //System.out.print(printOut + " unsolvable for " + " " + v); //unsolvable
                 } catch (UnsupportedOperationException e) {
-                    System.out.print("\nfindVarTypeHelper wtf? " + printOut + " " + e);
+                    //System.out.print("\nfindVarTypeHelper wtf? " + printOut + " " + e);
                 }
                 //System.out.println(); //uncomment
             });
@@ -403,8 +421,21 @@ public class Coupling
             //System.out.print(i.getName()); //uncomment
             if (i.isAsterisk()) {
                 //System.out.print(" (package) " + i.getName()); //uncomment
+                //do nothing
+            } else {
+                for(String s: paths)
+                {
+                    if(i.getName().toString().equals(s))
+                    {
+                        Set<String> set = coupledClasses.get(index);
+                        if(!set.contains(i.getName().toString()) && !fileName.equals(i.getName().toString()))
+                        {
+                            System.out.println(" (package) YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + i.getName() + " " + coupledClasses.get(index) + " " +s + " " + fileName);
+                            checkResolve(i.getName().toString());
+                        }
+                    }
+                }
             }
-            //System.out.println();
         });
     }
 
@@ -412,8 +443,6 @@ public class Coupling
         cu.findAll(ClassOrInterfaceDeclaration.class).forEach(c -> {
             if (c.isInnerClass()) {
                 String qName = c.resolve().getQualifiedName();
-                //System.out.println("Parent Class: " + qName.substring(0, qName.lastIndexOf('.')));
-                System.out.println("Inner Class: " + qName);
                 Set<String> set = innerClasses.get(index);
                 if(!set.contains(c.resolve().getQualifiedName())) //if inner classes isn't in list already
                 {
