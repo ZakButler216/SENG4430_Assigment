@@ -72,6 +72,24 @@ public class Main {
         }
     }
     
+    //Naneth: This inner class separates the Java classes in the source
+    public static void classSplitter(String source){
+        //create a new parser
+        Parser rootParser = new Parser();
+
+        //array list of compilation units
+        //initialise allCU
+        List<CompilationUnit> allCU = rootParser.getCompilationUnits(source);
+
+        for(int i = 0; i < allCU.size(); i++){
+            //now we want to separate each methods and save them in a FanInOutMethod object
+
+            //create visitor for normal methods
+            VoidVisitor<?> methodVisitor = new Main.MethodSplitter();
+            methodVisitor.visit(allCU.get(i), null);
+        }
+    }
+    
     public static void main(String[] args) throws FileNotFoundException {
 
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
@@ -90,35 +108,20 @@ public class Main {
         Tree t = new Tree(cu);
         t.result();
         
-        //////////////////////////////////////( Fan-in/out: starts )/////////////////////////////////////////
+         //////////////////////////////////////( Fan-in/out: starts )/////////////////////////////////////////
         //path
-        String s2 = "src5";
-        //array list of compilation units
-        List<CompilationUnit> allCU;
+        String s1 = "srcEmptyNoFile";
 
-        //create a new parser
-        Parser rootParser = new Parser();
+        classSplitter(s1);
 
-        //initialise allCU
-        allCU = rootParser.getCompilationUnits(s2);
-
-        //iterate on each compilation units
-        for(int i = 0; i < allCU.size(); i++){
-            //now we want to separate each methods and save them in a FanInOutMethod object
-
-            //create visitor for normal methods
-            VoidVisitor<?> methodVisitor = new MethodSplitter();
-            methodVisitor.visit(allCU.get(i), null);
-        }
-
-        //*****************************( fan-out )*****************************//
+        //******************( fan-out )******************//
         //make new FanOut object
         FanOut fo = new FanOut();
 
         //execute fan out method of FanOut object
-        fo.calculateFanOut(methodsList);
+        List<Integer> result = fo.calculateFanOut(methodsList);
 
-        //*****************************( fan-in )*****************************//
+        //******************( fan-in )******************//
         //make new FanIn object
         FanIn fi = new FanIn();
 
