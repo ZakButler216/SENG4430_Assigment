@@ -54,21 +54,6 @@ class FanOutTest {
     }
 
     /*
-     * This test is for an invalid test file
-     * Should FAIL
-     * */
-    @Test
-    void testCalculateFanOutInvalidFile() {
-        //path
-        String s1 = "srcInvalidFile";
-
-        List<Integer> expected = new ArrayList<>();
-        expected.add(0);
-        expected.add(0);
-        doTest(s1, expected);
-    }
-
-    /*
      * This test is for an empty source. There are no Java files.
      * Should PASS
      * */
