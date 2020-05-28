@@ -161,6 +161,8 @@ public class Main {
 
         //clear our methodsList
         Main.clearMethodsList();
+        
+        //split all the .java files, then split all the methods in each .java file
         classSplitter(s1);
 
         //******************( fan-out )******************//
