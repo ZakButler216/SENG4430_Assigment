@@ -14,7 +14,7 @@ class RFCTest {
         List<CompilationUnit> cuList = p.getCompilationUnits(directory);
         CompilationUnit cu = cuList.get(0);
         RFC rfc = new RFC(cu);
-
+        assertEquals(6, rfc.getRfc());
     }
 
 }
