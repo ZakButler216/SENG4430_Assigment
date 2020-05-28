@@ -36,6 +36,7 @@ public class Coupling
     private boolean packages, findAllTypes;
     private ArrayList<Set<String>> coupledClasses;
     private ArrayList<Set<String>> innerClasses;
+    private String test;
     //private String rootPackage;
 
     public Coupling(List<CompilationUnit> newCuList) //the full name plus the packname must be unique within a program
@@ -157,10 +158,6 @@ public class Coupling
             findVarType(cu);
             findMethodCallClass(cu);
             findAllTypes = true;
-            if(fileName.equals("Main"))
-            {
-                System.out.println("// " + coupledClasses.get(index));
-            }
             findImports(cu);
             findAllTypes(cu);
             findAllTypes = false;
@@ -172,13 +169,17 @@ public class Coupling
         //printContent();
     }
 
-    public void incrementClass(int i)
+    public void incrementClass(int i, String pkgName, String className)
     {
+        /*
+        Main is not incrementing when Node is import into it, but Node is incrementing
+        Both incrementClass(i) and fileName are called so do we need checks for both set and set2?
+         */
         Set<String> set = coupledClasses.get(index);
         Set<String> set2 = coupledClasses.get(i);
         if(!findAllTypes)
         {
-            if(!paths.get(i).equals(paths.get(index)))// && !set2.contains(paths.get(index))) class being coupled isn't fileName
+            if(!paths.get(i).equals(paths.get(index)))// class being coupled isn't fileName
             {
                 if(!set.contains(paths.get(i)))
                 {
@@ -190,10 +191,8 @@ public class Coupling
                 }
             }
             classCouple.set(i, classCouple.get(i)+1);
-            /*if(fileName.equals("BST"))
-                Thread.dumpStack();*/
         } else { //if findAllTypes is being called
-            if(!paths.get(i).equals(paths.get(index)))// && !set2.contains(paths.get(index)))
+            if(!paths.get(i).equals(paths.get(index)))
             {
                 if(!set.contains(paths.get(i)))
                 {
@@ -204,6 +203,10 @@ public class Coupling
                 {
                     set2.add(paths.get(index));
                 }
+            } else { //if i is index
+                String qN = pkgName+"."+className;
+                if(!set.contains(qN))
+                    classCouple.set(i, classCouple.get(i)+1);
             }
         }
     }
@@ -241,6 +244,7 @@ public class Coupling
 
     public void checkResolve(String className, String pkgName)
     {
+        test=className;
         for(int i=0; i<paths.size(); i++)
         {
             if(paths.get(i).equals(pkgName))
@@ -262,9 +266,9 @@ public class Coupling
                 {
                     if(comp.getPrimaryTypeName().toString().equals(className))
                     {
-                        incrementClass(index); //increment this class
+                        incrementClass(index, pkgName, className); //increment this class
                         //System.out.println("0");
-                        incrementClass(i); //increment that class
+                        incrementClass(i, pkgName, className); //increment that class
                         //System.out.println("1");
                         break;
                     }
@@ -272,23 +276,23 @@ public class Coupling
                 }
             }
         } else { //if packages
-            if(!fileName.equals(className) && pkgName.contains(minPath)) //diff classes - diff class name and pkg name
+            if(!fileName.equals(className) && pkgName.startsWith(minPath)) //diff classes - diff class name and pkg name
             {
                 for(int i =0; i<paths.size(); i++)
                 {
                     String str = paths.get(i).substring(paths.get(i).lastIndexOf('.')+1);
                     if(str.equals(className) && paths.get(i).contains(pkgName))
                     {
-                        incrementClass(index); //increment this class
+                        incrementClass(index, pkgName, className); //increment this class
                         //System.out.println("2");
-                        incrementClass(i); //increment that class
+                        incrementClass(i, pkgName, className); //increment that class
                         //System.out.println("3");
                         break;
                     }
                 }
             } else if (fileName.equals(className)) //diff classes - same class name diff pkg name
             {
-                if(!paths.get(index).substring(0, paths.get(index).lastIndexOf('.')).contains(pkgName) && pkgName.contains(minPath))
+                if(!paths.get(index).substring(0, paths.get(index).lastIndexOf('.')).contains(pkgName) && pkgName.startsWith(minPath))
                 {
                     //System.out.println("Checking resolve for: " + className + " | " + pkgName);
                     for(int i =0; i<paths.size(); i++)
@@ -296,9 +300,9 @@ public class Coupling
                         String str = paths.get(i).substring(paths.get(i).lastIndexOf('.')+1);
                         if(str.equals(className) && paths.get(i).contains(pkgName))
                         {
-                            incrementClass(index); //increment this class
+                            incrementClass(index, pkgName, className); //increment this class
                             //System.out.println("4 " + paths.get(index) + " | " + fileName);
-                            incrementClass(i); //increment that class
+                            incrementClass(i, pkgName, className); //increment that class
                             //System.out.println("5");
                             break;
                         }
@@ -310,6 +314,7 @@ public class Coupling
 
     private void checkResolve(String qualifiedName)
     {
+        test = qualifiedName;
         if(!qualifiedName.contains("."))
         {
             checkResolve(qualifiedName, "");
@@ -430,7 +435,7 @@ public class Coupling
                         Set<String> set = coupledClasses.get(index);
                         if(!set.contains(i.getName().toString()) && !fileName.equals(i.getName().toString()))
                         {
-                            System.out.println(" (package) YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + i.getName() + " " + coupledClasses.get(index) + " " +s + " " + fileName);
+                            //System.out.println(" (package) " + i.getName() + " " + coupledClasses.get(index) + " " +s + " " + fileName);
                             checkResolve(i.getName().toString());
                         }
                     }
