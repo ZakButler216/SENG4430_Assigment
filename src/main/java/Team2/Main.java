@@ -81,6 +81,7 @@ public class Main {
         }
     }
 
+    //Naneth: This method helps(is used by) the two visitor classes; MethodSplitter, and ConstructorVisitor
     public static void visitorHelper(FanInOutMethod temp){
         //prepare parser
         TypeSolver typeSolver = new ReflectionTypeSolver();
@@ -101,7 +102,7 @@ public class Main {
         methodsList.add(temp);
     }
 
-    //Naneth: This inner class separates the Java classes in the source
+    //Naneth: This method separates the Java classes in the source
     public static void classSplitter(String source){
         //create a new parser
         Parser rootParser = new Parser();
@@ -128,6 +129,7 @@ public class Main {
 
     }
 
+    //Naneth: This method returns the methodsList
     public static List<FanInOutMethod> getMethodsList() {
         return methodsList;
     }
