@@ -185,4 +185,8 @@ public class FogIndex {
                 break;
         }
     }
+
+    public double getFogIndex() {
+        return fogIndex;
+    }
 }

@@ -136,5 +136,9 @@ public class RFC {
             }
         }
   }
+
+  public int getRfc(){
+        return rfc;
+  }
 }
 

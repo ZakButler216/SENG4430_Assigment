@@ -31,7 +31,7 @@ public class Main {
         }
 
         List<RFC> rfcResults = new ArrayList<>();
-        for(CompilationUnit cu : cuList){
+        for(CompilationUnit cu : cuList) {
             RFC rfc = new RFC(cu);
             rfcResults.add(rfc);
             rfc.showResults();
