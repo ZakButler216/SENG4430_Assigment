@@ -22,8 +22,33 @@ import java.io.IOException;
  */
 public class Parser {
 
+    private static List<CompilationUnit> storedCompilationUnits;
+    private static String storedDirectory;
+
+
     public Parser() {
 
+    }
+
+    static {
+        storedCompilationUnits = new ArrayList<>();
+        storedDirectory="";
+    }
+
+    public void setStoredDirectory(String directory) {
+        storedDirectory = directory;
+    }
+
+    public static String getStoredDirectory() {
+        return storedDirectory;
+    }
+
+    public void setStoredCompilationUnits(List<CompilationUnit> compilationUnits) {
+        storedCompilationUnits = compilationUnits;
+    }
+
+    public static List<CompilationUnit> getStoredCompilationUnits() {
+        return storedCompilationUnits;
     }
 
 
@@ -71,6 +96,33 @@ public class Parser {
     }
 
     /**
+     This method gets a list of classes/compilation unit names as String
+     */
+    public List<String> getClassesAsString(List<CompilationUnit> compilationUnits) {
+
+        //Initializes new list to store compilation unit names
+        List<String> compilationUnitNames = new ArrayList<>();
+
+        //Traverses the list of all compilation units
+        for(int i=0;i<compilationUnits.size();i++) {
+
+            //Gets the class name of each compilation unit, which is of form Optional[Classname]
+            String className = compilationUnits.get(i).getPrimaryTypeName().toString();
+
+            //Trim the string from Optional[Classname] to Classname
+            className = className.substring(className.indexOf("[")+1);
+            className = className.substring(0,className.indexOf("]"));
+
+            //Add to list
+            compilationUnitNames.add(className);
+        }
+
+        //return list
+        return compilationUnitNames;
+    }
+
+
+    /**
      This method gets a compilation unit from a list of compilation units,
      by searching via it's class name.
      */
@@ -94,6 +146,15 @@ public class Parser {
 
         //else return null
         return null;
+    }
+
+    public String getClassNameFromCompilationUnit(CompilationUnit cu) {
+        String className = cu.getPrimaryTypeName().toString();
+
+        className = className.substring(className.indexOf("[")+1);
+        className = className.substring(0,className.indexOf("]"));
+
+        return className;
     }
 
     /**

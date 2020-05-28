@@ -258,5 +258,43 @@ public class CyclomaticComplexity extends Generic {
 
     }
 
+    //Encapsulation thus returning it as a string
+    //Better for testing (i.e. can test the string),
+    //and maintenance (i.e. if switch view to another platform, can just transfer the string)
+    //and scalability (i.e. if want to distribute it to other platforms, can just use the string)
+    //and extensibility (i.e. can utilize inheritance/polymorphism/composition to modify String)
+    public String getResult(CompilationUnit cu) {
+
+
+        String result="";
+        String allMethods="";
+        String className;
+
+        List<IndividualMethod> methodsList = findCCForAClass(cu);
+
+
+        for(int i=0;i<methodsList.size();i++) {
+            String totalMethod = "";
+
+            String methodName ="Method name: "+methodsList.get(i).getName();
+
+            int cc = methodsList.get(i).getCC();
+            String methodCC = "Method Cyclomatic Complexity: "+Integer.toString(cc);
+
+            String methodEvaluation ="Method evaluation: "+ methodsList.get(i).getEval().toString();
+
+            totalMethod = "\n"+methodName +"\n" +methodCC +"\n" +methodEvaluation+"\n";
+            allMethods += totalMethod;
+
+        }
+
+        Parser parser = new Parser();
+        className = "Class: "+parser.getClassNameFromCompilationUnit(cu);
+
+        result = className+"\n"+allMethods;
+
+        return result;
+    }
+
 
 }

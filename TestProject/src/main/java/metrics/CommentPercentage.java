@@ -16,6 +16,21 @@ public class CommentPercentage {
 
     }
 
+    private Evaluation commentEvaluation;
+
+    public enum Evaluation {
+        Good {
+            public String toString() {
+                return "Comment Percentage is good. Comment Percentage should be between 30% and 75%.";
+            }
+        },
+        Bad {
+            public String toString() {
+                return "Comment Percentage is bad. Comment Percentage should be between 30% and 75%." ;
+            }
+        }
+    }
+
     /**
      This takes a list of compilationUnits, and outputs comment percentage for all the compilation units.
      */
@@ -160,5 +175,36 @@ public class CommentPercentage {
 
         return removeFive;
 
+    }
+
+
+    public String evaluateCommentPercentage(double cp) {
+        if(cp>0.3&&cp<0.75) {
+            commentEvaluation = Evaluation.Good;
+        } else {
+            commentEvaluation = Evaluation.Bad;
+        }
+
+        return commentEvaluation.toString();
+    }
+
+    public String getResult(CompilationUnit cu) {
+        String result = "";
+
+        double cp = getCommentPercentageForOneCompilationUnit(cu);
+        double percentage = cp*100;
+        int roundedPercentage = (int) Math.round(percentage);
+        String commentPercentage = Integer.toString(roundedPercentage);
+        commentPercentage += "%";
+        commentPercentage = "Comment Percentage: "+commentPercentage;
+
+        String commentEvaluation ="Comment Percentage Evaluation: " + evaluateCommentPercentage(cp);
+
+        Parser parser = new Parser();
+        String className = "Class: "+parser.getClassNameFromCompilationUnit(cu);
+
+        result= "\n"+className+"\n"+commentPercentage+"\n"+commentEvaluation+"\n";
+
+        return result;
     }
 }
