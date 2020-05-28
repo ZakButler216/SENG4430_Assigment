@@ -13,10 +13,13 @@ import java.sql.SQLSyntaxErrorException;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.javaparser.ast.body.CallableDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.metamodel.CallableDeclarationMetaModel;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
@@ -55,24 +58,47 @@ public class Main {
             temp.setMethodName(md.getNameAsString());
             temp.setMethodBlock(md.toString());
 
-            //prepare parser
-            TypeSolver typeSolver = new ReflectionTypeSolver();
-            JavaSymbolSolver symbolSolver = new JavaSymbolSolver(typeSolver);
-            StaticJavaParser.getConfiguration().setSymbolResolver(symbolSolver);
-
-            //parse input
-            //add dummy class declaration to surround method coz it won't compile code with error
-            CompilationUnit cu2 = StaticJavaParser.parse("public class Dummy {" + temp.getMethodBlock() + "}");
-
-            //visit each method
-            cu2.findAll(MethodCallExpr.class).forEach(mce -> {
-                //save the method name to the FanInMethod object's ArrayList of method calls
-                temp.getCalledMethodsList().add(mce.getNameAsString());
-            });
-
-            //add temp to methodsList
-            methodsList.add(temp);
+            visitorHelper(temp);
         }
+    }
+
+    //Naneth: This inner class separates the methods of one class and puts the methods in a static array list
+    public static class ConstructorVisitor extends VoidVisitorAdapter<Void> {
+
+        @Override
+        public void visit(ConstructorDeclaration md, Void arg){
+            super.visit(md, arg);
+
+            //create new FanInOutMethod Object
+            FanInOutMethod temp = new FanInOutMethod();
+
+            //update values of FanInOutMethod object
+            temp.setMethodName(md.getNameAsString() + " (constructor)");
+            temp.setMethodBlock(md.toString());
+
+            visitorHelper(temp);
+
+        }
+    }
+
+    public static void visitorHelper(FanInOutMethod temp){
+        //prepare parser
+        TypeSolver typeSolver = new ReflectionTypeSolver();
+        JavaSymbolSolver symbolSolver = new JavaSymbolSolver(typeSolver);
+        StaticJavaParser.getConfiguration().setSymbolResolver(symbolSolver);
+
+        //parse input
+        //add dummy class declaration to surround method coz it won't compile code with error
+        CompilationUnit cu2 = StaticJavaParser.parse("public class Dummy {" + temp.getMethodBlock() + "}");
+
+        //visit each method
+        cu2.findAll(MethodCallExpr.class).forEach(mce -> {
+            //save the method name to the FanInMethod object's ArrayList of method calls
+            temp.getCalledMethodsList().add(mce.getNameAsString());
+        });
+
+        //add temp to methodsList
+        methodsList.add(temp);
     }
 
     //Naneth: This inner class separates the Java classes in the source
@@ -91,6 +117,15 @@ public class Main {
             VoidVisitor<?> methodVisitor = new Main.MethodSplitter();
             methodVisitor.visit(allCU.get(i), null);
         }
+
+        for(int j = 0; j < allCU.size(); j++){
+            //now we want to separate each methods and save them in a FanInOutMethod object
+
+            //create visitor for normal methods
+            VoidVisitor<?> constructorVisitor = new Main.ConstructorVisitor();
+            constructorVisitor.visit(allCU.get(j), null);
+        }
+
     }
 
     public static List<FanInOutMethod> getMethodsList() {
@@ -127,7 +162,7 @@ public class Main {
 
         //////////////////////////////////////( Fan-in/out: starts )/////////////////////////////////////////
         //path
-        String s1 = "srcEmptyNoFile";
+        String s1 = "src3";
 
         classSplitter(s1);
 
