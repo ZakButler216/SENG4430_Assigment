@@ -28,7 +28,6 @@ public class FogIndex {
     //Constructor that calls method that calculates all required metrics when called
     FogIndex(File file) throws IOException {
         calcFogIndex(file);
-        //System.out.println(file.getName());
     }
 
     //Calculates the fog index of the file
