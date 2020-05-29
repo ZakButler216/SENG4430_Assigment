@@ -2,7 +2,7 @@
  * File name:    FanIn.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      4.0
+ * Version:      4.1
  * Description:  Fan-in is a software metrics that means:
  *                  - a measure of the number of functions or
  *                      methods that calls another function or method.
@@ -175,23 +175,20 @@ public class FanIn {
             System.out.format(tableFormat, div, div, div + "\n");
             //iterate on the methods list and print how many callers and called each method has.
             for(int k = 0; k < methodsList.size(); k++){
-                //exclude constructors
-                if(methodsList.get(k).isConstructor() == false){
-                    String methodName = methodsList.get(k).getMethodName();
-                    int called = methodsList.get(k).getCalledMethodsList().size();
+                String methodName = methodsList.get(k).getMethodName();
+                int called = methodsList.get(k).getCalledMethodsList().size();
 
-                    System.out.format(tableFormat, methodName, " | ", "total: " + called);
+                System.out.format(tableFormat, methodName, " | ", "total: " + called);
 
-                    for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
-                        System.out.println("");
-                        System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
-                    }
-
-
+                for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
                     System.out.println("");
-                    System.out.format(tableFormat, div, div, div, div, div);
-                    System.out.println("");
+                    System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
                 }
+
+
+                System.out.println("");
+                System.out.format(tableFormat, div, div, div, div, div);
+                System.out.println("");
             }
             System.out.println("");
         }
