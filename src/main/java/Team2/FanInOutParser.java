@@ -117,13 +117,4 @@ public class FanInOutParser {
         return methodsList;
     }
 
-    /*  This method is used for JUnit testing where the methodsList must be refreshed.
-     *  Don't transfer to classSplitter method, as more than one module uses the
-     *  methodsList array list.
-     * */
-    public void clearMethodsList(){
-        //clear our methodsList
-        methodsList = new ArrayList<>();
-    }
-
 }
