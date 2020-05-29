@@ -1,3 +1,14 @@
+/*
+ * File name:    FanInTest.java
+ * Author:       Naneth Sayao
+ * Date:         26 May 2020
+ * Version:      2.0
+ * Description:  Test fan-in with data that are;
+ *                  - valid,
+ *                  - invalid, and
+ *                  - empty.
+ * */
+
 package Team2;
 
 import org.junit.jupiter.api.Test;
@@ -10,14 +21,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class FanInTest {
 
     private void doTest(String s1, List<Integer> expected){
+        //make fan in/out parser
+        FanInOutParser fioParser = new FanInOutParser();
+
         //clear our methodsList
-        Main.clearMethodsList();
-        Main.classSplitter(s1);
+        fioParser.clearMethodsList();
+        fioParser.classSplitter(s1);
 
         //make new FanIn object
         FanIn fi = new FanIn();
         //execute fan out method of FanOut object and save result
-        List<Integer> result = fi.calculateFanIn(Main.getMethodsList());
+        List<Integer> result = fi.calculateFanIn(fioParser.getMethodsList());
         for(int a = 0; a < expected.size(); a++){
             assertEquals(expected.get(a), result.get(a));
         }
@@ -33,7 +47,7 @@ class FanInTest {
         String s1 = "srcValid";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(3);
+        expected.add(6);
         expected.add(3);
         expected.add(0);
         expected.add(3);
@@ -41,10 +55,6 @@ class FanInTest {
         doTest(s1, expected);
     }
 
-    /*
-     * This test is for an invalid test file
-     * Should PASS
-     * */
     @Test
     void testCalculateFanInInvalidFile() {
         //path
