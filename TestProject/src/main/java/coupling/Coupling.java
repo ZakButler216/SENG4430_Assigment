@@ -75,7 +75,7 @@ public class Coupling
         /*
         1. create variable to track C, have list of C vars for every class
         2. increment twice when finding the class (once for the class its in, once for the class it resolved to)
-            2.1. find obj/method -> increment of class its in -> resolve it -> find class it resolved to -> increment class it belonged to
+            2.1. find obj/method -> increment class its in -> resolve it -> find class it resolved to -> increment class it belonged to
         3. have C var for each class in program
         4. add all C var to print final result
         5. show C var in table for each class as well
