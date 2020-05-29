@@ -275,6 +275,13 @@ public class Event {
                         break;
 
                     case "d":
+                        FanInOutParser fioParserOne = new FanInOutParser();
+                        fioParserOne.classSplitter();
+                        FanOut fo = new FanOut();
+                        List<Integer> numericResult = fo.calculateFanOut(fioParserOne.getMethodsList());
+                        String foResult = fo.getOutputResult();
+
+                        totalResult+=foResult;
                         break;
 
                     case "e":
@@ -432,6 +439,8 @@ public class Event {
 
     public static void setCurrentClass(String current) {
         currentClass = current;
+
+
     }
 
     public static String getCurrentClass() {

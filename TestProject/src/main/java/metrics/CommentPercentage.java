@@ -203,7 +203,7 @@ public class CommentPercentage {
         Parser parser = new Parser();
         String className = "Class: "+parser.getClassNameFromCompilationUnit(cu);
 
-        result= "\n"+className+"\n"+commentPercentage+"\n"+commentEvaluation+"\n";
+        result= "\n"+className+"\n"+commentPercentage+"\n"+commentEvaluation+"\n\n";
 
         return result;
     }

@@ -24,7 +24,7 @@ public class Parser {
 
     private static List<CompilationUnit> storedCompilationUnits;
     private static String storedDirectory;
-
+    private static CompilationUnit storedCurrentCompilationUnit;
 
     public Parser() {
 
@@ -33,6 +33,15 @@ public class Parser {
     static {
         storedCompilationUnits = new ArrayList<>();
         storedDirectory="";
+        storedCurrentCompilationUnit = new CompilationUnit();
+    }
+
+    public static CompilationUnit getStoredCurrentCompilationUnit() {
+        return storedCurrentCompilationUnit;
+    }
+
+    public void setStoredCurrentCompilationUnit(CompilationUnit storedCurrent) {
+        storedCurrentCompilationUnit = storedCurrent;
     }
 
     public void setStoredDirectory(String directory) {
