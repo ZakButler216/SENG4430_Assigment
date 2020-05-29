@@ -24,8 +24,6 @@ class FanOutTest {
         //make fan in/out parser
         FanInOutParser fioParser = new FanInOutParser();
 
-        //clear our methodsList
-        fioParser.clearMethodsList();
         fioParser.classSplitter(s1);
 
         //make new FanOut object
