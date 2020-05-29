@@ -2,7 +2,7 @@
  * File name:    FanInOutMethod.java
  * Author:       Naneth Sayao
  * Date:         17 May 2020
- * Version:      1.0
+ * Version:      2.2
  * Description:  An object that will hold:
  *                  - one method block
  *                  - record fan-in/fan-out related data
@@ -10,7 +10,11 @@
 
 package Team2;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.visitor.VoidVisitor;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class FanInOutMethod {
     /*
@@ -26,9 +30,10 @@ public class FanInOutMethod {
     //////////////////////////////////////////////////( variables )///////////////////////////////////////////////////
 
     String  methodName,
-            methodBlock,
-            grade,
-            recommendation;
+            methodBlock;
+
+    boolean isConstructor,
+            isDead;
 
     ArrayList<String> calledMethodsList, callerList;//|NOTE: ASK THIS| do we skip same external method names?
 
@@ -38,12 +43,13 @@ public class FanInOutMethod {
         //initialise variables
         methodName = "";
         methodBlock = "";
-        grade = "";
-        recommendation = "";
+
+        isConstructor = false;
 
         calledMethodsList = new ArrayList<>();
         callerList = new ArrayList<>();
     }
+
     ////////////////////////////////////////////////////( getters )////////////////////////////////////////////////////
 
     public String getMethodName() {
@@ -54,12 +60,9 @@ public class FanInOutMethod {
         return methodBlock;
     }
 
-    public String getGrade() {
-        return grade;
-    }
+    public boolean isConstructor() {
 
-    public String getRecommendation() {
-        return recommendation;
+        return isConstructor;
     }
 
     public ArrayList<String> getCalledMethodsList() {
@@ -80,19 +83,7 @@ public class FanInOutMethod {
         this.methodBlock = methodBlock;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public void setRecommendation(String recommendation) {
-        this.recommendation = recommendation;
-    }
-
-    public void setCalledMethodsList(ArrayList<String> calledMethodsList) {
-        this.calledMethodsList = calledMethodsList;
-    }
-
-    public void setCallerList(ArrayList<String> callerList) {
-        this.callerList = callerList;
+    public void setConstructor(boolean constructor) {
+        isConstructor = constructor;
     }
 }
