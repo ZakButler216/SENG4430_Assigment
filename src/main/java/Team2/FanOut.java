@@ -2,7 +2,7 @@
  * File name:    FanIn.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      2.0
+ * Version:      2.1
  * Description:  Fan-out is a software metrics that means:
  *                  - the number of functions that are called by
  *                      function X.
@@ -81,7 +81,7 @@ public class FanOut {
             System.out.println("//****************************( detailed )****************************//");
             String  tableFormat = "%30s%10s%10s",
                     mn = "Method Name",
-                    cm = "# Methods Called",
+                    cm = "# of Methods Called",
                     div = "____________________";
             System.out.format("%30s%10s%20s", mn, " | ", cm);
             System.out.println("");
