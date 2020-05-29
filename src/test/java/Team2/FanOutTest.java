@@ -2,7 +2,7 @@
  * File name:    FanOutTest.java
  * Author:       Naneth Sayao
  * Date:         26 May 2020
- * Version:      2.0
+ * Version:      2.1
  * Description:  Test fan-out with data that are;
  *                  - valid,
  *                  - invalid, and
