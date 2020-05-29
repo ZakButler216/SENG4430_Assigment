@@ -70,6 +70,7 @@ public class Coupling
         } else {
             packages = false;
             System.out.println("No root package. Cooupling results might not be accurate.");
+            System.out.println();
         }
 
         /*
@@ -227,6 +228,46 @@ public class Coupling
         for (final Object[] row : table) {
             System.out.format("%15s%15s\n", row);
         }
+
+        int total = 0;
+        int totalAvg = 0;
+        int looselyCoupled = 0;
+        String[] evalResult = {"High", "Medium", "Low"};
+
+        for(int c: classCouple)
+        {
+            total += c;
+            if(c <= 4)
+            {
+                looselyCoupled++;
+            }
+        }
+
+        totalAvg = total/cuList.size();
+
+        System.out.println();
+        System.out.println("Total coupling value of program: " + total);
+        System.out.println("Total coupling value of program per class (excluding internal classes): " + totalAvg);
+        System.out.println("Loosely coupled classes (excluding internal classes): " + looselyCoupled + "/" + cuList.size() + " classes");
+        System.out.println("Final evaluation is based on this loosely coupled ratio.");
+        System.out.println();
+
+        float eval = looselyCoupled/cuList.size();
+
+        System.out.print("Final Evaluation of Program: ");
+        if(eval<0.4)
+        {
+            System.out.print(evalResult[0]);
+        } else if(totalAvg>=0.4 && totalAvg<=0.6)
+        {
+            System.out.print(evalResult[1]);
+        } else if(totalAvg>0.6)
+        {
+            System.out.print(evalResult[2]);
+        }
+        System.out.print(" coupling");
+        System.out.println();
+
     }
 
     public void checkResolve(String className, String pkgName)

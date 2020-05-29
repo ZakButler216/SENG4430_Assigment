@@ -51,7 +51,6 @@ public class Main {
         Parser p = new Parser();
 
         List<CompilationUnit> cuList = p.getCompilationUnits(filePath);
-        System.out.println("List length: " + cuList.size());
 /*
         RFC rfc = new RFC(cuList.get(0));
         rfc.showResults();*/
