@@ -2,7 +2,7 @@
  * File name:    FanIn.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      1.0
+ * Version:      2.0
  * Description:  Fan-out is a software metrics that means:
  *                  - the number of functions that are called by
  *                      function X.
@@ -52,34 +52,50 @@ public class FanOut {
 
         //if the file is invalid/ has code errors, or or there are no methods
         if(methodsList.size() <= 0){
-            System.out.println( "No methods detected. \n" +
-                                "Please ensure that the Java file/s have no error and that \n" +
-                                "there is at least one method in the Java file/s.");
+            System.out.println( "No methods detected. \n");
             System.out.println("");
         }
         else{
             System.out.println("///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////");
+            System.out.println("Fan-out is the number of methods that are called by method X.\n");
+
             System.out.println("It is ideal to keep the fan-out value on average or below average. The lower the better for code reusability.");
             System.out.println("");
 
             System.out.println("//****************************( summary )****************************//");
 
+            String format = "%-40s%s%n";
+
             for(int a = 0; a < methodsList.size(); a++){
                 totalCalledMethods += methodsList.get(a).getCalledMethodsList().size();
             }
-            System.out.println("Total number of called methods: " + totalCalledMethods);
+            System.out.printf(format, "Total number of called methods: ", totalCalledMethods);
 
             //avoid division by zero
             if(methodsList.size() > 0){
                 averageFanOut = totalCalledMethods/methodsList.size();
-                System.out.println("Average fan-out value: " + averageFanOut);
+                System.out.printf(format, "Average fan-out value: ", averageFanOut);
                 System.out.println("");
             }
-
+            //System.out.format("%32s%10d%16s", string1, int1, string2);
             System.out.println("//****************************( detailed )****************************//");
+            String  tableFormat = "%30s%10s%10s",
+                    mn = "Method Name",
+                    cm = "# Methods Called",
+                    div = "____________________";
+            System.out.format("%30s%10s%20s", mn, " | ", cm);
+            System.out.println("");
+            System.out.format(tableFormat, div, div, div);
             for(int b = 0; b < methodsList.size(); b++){
-                System.out.println("Method Name: " + methodsList.get(b).getMethodName());
-                System.out.println("Number of methods called: " + methodsList.get(b).getCalledMethodsList().size() + "\n");
+                String  methodName = methodsList.get(b).getMethodName();
+                int numCalledMethods = methodsList.get(b).getCalledMethodsList().size();
+
+                System.out.println("");
+                System.out.format(tableFormat, methodName, " | ", numCalledMethods);
+                System.out.println("");
+                System.out.format(tableFormat, div, div, div);
+                //System.out.println("Method Name: " + methodsList.get(b).getMethodName());
+                //System.out.println("Number of methods called: " + methodsList.get(b).getCalledMethodsList().size() + "\n");
             }
             System.out.println("");
         }
