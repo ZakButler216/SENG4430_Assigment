@@ -48,8 +48,6 @@ public class Main {
         String s1 = "srcValid";
         //make fan in/out parser
         FanInOutParser fioParser = new FanInOutParser();
-        //clear our methodsList
-        fioParser.clearMethodsList();
         //split all the .java files, then split all the methods in each .java file
         fioParser.classSplitter(s1);
 
