@@ -19,4 +19,12 @@ public class FogIndexTest {
         int fiResult = (int)fi.getFogIndex();
         assertEquals(13, fiResult);
     }
+
+    @Test
+    public void test2() throws IOException {
+        File file = new File("src\\main\\java\\FogIndex.java");
+        FogIndex fi = new FogIndex(file);
+        int fiResult = (int)fi.getFogIndex();
+        assertEquals(7, fiResult);
+    }
 }

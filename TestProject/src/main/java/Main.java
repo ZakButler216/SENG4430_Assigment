@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Main {
 
-    private static final String directory = "src";
+    private static final String directory = "src\\main";
 
     public static void main(String[] args) throws IOException {
 
