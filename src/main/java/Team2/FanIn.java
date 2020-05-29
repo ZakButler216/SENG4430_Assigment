@@ -2,7 +2,7 @@
  * File name:    FanIn.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      2.0
+ * Version:      3.0
  * Description:  Fan-in is a software metrics that means:
  *                  - a measure of the number of functions or
  *                      methods that calls another function or method.
@@ -60,69 +60,102 @@ public class FanIn {
         int twoOrMoreCaller = 0;
         int deadMethods = 0;
 
+        String format = "%-40s%s%n";
+
         //if the file is invalid/ has code errors, or or there are no methods
         if(methodsList.size() > 0){
             System.out.println("///////////////////////////////////////////( fan-in result )/////////////////////////////////////////////");
-            System.out.println("Zero caller may or may not indicate a dead method code.");
+            System.out.println("Fan-in is the number of methods that calls another method. In short, the number of caller methods.\n");
+
+            System.out.println("Zero caller may or may not indicate a dead method code. This excludes constructor calls.");
             System.out.println("One caller makes the method a candidate to be moved inside the caller method for optimisation.");
             System.out.println("Two or more callers indicate reuse.");
             System.out.println("A high the number of callers may mean: \n - good for reuse \n - bad for cross-file coupling \n");
 
             System.out.println("//****************************( summary )****************************//");
 
+            //iterate methodsList to find out total number of a method's caller (#caller number)
+            for(int u = 0; u < methodsList.size(); u++){
+                //save this current method (called method)
+                FanInOutMethod calledMethod = methodsList.get(u);
+                //iterate each method in methodsList to find caller of 'calledName'
+                for(int i = 0; i < methodsList.size(); i++){
+                    //save the name of the caller method
+                    FanInOutMethod callerMethod = methodsList.get(i);
+                    //and then iterate on their called methods list to see if 'calledMethod' was called
+                    for(int j = 0; j < callerMethod.getCalledMethodsList().size(); j++){
+                        //compare the name of calledMethod to the called methods of callerMethod
+                        if(calledMethod.getMethodName().equals(callerMethod.getCalledMethodsList().get(j))){
+                            //if there is a match, add name of callerMethod to caller list of calledMethod
+                            calledMethod.getCallerList().add(callerMethod.getMethodName());
+                        }
+
+                    }
+                }
+            }
+
+            //iterate each method in methodsList to update variables
             for(int s = 0; s < methodsList.size(); s++){
-                //if called methods ArrayList size is greater than zero, increment methodCallerCount
+                //count how many  methods called another method (how many callers)
+                //if called methods ArrayList size is greater than zero, this is a caller method
+                // increment methodCallerCount
                 if(methodsList.get(s).getCalledMethodsList().size() > 0){
                     methodCallerCount++;
                 }
 
                 //see if method has 1 or more than 2 callers
-                if(methodsList.get(s).getCalledMethodsList().size() == 1){
-                    //if only 1 caller
+                // if only 1 caller
+                if(methodsList.get(s).getCallerList().size() == 1){
+                    //count how many methods are transferable
+                    //transferable methods only have one caller
                     oneCaller++;
                 }
-                else if(methodsList.get(s).getCalledMethodsList().size() >= 2){
+                else if(methodsList.get(s).getCallerList().size() >= 2){
+                    //count how many methods are reused
+                    //reused methods have two or more callers
                     twoOrMoreCaller++;
                 }
-
-                //how many called a specific method?
-                //save the name of this current method
-                String name = methodsList.get(s).getMethodName();
-                //iterate each method in methodsList
-                for(int i = 0; i < methodsList.size(); i++){
-                    //and then iterate again on their called methods list
-                    for(int j = 0; j < methodsList.get(i).getCalledMethodsList().size(); j++){
-                        //compare the name of this method and the called methods
-                        if(name.equals(methodsList.get(i).getCalledMethodsList().get(j))){
-                            //if there is a match, save the caller name on the callerList of the FanInOutMethod object of this method
-                            methodsList.get(i).getCallerList().add(methodsList.get(i).getCalledMethodsList().get(j));
-                        }
-
-                    }
-                }
-
             }
 
-            System.out.println("Total Number of methods: " + methodsList.size());
-            System.out.println("Number of methods that called a method: " + methodCallerCount);
-            deadMethods = methodsList.size() - methodCallerCount;
-            System.out.println("Number of possibly dead methods: " + deadMethods);
-            System.out.println("Number of methods that can be transferred to the caller: " + oneCaller);
-            System.out.println("Number of reused methods: " + twoOrMoreCaller + "\n");
+            //for dead methods, don't include constructors
+            int methodsOnly = 0;
+            //counts number of methods only, exclude constructors
+            for(int k = 0; k < methodsList.size(); k++){
+                if(methodsList.get(k).isConstructor == false){
+                    methodsOnly++;
+                }
+            }
+
+            deadMethods = methodsOnly - methodCallerCount;
+
+            System.out.printf(format, "Total Number of methods: ", methodsList.size());
+            System.out.printf(format, "Number of caller methods: ", methodCallerCount);
+            System.out.printf(format, "Number of possibly dead methods: ", deadMethods);
+            System.out.printf(format, "Number of transferable methods : ", oneCaller);
+            System.out.printf(format, "Number of reused methods: ", twoOrMoreCaller + "\n");
+
             System.out.println("//****************************( detailed )****************************//");
 
-            //iterate on the methods list and print how many callers each method has
+            //iterate on the methods list and print how many callers each method has. Exclude constructors
             for(int k = 0; k < methodsList.size(); k++){
-                System.out.println("Method Name: " + methodsList.get(k).getMethodName());
-                System.out.println("Number of callers of " + methodsList.get(k).getMethodName() + ": " + methodsList.get(k).getCallerList().size());
+                if(methodsList.get(k).isConstructor() == false){
+                    System.out.println("Method Name: " + methodsList.get(k).getMethodName());
+                    System.out.println("Number of callers of " + methodsList.get(k).getMethodName() + ": " + methodsList.get(k).getCallerList().size());
+                    System.out.println("List of callers: ");
 
-                for(int d = 0; d < methodsList.get(k).getCallerList().size(); d++){
-                    System.out.println(" - " + methodsList.get(k).getCallerList().get(d));
+                    for(int d = 0; d < methodsList.get(k).getCallerList().size(); d++){
+                        System.out.println(" - " + methodsList.get(k).getCallerList().get(d));
+                    }
+
+                    System.out.println("");
                 }
-
-                System.out.println("");
             }
 
+            System.out.println("");
+        }
+        else{
+            System.out.println( "Please ensure that the Java file/s have no error and that \n" +
+                                "there is at least one method in the Java file/s.");
             System.out.println("");
         }
 
