@@ -1,10 +1,9 @@
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 24/05/2020
+//Date last Modified: 29/05/2020
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,7 +44,6 @@ public class FogIndex {
         double complexCount = 0;
         double longestLine = 0;
 
-        FileReader fr = new FileReader(file);
         List<String> lines = Files.readAllLines(Paths.get(String.valueOf(file)), StandardCharsets.UTF_8);
 
         for(String s: lines)
@@ -153,6 +151,11 @@ public class FogIndex {
     }
 
     //Method to print out the results
+    //A fog index between 1 and 5 means the code is super readable
+    //Between 6 and 8 means the code is very easy to read
+    //Between 9 and 12 means the code is readable, but not super optimized
+    //Between 13 and 17 means the code is not well optimized and could be hard to read
+    //Over 17 means the code is not optimized at all and should be refactored
     public void showResults(){
         System.out.println("Fog Index Results for: " + fileName);
         System.out.println("Word average per line: " + wordAveragePerLine);
@@ -180,11 +183,12 @@ public class FogIndex {
                 System.out.println("Your code might be difficult to read.");
                 break;
             default:
-                System.out.println("Your code is is difficult to read, consider refactoring it.");
+                System.out.println("Your code is very difficult to read, consider refactoring it.");
                 break;
         }
     }
 
+    //Returns the fog index
     public double getFogIndex() {
         return fogIndex;
     }

@@ -1,7 +1,7 @@
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 25/05/2020
+//Date last Modified: 29/05/2020
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -36,9 +36,8 @@ public class RFC {
         }
     }
 
-
-    //Method to find all the non top level classes
-    //These will mostly be private classes used only by the top level class
+    //A private class used to find all of the non top level classes in the file
+    //These will mostly be private classes
     private static class ClassFinder extends VoidVisitorAdapter<List<ClassOrInterfaceDeclaration>>{
         @Override
         public void visit(ClassOrInterfaceDeclaration cid, List<ClassOrInterfaceDeclaration> classes){
@@ -50,6 +49,8 @@ public class RFC {
     }
 
     //Finds all the method declarations in a class
+    //Used to find all the methods in the top level class
+    //Then all the methods in the non top level classes
     private static class MethodDecFinder extends VoidVisitorAdapter<List<MethodDeclaration>>{
         @Override
         public void visit(MethodDeclaration md, List<MethodDeclaration> methods){
@@ -59,7 +60,7 @@ public class RFC {
     }
 
 
-    //Finds all method calls within a method declaration
+    //Finds all method calls within a method declaration and adds them to a list
     private static class MethodCallFinder extends VoidVisitorAdapter<List<MethodCallExpr>>{
         @Override
         public void visit(MethodCallExpr mc, List<MethodCallExpr> methods){
@@ -79,7 +80,7 @@ public class RFC {
     //Removes the methods from the sub class from the list of the top level class' methods
     //Counts how many public methods remain in the top level class
     //Adds all the method calls in the public methods to a list
-    //The absolute value of the set of public methods, plus the methods called within those public methods
+    //The absolute value of the set of public methods plus the set of methods called within those public methods
     //Is the Response for a Class
     private void calcRFC (){
         VoidVisitor<List<ClassOrInterfaceDeclaration>> mainClassFinder = new MainClassFinder();
@@ -124,6 +125,9 @@ public class RFC {
     }
 
     //Prints out the Response for the top level class
+    //Less than 50 is great
+    //Between 50 and 100 is acceptable
+    //Over 100 is not good, the code should be reformatted
     public void showResults(){
         System.out.println("Response for Class " + mainClass.getNameAsString() + " is: " + rfc);
         if(rfc <= 50){
@@ -132,12 +136,13 @@ public class RFC {
             if(rfc <= 100){
                 System.out.println("The Response for this Class is between 50 and 100, this is okay, but not great.");
             }else{
-                System.out.println("The Response for this Class is over 100, this is not good.");
+                System.out.println("The Response for this Class is over 100, this is not good. Consider extracting some functions to another class.");
             }
         }
-  }
+    }
 
-  public int getRfc(){
+    //Returns the rfc value
+    public int getRfc(){
         return rfc;
   }
 }
