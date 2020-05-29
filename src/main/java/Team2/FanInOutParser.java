@@ -2,7 +2,7 @@
  * File name:    FanInOutParser.java
  * Author:       Naneth Sayao
  * Date:         29 May 2020
- * Version:      1.0
+ * Version:      8.2
  * Description:  A specific parser for the fan-in and fan-out metrics.
  *                  This parser will use the 'Parser' class written by Cliff.
  * */
@@ -22,12 +22,13 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeS
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FanInOutParser {
     private List<FanInOutMethod> methodsList = new ArrayList<>();
 
     //This inner class separates the methods of one class and puts the methods in a static array list
-    public class MethodSplitter extends VoidVisitorAdapter<Void> {
+    public class MethodVisitor extends VoidVisitorAdapter<Void> {
 
         @Override
         public void visit(MethodDeclaration md, Void arg){
@@ -40,7 +41,7 @@ public class FanInOutParser {
             temp.setMethodName(md.getNameAsString());
             temp.setMethodBlock(md.toString());
 
-            visitorHelper(temp);
+            methodSplitter(temp);
         }
     }
 
@@ -59,13 +60,13 @@ public class FanInOutParser {
             temp.setMethodBlock(md.toString());
             temp.setConstructor(true); //for calculating dead methods (fan in), exclude constructors
 
-            visitorHelper(temp);
+            methodSplitter(temp);
 
         }
     }
 
     //This method helps(is used by) the two visitor classes; MethodSplitter, and ConstructorVisitor
-    public void visitorHelper(FanInOutMethod temp){
+    public void methodSplitter(FanInOutMethod temp){
         //prepare parser
         TypeSolver typeSolver = new ReflectionTypeSolver();
         JavaSymbolSolver symbolSolver = new JavaSymbolSolver(typeSolver);
@@ -87,6 +88,9 @@ public class FanInOutParser {
 
     //This method separates the Java classes in the source
     public void classSplitter(String source){
+        //clear our methodsList
+        methodsList = new ArrayList<>();
+
         //create a new parser
         Parser rootParser = new Parser();
 
@@ -98,7 +102,7 @@ public class FanInOutParser {
             //now we want to separate each methods and save them in a FanInOutMethod object
 
             //create visitor for normal methods
-            VoidVisitor<?> methodVisitor = new MethodSplitter();
+            VoidVisitor<?> methodVisitor = new MethodVisitor();
             methodVisitor.visit(allCU.get(i), null);
         }
 
