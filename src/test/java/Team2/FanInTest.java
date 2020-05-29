@@ -2,7 +2,7 @@
  * File name:    FanInTest.java
  * Author:       Naneth Sayao
  * Date:         26 May 2020
- * Version:      2.0
+ * Version:      2.1
  * Description:  Test fan-in with data that are;
  *                  - valid,
  *                  - invalid, and
