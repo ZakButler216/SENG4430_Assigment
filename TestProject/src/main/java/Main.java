@@ -24,8 +24,7 @@ import java.util.ArrayList;
 public class Main {
 
     private static final String filePath = "src/test/java/Tree_TestData/src/main.java";
-    private static List<FanInOutMethod> methodsList = new ArrayList<FanInOutMethod>();
-
+    
     private static List<String> readFileInList(String fileName)
     {
         List<String> lineList = Collections.emptyList();
@@ -36,105 +35,6 @@ public class Main {
             e.printStackTrace();
         }
         return lineList;
-    }
-
-    //Naneth: This inner class separates the methods of one class and puts the methods in a static array list
-    public static class MethodSplitter extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(MethodDeclaration md, Void arg){
-            super.visit(md, arg);
-
-            //create new FanInOutMethod Object
-            FanInOutMethod temp = new FanInOutMethod();
-
-            //update values of FanInOutMethod object
-            temp.setMethodName(md.getNameAsString());
-            temp.setMethodBlock(md.toString());
-
-            visitorHelper(temp);
-        }
-    }
-
-    //Naneth: This inner class separates the methods of one class and puts the methods in a static array list
-    public static class ConstructorVisitor extends VoidVisitorAdapter<Void> {
-
-        @Override
-        public void visit(ConstructorDeclaration md, Void arg){
-            super.visit(md, arg);
-
-            //create new FanInOutMethod Object
-            FanInOutMethod temp = new FanInOutMethod();
-
-            //update values of FanInOutMethod object
-            temp.setMethodName(md.getNameAsString() + " (constructor)");
-            temp.setMethodBlock(md.toString());
-
-            visitorHelper(temp);
-
-        }
-    }
-
-    //Naneth: This method helps(is used by) the two visitor classes; MethodSplitter, and ConstructorVisitor
-    public static void visitorHelper(FanInOutMethod temp){
-        //prepare parser
-        TypeSolver typeSolver = new ReflectionTypeSolver();
-        JavaSymbolSolver symbolSolver = new JavaSymbolSolver(typeSolver);
-        StaticJavaParser.getConfiguration().setSymbolResolver(symbolSolver);
-
-        //parse input
-        //add dummy class declaration to surround method coz it won't compile code with error
-        CompilationUnit cu2 = StaticJavaParser.parse("public class Dummy {" + temp.getMethodBlock() + "}");
-
-        //visit each method
-        cu2.findAll(MethodCallExpr.class).forEach(mce -> {
-            //save the method name to the FanInMethod object's ArrayList of method calls
-            temp.getCalledMethodsList().add(mce.getNameAsString());
-        });
-
-        //add temp to methodsList
-        methodsList.add(temp);
-    }
-
-    //Naneth: This method separates the Java classes in the source
-    public static void classSplitter(String source){
-        //create a new parser
-        Parser rootParser = new Parser();
-
-        //array list of compilation units
-        //initialise allCU
-        List<CompilationUnit> allCU = rootParser.getCompilationUnits(source);
-
-        for(int i = 0; i < allCU.size(); i++){
-            //now we want to separate each methods and save them in a FanInOutMethod object
-
-            //create visitor for normal methods
-            VoidVisitor<?> methodVisitor = new Main.MethodSplitter();
-            methodVisitor.visit(allCU.get(i), null);
-        }
-
-        for(int j = 0; j < allCU.size(); j++){
-            //now we want to separate each methods and save them in a FanInOutMethod object
-
-            //create visitor for normal methods
-            VoidVisitor<?> constructorVisitor = new Main.ConstructorVisitor();
-            constructorVisitor.visit(allCU.get(j), null);
-        }
-
-    }
-
-    //Naneth: This method returns the methodsList
-    public static List<FanInOutMethod> getMethodsList() {
-        return methodsList;
-    }
-
-    /*Naneth:   This method is used for JUnit testing where the methodsList must be refreshed.
-    *           Don't transfer to classSplitter method, as more than one module uses the
-    *               methodsList array list.
-    * */
-    public static void clearMethodsList(){
-        //clear our methodsList
-        methodsList = new ArrayList<>();
     }
     
     public static void main(String[] args) throws FileNotFoundException {
@@ -155,29 +55,27 @@ public class Main {
         Tree t = new Tree(cu);
         t.result();
         
-         //////////////////////////////////////( Fan-in/out: starts )/////////////////////////////////////////
+        //////////////////////////////////////( Fan-in/out: starts )/////////////////////////////////////////
         //path
-        String s1 = "srcEmptyNoFile";
-
+        String s1 = "srcValid";
+        //make fan in/out parser
+        FanInOutParser fioParser = new FanInOutParser();
         //clear our methodsList
-        Main.clearMethodsList();
-        
+        fioParser.clearMethodsList();
         //split all the .java files, then split all the methods in each .java file
-        classSplitter(s1);
+        fioParser.classSplitter(s1);
 
         //******************( fan-out )******************//
         //make new FanOut object
         FanOut fo = new FanOut();
-
         //execute fan out method of FanOut object
-        List<Integer> result = fo.calculateFanOut(methodsList);
+        List<Integer> result = fo.calculateFanOut(fioParser.getMethodsList());
 
         //******************( fan-in )******************//
         //make new FanIn object
         FanIn fi = new FanIn();
-
         //execute fan in method of FanIn object
-        fi.calculateFanIn(methodsList);
+        fi.calculateFanIn(fioParser.getMethodsList());
 
         ////////////////////////////////////( Fan-in/out: finished )///////////////////////////////////////
 
