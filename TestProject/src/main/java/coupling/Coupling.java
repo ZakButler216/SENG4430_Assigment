@@ -54,7 +54,7 @@ public class Coupling
 
         for(CompilationUnit comp: cuList)
         {
-            System.out.println(comp.getPrimaryTypeName());
+            //System.out.println(comp.getPrimaryTypeName()); //testing
             classCouple.add(0);
             coupledClasses.add(new HashSet<>());
             innerClasses.add(new HashSet<>());
@@ -133,14 +133,13 @@ public class Coupling
         //test maxCommonLevel
 
         String test = paths.get(0);
-        //System.out.println("P " + test + " | " + maxCommonLevel + " | " + test.split("\\.")[0] + " | " + test.split("\\.")[1]);
+
         for(int j = 0; j<maxCommonLevel; j++)
         {
             minPath += test.split("\\.")[j];
             if(j!=maxCommonLevel && j!=maxCommonLevel-1)
                 minPath += ".";
         }
-        //System.out.println("Min Path: " + minPath + " " + maxCommonLevel + " " + test.split("\\.").length + " " + test + " " + minPath.equals(""));
 
 
         for(int i =0; i<cuList.size(); i++) //cuList.size() is param
