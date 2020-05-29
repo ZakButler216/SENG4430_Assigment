@@ -2,7 +2,7 @@
  * File name:    FanIn.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      3.0
+ * Version:      4.0
  * Description:  Fan-in is a software metrics that means:
  *                  - a measure of the number of functions or
  *                      methods that calls another function or method.
@@ -118,15 +118,16 @@ public class FanIn {
             }
 
             //for dead methods, don't include constructors
-            int methodsOnly = 0;
+            //dead methods are methods without callers
             //counts number of methods only, exclude constructors
             for(int k = 0; k < methodsList.size(); k++){
                 if(methodsList.get(k).isConstructor == false){
-                    methodsOnly++;
+                    //check if callerList is 0
+                    if(methodsList.get(k).getCallerList().size() == 0){
+                        deadMethods++;
+                    }
                 }
             }
-
-            deadMethods = methodsOnly - methodCallerCount;
 
             System.out.printf(format, "Total Number of methods: ", methodsList.size());
             System.out.printf(format, "Number of caller methods: ", methodCallerCount);
@@ -134,23 +135,64 @@ public class FanIn {
             System.out.printf(format, "Number of transferable methods : ", oneCaller);
             System.out.printf(format, "Number of reused methods: ", twoOrMoreCaller + "\n");
 
-            System.out.println("//****************************( detailed )****************************//");
+            System.out.println("//************************( detailed : Callers )************************//\n");
+            String  tableFormat = "%20s%10s%20s",
+                    mn = "Method Name",
+                    c = "Callers",
+                    cm = "Called Methods",
+                    div = "____________________";
 
-            //iterate on the methods list and print how many callers each method has. Exclude constructors
+            System.out.format("%20s%10s%20s", mn, " | ", c);
+            System.out.println("");
+            System.out.format(tableFormat, div, div, div + "\n");
+
+            //iterate on the methods list and print how many callers and called each method has.
             for(int k = 0; k < methodsList.size(); k++){
+                //exclude constructors
                 if(methodsList.get(k).isConstructor() == false){
-                    System.out.println("Method Name: " + methodsList.get(k).getMethodName());
-                    System.out.println("Number of callers of " + methodsList.get(k).getMethodName() + ": " + methodsList.get(k).getCallerList().size());
-                    System.out.println("List of callers: ");
+                    String methodName = methodsList.get(k).getMethodName();
+                    int callers = methodsList.get(k).getCallerList().size();
 
+                    System.out.format(tableFormat, methodName, " | ", "total: " + callers);
+
+                    //iterate for as long as longerListNumber
                     for(int d = 0; d < methodsList.get(k).getCallerList().size(); d++){
-                        System.out.println(" - " + methodsList.get(k).getCallerList().get(d));
+                        System.out.println("");
+                        System.out.format(tableFormat, "", " | ", methodsList.get(k).getCallerList().get(d));
                     }
 
+                    System.out.println("");
+                    System.out.format(tableFormat, div, div, div, div, div);
                     System.out.println("");
                 }
             }
 
+            System.out.println("");
+
+            System.out.println("//************************( detailed : Called )************************//\n");
+            System.out.format("%20s%10s%20s", mn, " | ", cm);
+            System.out.println("");
+            System.out.format(tableFormat, div, div, div + "\n");
+            //iterate on the methods list and print how many callers and called each method has.
+            for(int k = 0; k < methodsList.size(); k++){
+                //exclude constructors
+                if(methodsList.get(k).isConstructor() == false){
+                    String methodName = methodsList.get(k).getMethodName();
+                    int called = methodsList.get(k).getCalledMethodsList().size();
+
+                    System.out.format(tableFormat, methodName, " | ", "total: " + called);
+
+                    for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
+                        System.out.println("");
+                        System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
+                    }
+
+
+                    System.out.println("");
+                    System.out.format(tableFormat, div, div, div, div, div);
+                    System.out.println("");
+                }
+            }
             System.out.println("");
         }
         else{
