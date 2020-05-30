@@ -18,7 +18,7 @@ public class One {
     }
 
     public void oneMethod2(){
-        System.out.println("");
+        Three tres = new Three();
         System.out.println("");
     }
 }
