@@ -1,8 +1,9 @@
-package metrics;
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 29/05/2020
+//Date last Modified: 30/05/2020
+
+package metrics;
 
 import java.io.File;
 import java.util.*;
@@ -35,8 +36,14 @@ public class FolderReader {
         }
     }
 
-    //Returns the list of files
-    public ArrayList<File> getFileList(){
-        return fileList;
+    //Used to get a specific file representing a java class from the list of files
+    public File getClassFile(String currentClass) {
+        File classFile = null;
+        for(File file : fileList){
+            if(file.getName().equals(currentClass + ".java")){
+                classFile = file;
+            }
+        }
+        return classFile;
     }
 }

@@ -29,15 +29,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- This class changes the view on the user interface according to the event.
- */
 public class Event {
 
-    //variable that stores all classes in program user entered
     private static List<String> allClassesInProgram;
-
-    //variable that stores current class that user is currently evaluating
     private static String currentClass;
 
     static {
@@ -45,68 +39,69 @@ public class Event {
         currentClass = "";
     }
 
-    /**
-     This method processes user input.
 
+/*
+    public static void main(String[] args) throws FileNotFoundException {
+
+    }
+*/
+
+
+
+
+    /**
      Note: parse and class and eval commands have to be separate and sequential,
      as parse will update classes list on UI,
      class will select a class (or if already selected, remain with current class)
      and eval will evaluate metrics of current class
      */
-    public static boolean processInput(String scanInput) {
+    public static boolean processInput(String scanInput) throws IOException {
 
-        //gets the command
-        String[] container = scanInput.split("\\s");
+        if(!scanInput.equals("exit")) {
 
-        String command = container[0];
+            checkNew(scanInput);
 
-        //This switch case determines which command to process
-        switch(command) {
-            case "new":
-                checkNew(scanInput);
-                return false;
-            case "parse":
-                checkParse(scanInput);
-                return false;
-            case "class":
-                checkClass(scanInput);
-                return false;
-            case "eval":
-                checkEval(scanInput);
-                return false;
-            case "view":
-                checkView(scanInput);
-                return false;
-            case "exit":
-                return true;
-            default:
-                return false;
+            checkParse(scanInput);
+
+            checkClass(scanInput);
+
+            checkEval(scanInput);
+
+            checkView(scanInput);
+
+           return false;
+
         }
 
+        return true;
+
+
     }
 
-    /**
-     This method handles the view command.
-     View command is for when user wants to view something.
-     */
     public static void checkView(String scanInput) {
 
-            //gets the rest of the input
-            String input = scanInput.substring(5,scanInput.length());
+        String checkCommand="";
+        String input = "";
+
+        try {
+
+            checkCommand = scanInput.substring(0,5);
+
+        } catch(StringIndexOutOfBoundsException e) {
+
+        }
+
+        if(checkCommand.equals("view ")) {
+
+            input = scanInput.substring(5,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
-            //calls the view method
             view(input);
 
+        }
     }
 
-    /**
-     This method prints whatever user wanted to view.
-     Based on the input.
-     */
     public static void view(String input) {
-
-        //prints output according to user choice
         switch(input) {
             case "metrics":
                 printMetricsList();
@@ -117,100 +112,107 @@ public class Event {
             case "all":
                 printClassesList();
                 break;
-            case "commands":
-                printCommands();
-                break;
             default:
                 break;
 
         }
     }
 
-    /**
-     This method handles the parse command.
-     Parse command is for when the user wants to parse all compilation units that is in the stored directory.
-     */
     public static void checkParse(String scanInput) {
-
-            //parses all the compilation units in the directory stored
+        if(scanInput.equals("parse")) {
             parseCompilationUnits();
             System.out.println("Dem units have been parsed :D");
             System.out.println("Classes are: ");
-
-            //prints out all the classes/compilation units for user to see
             printClassesList();
 
+        }
     }
 
-    /**
-     This method handles the new command.
-     New command is for when the user wants to store a new directory path.
-     */
     public static void checkNew(String scanInput) {
 
-            String input = scanInput.substring(4,scanInput.length());
+        String checkCommand="";
+        String input = "";
+
+        try {
+
+            checkCommand = scanInput.substring(0,4);
+
+        } catch(StringIndexOutOfBoundsException e) {
+
+        }
+
+        if(checkCommand.equals("new ")) {
+
+            input = scanInput.substring(4,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
             Parser parser = new Parser();
 
             //Stores the directory in a static place so anybody can access it
             parser.setStoredDirectory(input);
-
-            //feedback notification to user
             System.out.println("New directory stored :)");
             System.out.println("Directory name: "+Parser.getStoredDirectory());
 
+            //Parse compilation units
+            //parseCompilationUnits();
+
+        }
 
     }
 
-    /**
-     This method handles the class command.
-     Class command is for when user wants to set a new class to be evaluated.
-     */
     public static void checkClass(String scanInput) {
+        String checkCommand = "";
+        String input = "";
 
-            String input = scanInput.substring(6,scanInput.length());
+        try {
+
+            checkCommand = scanInput.substring(0,6);
+
+        } catch(StringIndexOutOfBoundsException e) {
+
+        }
+
+        if(checkCommand.equals("class ")) {
+            input = scanInput.substring(6,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
-            //traverses all the classes in program
             for(int i=0;i<allClassesInProgram.size();i++) {
-
-                //if user's input class matches the class in the for loop
                 if(input.equalsIgnoreCase(allClassesInProgram.get(i))) {
-
-                    //set it as current class for user to evaluate
                     setCurrentClass(input);
 
-                    //feedback notification to user
                     System.out.println("Current class is now:");
                     System.out.println(getCurrentClass()+" :DD");
 
                     break;
                 }
-
+            }
         }
 
 
     }
 
-    /**
-     This method handles the evaluate command.
-     Evaluate command is for when user wants to evaluate certain metrics. (Can be 1 to many).
-     */
-    public static void checkEval(String scanInput) {
+    public static void checkEval(String scanInput) throws IOException {
 
+        String checkCommand = "";
+        String input = "";
+        try {
 
-            String input = scanInput.substring(5,scanInput.length());
+            checkCommand = scanInput.substring(0,5);
+
+        } catch(StringIndexOutOfBoundsException e) {
+
+        }
+        if(checkCommand.equals("eval ")) {
+
+            input = scanInput.substring(5,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
-            //evaluates metrics
             evaluate(input);
 
+        }
     }
 
     /**
-     This method evaluates metrics that have been chosen.
-
      Preconditions:
      Newly parsed compilation units. Classes all shown on UI
      Parser class stores all newly parsed compilation units.
@@ -229,17 +231,20 @@ public class Event {
      l) Lack of cohesion in Methods
 
      */
-    public static void evaluate(String metricsChosen) {
+    public static void evaluate(String metricsChosen) throws IOException {
 
         Parser parser = new Parser();
-
-        //Gets the current compilation unit that user has selected to be evaluated
         CompilationUnit cu = parser.getCompilationUnitByName(Parser.getStoredCompilationUnits(),currentClass);
+        //System.out.println("Units are "+Parser.getStoredCompilationUnits());
+        //System.out.println("Current class is "+currentClass);
 
-        //initialize variable to store total string
+        FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
+        File file = fr.getClassFile(currentClass);
+
+        //to store total string
         String totalResult="";
 
-        //initialize menu to choose from
+        //menu to choose from
         String[] menu = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l"};
 
         //if user inputted *, process all metrics
@@ -291,14 +296,14 @@ public class Event {
 
                     case "g":
                         RFC rfc = new RFC(cu);
-                        rfc.showResults();
-                        //Store output in string
+                        String rfcResult = rfc.getResults();
+                        totalResult+=rfcResult;
                         break;
 
                     case "h":
-                        //Fog Index
-                        //Store output in string
-                        //Take compilation unit as input
+                        FogIndex fi = new FogIndex(file);
+                        String fiResult = fi.getResults();
+                        totalResult+=fiResult;
                         break;
 
                     case "i":
@@ -322,15 +327,12 @@ public class Event {
             }
         }
 
-        //Output appended metric(s) result for user
         System.out.println(totalResult);
 
     }
 
 
-    /**
-     This method prints out all the metrics that are available to be evaluated.
-     */
+
     public static void printMetricsList() {
 
         System.out.println("Software Quality Metrics:");
@@ -348,10 +350,6 @@ public class Event {
         System.out.println("l) Lack of cohesion in Methods");
     }
 
-    /**
-     This method prints out all the classes/compilation units,
-     from the list of compilation units in the program
-     */
     public static void printClassesList() {
 
         System.out.println("All Classes: ");
@@ -361,17 +359,11 @@ public class Event {
 
     }
 
-    /**
-     This method prints out current class user is evaluating.
-     */
     public static void printCurrentClass() {
         System.out.println("Current Class:");
         System.out.println(currentClass);
     }
 
-    /**
-     This method prints out all the commands available for this software.
-     */
     public static void printCommands() {
         System.out.println("Commands for this software are:");
 
@@ -421,9 +413,7 @@ public class Event {
     }
 
 
-    /**
-     This method parses all the compilation units and stores it in a static variable in Parser class.
-     */
+
     public static void parseCompilationUnits() {
 
         Parser parser = new Parser();
@@ -445,8 +435,6 @@ public class Event {
     }
 
     /**
-     This method stores all classes/compilation units for user to view.
-
      Precondition: Program parsed and compilation units stored in Parser class.
      This method is used to display classes output on UI.
      */
@@ -457,28 +445,24 @@ public class Event {
 
     }
 
-    /**
-     This method gets all classes in the program.
-     */
     public static List<String> getAllClassesInProgram() {
         return allClassesInProgram;
     }
 
-    /**
-     This method sets current class user is evaluating.
-     */
     public static void setCurrentClass(String current) {
         currentClass = current;
 
 
     }
 
-    /**
-     This method gets current class user is evaluating.
-     */
     public static String getCurrentClass() {
         return currentClass;
     }
+
+
+
+
+
 
 
 }
