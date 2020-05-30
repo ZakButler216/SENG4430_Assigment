@@ -274,16 +274,18 @@ public class Event {
                         break;
 
                     case "c":
+                        FanInOutParser fioParserOne = new FanInOutParser();
+                        fioParserOne.wholeProjectVisitor(parser.getStoredCompilationUnits());
+
+                        FanIn fi = new FanIn();
+                        fi.calculateFanIn(fioParserOne.getMethodsList(), getCurrentClass());
                         break;
 
                     case "d":
-                        FanInOutParser fioParserOne = new FanInOutParser();
-                        fioParserOne.classSplitter();
+                        FanInOutParser fioParserTwo = new FanInOutParser();
+                        fioParserTwo.singleClassVisitor(cu);
                         FanOut fo = new FanOut();
-                        List<Integer> numericResult = fo.calculateFanOut(fioParserOne.getMethodsList());
-                        String foResult = fo.getOutputResult();
-
-                        totalResult+=foResult;
+                        fo.calculateFanOut(fioParserTwo.getMethodsList());
                         break;
 
                     case "e":
