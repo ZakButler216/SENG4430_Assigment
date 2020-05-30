@@ -11,19 +11,25 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+//Student Author: Zachery Butler
+//Student Number: C3232981
+//Course: SENG4430, UoN, Semester 1, 2020
+//Date last Modified: 30/05/2020
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+//Class used to calculate the Fog Index of a file.
 public class FogIndex {
 
-    private String fileName;           //name of the file being measured
-    private double wordAveragePerLine; //average number of words per line
-    private double complexAverage;     //average number of complex words for whole file
-    private double fWordCount;         //final count of number of words
-    private double fComplexCount;      //final count of number of complex words
-    private double fLongestLine;       //Length of the longest line
-    private double lineCount;          //count of number of lines
-    private double fogIndex;           //The Fog Index for the file
-
+    //The Fog Index for the file
+    private double fogIndex;
 
     //Constructor that calls method that calculates all required metrics when called
     FogIndex(File file) throws IOException {
@@ -63,14 +69,8 @@ public class FogIndex {
                 }
             }
         }
-        fileName = file.getName();
-        wordAveragePerLine = wordCount/lines.size();
-        complexAverage = complexCount/wordCount;
-        fWordCount = wordCount;
-        fComplexCount = complexCount;
-        fLongestLine = longestLine;
-        lineCount = lines.size();
-        fogIndex = 0.4*(wordAveragePerLine+(100*(complexCount/wordCount)));
+        double wordAveragePerLine = wordCount / lines.size();
+        fogIndex = 0.4*(wordAveragePerLine +(100*(complexCount/wordCount)));
     }
 
     //Checks if a word is complex by seeing if the word has 3 or more syllables
@@ -157,36 +157,27 @@ public class FogIndex {
     //Between 9 and 12 means the code is readable, but not super optimized
     //Between 13 and 17 means the code is not well optimized and could be hard to read
     //Over 17 means the code is not optimized at all and should be refactored
-    public void showResults(){
-        System.out.println("Fog Index Results for: " + fileName);
-        System.out.println("Word average per line: " + wordAveragePerLine);
-        System.out.println("Complex word average: " + complexAverage);
-        System.out.println("Word count: " + fWordCount);
-        System.out.println("Complex word count: " + fComplexCount);
-        System.out.println("Total Line Count: " + lineCount);
-        System.out.println("Length of longest line: " + fLongestLine);
-        if(fLongestLine > 110){
-            System.out.println("Aim for lines of code to be less than 110 characters.");
-        }
-        System.out.println("Fog Index: " + fogIndex);
+    public String getResults(){
         int fogIndexInt = (int)fogIndex;
+        String results = "Fog Index for this class is: "  + fogIndexInt + ".\n";
         switch(fogIndexInt){
             case 1: case 2: case 3: case 4: case 5:
-                System.out.println("Well done, your code is super readable.");
+                results += "Well done, your code is super readable.";
                 break;
             case 6: case 7: case 8:
-                System.out.println("Good, your code is easily readable.");
+                results += "Good, your code is easily readable.";
                 break;
             case 9: case 10: case 11: case 12:
-                System.out.println("Your code is readable.");
+                results += "Your code is readable.";
                 break;
             case 13: case 14: case 15: case 16: case 17:
-                System.out.println("Your code might be difficult to read.");
+                results += "Your code might be difficult to read.";
                 break;
             default:
-                System.out.println("Your code is very difficult to read, consider refactoring it.");
+                results += "Your code is very difficult to read, consider refactoring it.";
                 break;
         }
+        return results;
     }
 
     //Returns the fog index

@@ -2,17 +2,21 @@
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
 //Date last Modified: 29/05/2020
-package metrics;
+package metrics;//Student Author: Zachery Butler
+//Student Number: C3232981
+//Course: SENG4430, UoN, Semester 1, 2020
+//Date last Modified: 30/05/2020
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 
+//Class used to calculate the response for a class represented by a compilation unit
 public class RFC {
 
     private final CompilationUnit cu;
@@ -128,17 +132,18 @@ public class RFC {
     //Less than 50 is great
     //Between 50 and 100 is acceptable
     //Over 100 is not good, the code should be reformatted
-    public void showResults(){
-        System.out.println("Response for Class " + mainClass.getNameAsString() + " is: " + rfc);
-        if(rfc <= 50){
-            System.out.println("The Response for this Class is under 50, that's great");
+    public String getResults(){
+        String rfcResult = "Response for Class " + mainClass.getNameAsString() + " is: " + rfc + ".\n";
+        if(rfc < 50){
+            rfcResult += "The Response for this Class is under 50, that's great.\n";
         }else{
             if(rfc <= 100){
-                System.out.println("The Response for this Class is between 50 and 100, this is okay, but not great.");
+                rfcResult += "The Response for this Class is between 50 and 100, this is okay, but not great.\n";
             }else{
-                System.out.println("The Response for this Class is over 100, this is not good. Consider extracting some functions to another class.");
+                rfcResult += "The Response for this Class is over 100, this is not good. Consider extracting some functions to another class.\n";
             }
         }
+        return rfcResult;
     }
 
     //Returns the rfc value

@@ -53,7 +53,7 @@ public class Event {
      class will select a class (or if already selected, remain with current class)
      and eval will evaluate metrics of current class
      */
-    public static boolean processInput(String scanInput) {
+    public static boolean processInput(String scanInput) throws IOException {
 
         //gets the command
         String[] container = scanInput.split("\\s");
@@ -197,7 +197,7 @@ public class Event {
      This method handles the evaluate command.
      Evaluate command is for when user wants to evaluate certain metrics. (Can be 1 to many).
      */
-    public static void checkEval(String scanInput) {
+    public static void checkEval(String scanInput) throws IOException {
 
 
             String input = scanInput.substring(5,scanInput.length());
@@ -229,7 +229,7 @@ public class Event {
      l) Lack of cohesion in Methods
 
      */
-    public static void evaluate(String metricsChosen) {
+    public static void evaluate(String metricsChosen) throws IOException {
 
         Parser parser = new Parser();
 
@@ -291,14 +291,17 @@ public class Event {
 
                     case "g":
                         RFC rfc = new RFC(cu);
-                        rfc.showResults();
-                        //Store output in string
+                        String rfcResult = rfc.getResults()+"\n";
+                        totalResult+=rfcResult;
+
                         break;
 
                     case "h":
-                        //Fog Index
-                        //Store output in string
-                        //Take compilation unit as input
+                        FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
+                        File file = fr.getClassFile(currentClass);
+                        FogIndex fi = new FogIndex(file);
+                        String fiResult = fi.getResults()+"\n";
+                        totalResult+=fiResult;
                         break;
 
                     case "i":
