@@ -1,8 +1,10 @@
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 29/05/2020
+//Date last Modified: 30/05/2020
+
 package metrics;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -12,18 +14,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+//Class used to calculate the Fog Index of a file.
 public class FogIndex {
 
-    private String fileName;           //name of the file being measured
-    private double wordAveragePerLine; //average number of words per line
-    private double complexAverage;     //average number of complex words for whole file
-    private double fWordCount;         //final count of number of words
-    private double fComplexCount;      //final count of number of complex words
-    private double fLongestLine;       //Length of the longest line
-    private double lineCount;          //count of number of lines
-    private double fogIndex;           //The Fog Index for the file
-
+    //The Fog Index for the file
+    private double fogIndex;
 
     //Constructor that calls method that calculates all required metrics when called
     FogIndex(File file) throws IOException {
@@ -63,14 +58,8 @@ public class FogIndex {
                 }
             }
         }
-        fileName = file.getName();
-        wordAveragePerLine = wordCount/lines.size();
-        complexAverage = complexCount/wordCount;
-        fWordCount = wordCount;
-        fComplexCount = complexCount;
-        fLongestLine = longestLine;
-        lineCount = lines.size();
-        fogIndex = 0.4*(wordAveragePerLine+(100*(complexCount/wordCount)));
+        double wordAveragePerLine = wordCount / lines.size();
+        fogIndex = 0.4*(wordAveragePerLine +(100*(complexCount/wordCount)));
     }
 
     //Checks if a word is complex by seeing if the word has 3 or more syllables
@@ -159,7 +148,7 @@ public class FogIndex {
     //Over 17 means the code is not optimized at all and should be refactored
     public String getResults(){
         int fogIndexInt = (int)fogIndex;
-        String results = "Fog Index for this class = " + fogIndexInt + ".\n";
+        String results = "Fog Index for this class is: "  + fogIndexInt + ".\n";
         switch(fogIndexInt){
             case 1: case 2: case 3: case 4: case 5:
                 results += "Well done, your code is super readable.";
