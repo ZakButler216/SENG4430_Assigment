@@ -3,7 +3,7 @@ package metrics;
  * File name:    FanInOutMethod.java
  * Author:       Naneth Sayao
  * Date:         17 May 2020
- * Version:      2.3
+ * Version:      2.4
  * Description:  An object that will hold:
  *                  - one method block
  *                  - record fan-in/fan-out related data
@@ -31,10 +31,10 @@ public class FanInOutMethod {
 
     String  methodName,
             methodBlock,
-            parentClass;
+            parentClass,
+            evaluation; //evaluate if a method is reused, transferable, dead, etc.
 
-    boolean isConstructor,
-            isDead;
+    boolean isConstructor;
 
     ArrayList<String> calledMethodsList, callerList;//|NOTE: ASK THIS| do we skip same external method names?
 
@@ -45,6 +45,7 @@ public class FanInOutMethod {
         methodName = "";
         methodBlock = "";
         parentClass = "";
+        evaluation= "";
 
         isConstructor = false;
 
@@ -64,6 +65,10 @@ public class FanInOutMethod {
 
     public String getParentClass() {
         return parentClass;
+    }
+
+    public String getEvaluation() {
+        return evaluation;
     }
 
     public boolean isConstructor() {
@@ -91,6 +96,10 @@ public class FanInOutMethod {
 
     public void setParentClass(String parentClass) {
         this.parentClass = parentClass;
+    }
+
+    public void setEvaluation(String evaluation) {
+        this.evaluation = evaluation;
     }
 
     public void setConstructor(boolean constructor) {
