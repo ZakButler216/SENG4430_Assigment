@@ -293,7 +293,16 @@ public class Coupling
 
     public String getResults()
     {
-        final Object[][] table = new String[paths.size()+2][];
+        int tableSize = 0;
+
+        if(parsingThis.equals("")) {
+            tableSize = paths.size()+2;
+        } else {
+            tableSize = 3;
+        }
+
+        final Object[][] table = new String[tableSize][];
+
         table[0] = new String[] { "Class", "Coupling Value"};
         table[1] = new String[] { "-----", "--------------"};
 
@@ -315,7 +324,8 @@ public class Coupling
             } else { //if printing one class
                 if(path.contains(parsingThis)) //only print result if path contains class, excludes packages
                 {
-                    table[i] = new String[] { path, classCouple.get(j).toString()};
+                    table[2] = new String[] { path, classCouple.get(j).toString()};
+                    break;
                 }
             }
 
@@ -330,20 +340,38 @@ public class Coupling
         int total = 0;
         int totalAvg = 0;
         int looselyCoupled = 0;
+        boolean currCoupled = false;
         String[] evalResult = {"High", "Medium", "Low"};
 
+        int ind = 0;
         for(int c: classCouple)
         {
             total += c;
             if(c <= 4)
             {
+
                 looselyCoupled++;
+                if(paths.get(ind).contains(parsingThis))
+                    currCoupled = true;
             }
+            ind++;
         }
 
         totalAvg = total/cuList.size();
+        String currResult = "";
+
+        if(currCoupled)
+        {
+            currResult = "is";
+        } else {
+            currResult = "is not";
+        }
 
         results += "\n";
+        if(!parsingThis.equals(""))
+        {
+            results += "The class being tested " + currResult + " loosely coupled.\n\n";
+        }
         results += "Total coupling value of program: " + total + "\n";
         results += "Total coupling value of program per class (excluding internal classes): " + totalAvg + "\n";
         results += "Loosely coupled classes (excluding internal classes): " + looselyCoupled + "/" + cuList.size() + " classes" + "\n";
