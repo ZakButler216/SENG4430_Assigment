@@ -3,7 +3,7 @@ package metrics;
  * File name:    FanInOutParser.java
  * Author:       Naneth Sayao
  * Date:         29 May 2020
- * Version:      8.2
+ * Version:      9.0
  * Description:  A specific parser for the fan-in and fan-out metrics.
  *                  This parser will use the 'Parser' class written by Cliff.
  * */
