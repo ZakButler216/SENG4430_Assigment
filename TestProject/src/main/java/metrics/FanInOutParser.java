@@ -14,6 +14,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
@@ -58,9 +59,10 @@ public class FanInOutParser {
             FanInOutMethod temp = new FanInOutMethod();
 
             //update values of FanInOutMethod object
-            temp.setMethodName(md.getNameAsString() + " (constructor)");
+            temp.setMethodName(md.getNameAsString());
             temp.setMethodBlock(md.toString());
-            temp.setConstructor(true); //for calculating dead methods (fan in), exclude constructors
+            temp.setParentClass(currentClassName);
+            temp.setConstructor(true); //for identifying constructors
 
             methodSplitter(temp);
 
@@ -78,10 +80,16 @@ public class FanInOutParser {
         //add dummy class declaration to surround method coz it won't compile code with error
         CompilationUnit cu2 = StaticJavaParser.parse("public class Dummy {" + temp.getMethodBlock() + "}");
 
-        //visit each method
+        //visit each method call expression
         cu2.findAll(MethodCallExpr.class).forEach(mce -> {
             //save the method name to the FanInMethod object's ArrayList of method calls
             temp.getCalledMethodsList().add(mce.getNameAsString());
+        });
+
+        //visit each object creation / constructor calls
+        cu2.findAll(ObjectCreationExpr.class).forEach(mce -> {
+            //save the method name to the FanInMethod object's ArrayList of method calls
+            temp.getCalledMethodsList().add(mce.getTypeAsString());
         });
 
         //add temp to methodsList
@@ -126,7 +134,7 @@ public class FanInOutParser {
             //System.out.println(currentClassName);
 
             //create visitor for normal methods
-            VoidVisitor<?> methodVisitor = new FanInOutParser.MethodVisitor();
+            VoidVisitor<?> methodVisitor = new MethodVisitor();
             methodVisitor.visit(allCU.get(i), null);
         }
 
@@ -141,7 +149,7 @@ public class FanInOutParser {
             currentClassName = currentClassName.substring(0,currentClassName.indexOf("]"));
 
             //create visitor for normal methods
-            VoidVisitor<?> constructorVisitor = new FanInOutParser.ConstructorVisitor();
+            VoidVisitor<?> constructorVisitor = new ConstructorVisitor();
             constructorVisitor.visit(allCU.get(j), null);
         }
 
