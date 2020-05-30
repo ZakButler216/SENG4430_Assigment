@@ -285,15 +285,23 @@ public class Event {
                         break;
 
                     case "e":
+                        Coupling coupling = new Coupling(Parser.getStoredCompilationUnits());
+
                         break;
 
                     case "f":
                         break;
 
                     case "g":
+                        RFC rfc = new RFC(cu);
+                        rfc.showResults();
+                        //Store output in string
                         break;
 
                     case "h":
+                        //Fog Index
+                        //Store output in string
+                        //Take compilation unit as input
                         break;
 
                     case "i":
@@ -303,9 +311,11 @@ public class Event {
                         break;
 
                     case "k":
+                        //Identifiers
                         break;
 
                     case "l":
+                        //LCOM
                         break;
 
                     default:
