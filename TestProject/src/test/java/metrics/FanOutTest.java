@@ -1,3 +1,10 @@
+/*
+ * File name:    FanOutTest.java
+ * Author:       Naneth Sayao
+ * Date:         26 May 2020
+ * Version:      2.4
+ * Description:  This is a JUnit test class for fan-out
+ * */
 package metrics;
 
 import Team2.Parser;
@@ -12,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FanOutTest {
 
     //this method parses a source and assert expected vs actual
-    private void doTest(String source, int index, List<Integer> expected){
+    private void doTest(String source, String className, List<Integer> expected){
         //create a new parser
         Team2.Parser rootParser = new Parser();
 
@@ -23,9 +30,20 @@ class FanOutTest {
         //make fan in/out parser
         FanInOutParser fioParser = new FanInOutParser();
 
-        //clear our methodsList
-        //fioParser.clearMethodsList();
-        fioParser.singleClassVisitor(allCU.get(index));
+        //find the desired class and save the index of the desired class
+        int desiredIndex = 0;
+        for(int i = 0; i < allCU.size(); i++){
+            String currentName = allCU.get(i).getPrimaryTypeName().toString();
+            //substring currentName to remove i.e. "[" etc.
+            currentName = currentName.substring(currentName.indexOf("[")+1);
+            currentName = currentName.substring(0,currentName.indexOf("]"));
+
+            //compare className to currentName
+            if(currentName.equals(className)){
+                desiredIndex = i;
+            }
+        }
+        fioParser.singleClassVisitor(allCU.get(desiredIndex));
 
         //make new FanOut object
         FanOut fo = new FanOut();
@@ -40,59 +58,59 @@ class FanOutTest {
     void testCalculateFanOutValidOne() {
         //path
         String source = "srcValid";
-        int index = 0; //for method 'One'
+        String className = "One";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(3);
+        expected.add(4);
         expected.add(1);
-        doTest(source, index, expected);
+        doTest(source, className, expected);
     }
 
     @Test
     void testCalculateFanOutValidTwo() {
         //path
         String source = "srcValid";
-        int index = 1; //for method 'Two'
+        String className = "Two";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(3);
+        expected.add(2);
         expected.add(1);
-        doTest(source, index, expected);
+        doTest(source, className, expected);
     }
 
     @Test
     void testCalculateFanOutValidThree() {
         //path
         String source = "srcConstructor";
-        int index = 0; //for constructor 'Try'
+        String className = "Try";
 
         List<Integer> expected = new ArrayList<>();
         expected.add(2);
         expected.add(1);
-        doTest(source, index, expected);
+        doTest(source, className, expected);
     }
 
     @Test
     void testCalculateFanOutValidFour() {
         //path
         String source = "srcProject";
-        int index = 4; //for constructor 'Try'
+        String className = "FanInOutMethod";
 
         List<Integer> expected = new ArrayList<>();
+        expected.add(2);
         expected.add(0);
-        expected.add(0);
-        doTest(source, index, expected);
+        doTest(source, className, expected);
     }
 
     @Test
     void testCalculateFanOutValidFive() {
         //path
         String source = "srcProject";
-        int index = 2; //for constructor 'Try'
+        String className = "Main";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(5);
-        expected.add(2);
-        doTest(source, index, expected);
+        expected.add(12);
+        expected.add(6);
+        doTest(source, className, expected);
     }
 }
