@@ -35,6 +35,17 @@ public class FolderReader {
         }
     }
 
+
+    public File getClassFile(String currentClass) {
+        File classFile = null;
+        for(File file : fileList){
+            if(file.getName().equals(currentClass + ".java")){
+                classFile = file;
+            }
+        }
+        return classFile;
+    }
+
     //Returns the list of files
     public ArrayList<File> getFileList(){
         return fileList;

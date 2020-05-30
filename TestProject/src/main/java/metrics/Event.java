@@ -55,7 +55,7 @@ public class Event {
      class will select a class (or if already selected, remain with current class)
      and eval will evaluate metrics of current class
      */
-    public static boolean processInput(String scanInput) {
+    public static boolean processInput(String scanInput) throws IOException {
 
         if(!scanInput.equals("exit")) {
 
@@ -191,7 +191,7 @@ public class Event {
 
     }
 
-    public static void checkEval(String scanInput) {
+    public static void checkEval(String scanInput) throws IOException {
 
         String checkCommand = "";
         String input = "";
@@ -231,13 +231,15 @@ public class Event {
      l) Lack of cohesion in Methods
 
      */
-    public static void evaluate(String metricsChosen) {
+    public static void evaluate(String metricsChosen) throws IOException {
 
         Parser parser = new Parser();
         CompilationUnit cu = parser.getCompilationUnitByName(Parser.getStoredCompilationUnits(),currentClass);
         //System.out.println("Units are "+Parser.getStoredCompilationUnits());
         //System.out.println("Current class is "+currentClass);
 
+        FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
+        File file = fr.getClassFile(currentClass);
 
         //to store total string
         String totalResult="";
@@ -294,14 +296,14 @@ public class Event {
 
                     case "g":
                         RFC rfc = new RFC(cu);
-                        rfc.showResults();
-                        //Store output in string
+                        String rfcResult = rfc.getResults();
+                        totalResult+=rfcResult;
                         break;
 
                     case "h":
-                        //Fog Index
-                        //Store output in string
-                        //Take compilation unit as input
+                        FogIndex fi = new FogIndex(file);
+                        String fiResult = fi.getResults();
+                        totalResult+=fiResult;
                         break;
 
                     case "i":
