@@ -2,7 +2,7 @@
  * File name:    FanOut.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      2.2
+ * Version:      2.3
  * Description:  Fan-out is a software metrics that means:
  *                  - the number of functions that are called by
  *                      function X.
@@ -39,6 +39,8 @@ package metrics;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,14 +61,11 @@ public class FanOut {
             System.out.println("");
         }
         else{
-            System.out.println("///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////");
-            System.out.println("Fan-out is the number of methods that are called by method X.\n");
-
-            System.out.println( "It is ideal to keep the fan-out value on average or below average. " +
-                                "\nThe lower fan-out value, the better for code maintainability and reusability.");
-            System.out.println("");
-
-            System.out.println("//****************************( summary )****************************//");
+            System.out.println("///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////" +
+                    "\nFan-out is the number of methods that are called by method X.\n"                                                     +
+                    "\nIt is ideal to keep the fan-out value on average or below average. "                                                 +
+                    "\nThe lower fan-out value, the better for code maintainability and reusability."                                       +
+                    "//****************************( summary )****************************//");
 
             String format = "%-40s%s%n";
 
@@ -85,12 +84,12 @@ public class FanOut {
             }
 
             System.out.println("//****************************( detailed )****************************//");
-            String  tableFormat = "%20s%10s%20s",
-                    mn = "Method Name",
+            String  tableFormat = "%30s%10s%20s",
+                    mn = "Method Name + Grade",
                     cm = "Called Methods",
-                    div = "____________________";
+                    div = "___________________________";
 
-            System.out.format("%20s%10s%20s", mn, " | ", cm);
+            System.out.format("%30s%10s%20s", mn, " | ", cm);
             System.out.println("");
             System.out.format(tableFormat, div, div, div + "\n");
             //iterate on the methods list and print how many callers and called each method has.
@@ -98,11 +97,59 @@ public class FanOut {
                 String methodName = methodsList.get(k).getMethodName();
                 int called = methodsList.get(k).getCalledMethodsList().size();
 
+                //see if this method is a constructor
+                if(methodsList.get(k).isConstructor == true){
+                    methodName += " (constructor)";
+                }
                 System.out.format(tableFormat, methodName, " | ", "total: " + called);
 
-                for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
+                //calculate grade. Formula = (average / number of called methods) * 100
+                DecimalFormat df = new DecimalFormat("####0"); //format to 2 decimal places
+                double grade = (average / called) * 100;
+
+                //evaluate the grade
+                String evalGrade = "";
+                if(grade < 50){
+                    evalGrade = " Not good...";
+                }
+                else if(grade < 55){
+                    evalGrade = " Pass.";
+                }
+                else if(grade < 65){
+                    evalGrade = " Credit.";
+                }
+                else if(grade < 75){
+                    evalGrade = " Nice.";
+                }
+                else if(grade < 85){
+                    evalGrade = " Good.";
+                }
+                else if(grade < 95){
+                    evalGrade = " Great.";
+                }
+                else if(grade < 101){
+                    evalGrade = " Perfect!";
+                }
+                else{
+                    evalGrade = " BRILLIAN!";
+                }
+
+                //if called methods list is empty, there will be no iteration to print grade. Print it separately.
+                if(called == 0){
                     System.out.println("");
-                    System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
+                    System.out.format(tableFormat, "1000% BRILLIAN!", " | ", "");
+                }
+                else{
+                    for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
+                        System.out.println("");
+                        //only print grade on first iteration
+                        if(e == 0){
+                            System.out.format(tableFormat, df.format(grade)+"%" + evalGrade, " | ", methodsList.get(k).getCalledMethodsList().get(e));
+                        }
+                        else{
+                            System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
+                        }
+                    }
                 }
 
 
