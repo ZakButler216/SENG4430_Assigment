@@ -3,7 +3,7 @@ package metrics;
  * File name:    FanIn.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      4.1
+ * Version:      4.2
  * Description:  Fan-in is a software metrics that means:
  *                  - a measure of the number of functions or
  *                      methods that calls another function or method.
@@ -33,6 +33,8 @@ package metrics;
  *                          and how complex it is, you could possibly embed it within the caller(s).
  *                          This is a speed optimization technique. We don't recommend inlining for
  *                          usual coding because keeping the code modular improves reuse and legibility.
+ *                  - other resources:
+ *                          - https://portal.tiobe.com/8.5/docs/metrics/index.html
  * */
 
 
@@ -45,7 +47,7 @@ public class FanIn {
     public FanIn() {
     }
 
-    public List<Integer> calculateFanIn(List<FanInOutMethod> methodsList){
+    public List<Integer> calculateFanIn(List<FanInOutMethod> methodsList, String currentClassName){
         /*
          * populate this int array list with;
          *   # total methods,
@@ -55,6 +57,7 @@ public class FanIn {
          *   # reused methods.
          * */
         List<Integer> result = new ArrayList<>();
+        List<FanInOutMethod> methodsOfCurrentClass = new ArrayList<>(); //collect methods of current class only
         int methodCallerCount = 0;
         int oneCaller = 0;
         int twoOrMoreCaller = 0;
@@ -65,7 +68,7 @@ public class FanIn {
         //if the file is invalid/ has code errors, or or there are no methods
         if(methodsList.size() > 0){
             System.out.println("///////////////////////////////////////////( fan-in result )/////////////////////////////////////////////");
-            System.out.println("Fan-in is the number of methods that calls another method. In short, the number of caller methods.\n");
+            System.out.println("Fan-in is the number of methods that calls another method. \nIn short, the number of callers that a method has.\n");
 
             System.out.println("Zero caller may or may not indicate a dead method code. This excludes constructor calls.");
             System.out.println("One caller makes the method a candidate to be moved inside the caller method for optimisation.");
@@ -94,52 +97,53 @@ public class FanIn {
                 }
             }
 
-            //iterate each method in methodsList to update variables
+            //iterate each method in methodsList to update summary variables
             for(int s = 0; s < methodsList.size(); s++){
-                //count how many  methods called another method (how many callers)
-                //if called methods ArrayList size is greater than zero, this is a caller method
-                // increment methodCallerCount
-                if(methodsList.get(s).getCalledMethodsList().size() > 0){
-                    methodCallerCount++;
-                }
+                //we only want to count for the methods in the current class
+                if(methodsList.get(s).getParentClass().equals(currentClassName)){
+                    //update methodsOfCurrentClass
+                    methodsOfCurrentClass.add(methodsList.get(s));
 
-                //see if method has 1 or more than 2 callers
-                // if only 1 caller
-                if(methodsList.get(s).getCallerList().size() == 1){
-                    //count how many methods are transferable
-                    //transferable methods only have one caller
-                    oneCaller++;
-                }
-                else if(methodsList.get(s).getCallerList().size() >= 2){
-                    //count how many methods are reused
-                    //reused methods have two or more callers
-                    twoOrMoreCaller++;
-                }
-            }
+                    //count how many  methods called another method (how many callers)
+                    //if called methods ArrayList size is greater than zero, this is a caller method
+                    // increment methodCallerCount
+                    if(methodsList.get(s).getCalledMethodsList().size() > 0){
+                        methodCallerCount++;
+                    }
 
-            //for dead methods, don't include constructors
-            //dead methods are methods without callers
-            //counts number of methods only, exclude constructors
-            for(int k = 0; k < methodsList.size(); k++){
-                if(methodsList.get(k).isConstructor == false){
-                    //check if callerList is 0
-                    if(methodsList.get(k).getCallerList().size() == 0){
+                    //see if method has 1 or more than 2 callers
+                    // if only 1 caller
+                    if(methodsList.get(s).getCallerList().size() == 1){
+                        //count how many methods are transferable
+                        //transferable methods only have one caller
+                        oneCaller++;
+                    }
+                    else if(methodsList.get(s).getCallerList().size() >= 2){
+                        //count how many methods are reused
+                        //reused methods have two or more callers
+                        twoOrMoreCaller++;
+                    }
+                    //for dead methods, don't include constructors
+                    //dead methods are methods without callers
+                    //counts number of methods only, exclude constructors
+                    else if(methodsList.get(s).isConstructor == false && methodsList.get(s).getCallerList().size() == 0){
+                        //check if if(){
                         deadMethods++;
+
                     }
                 }
             }
 
-            System.out.printf(format, "Total Number of methods: ", methodsList.size());
-            System.out.printf(format, "Number of caller methods: ", methodCallerCount);
+            System.out.printf(format, "Total Number of methods: ", methodsOfCurrentClass.size());
+            //System.out.printf(format, "Number of caller methods: ", methodCallerCount);
             System.out.printf(format, "Number of possibly dead methods: ", deadMethods);
             System.out.printf(format, "Number of transferable methods : ", oneCaller);
             System.out.printf(format, "Number of reused methods: ", twoOrMoreCaller + "\n");
 
-            System.out.println("//************************( detailed : Callers )************************//\n");
+            System.out.println("//****************************( detailed )****************************//\n");
             String  tableFormat = "%20s%10s%20s",
                     mn = "Method Name",
                     c = "Callers",
-                    cm = "Called Methods",
                     div = "____________________";
 
             System.out.format("%20s%10s%20s", mn, " | ", c);
@@ -147,48 +151,24 @@ public class FanIn {
             System.out.format(tableFormat, div, div, div + "\n");
 
             //iterate on the methods list and print how many callers and called each method has.
-            for(int k = 0; k < methodsList.size(); k++){
+            for(int k = 0; k < methodsOfCurrentClass.size(); k++){
                 //exclude constructors
-                if(methodsList.get(k).isConstructor() == false){
-                    String methodName = methodsList.get(k).getMethodName();
-                    int callers = methodsList.get(k).getCallerList().size();
+                if(methodsOfCurrentClass.get(k).isConstructor() == false){
+                    String methodName = methodsOfCurrentClass.get(k).getMethodName();
+                    int callers = methodsOfCurrentClass.get(k).getCallerList().size();
 
                     System.out.format(tableFormat, methodName, " | ", "total: " + callers);
 
                     //iterate for as long as longerListNumber
-                    for(int d = 0; d < methodsList.get(k).getCallerList().size(); d++){
+                    for(int d = 0; d < methodsOfCurrentClass.get(k).getCallerList().size(); d++){
                         System.out.println("");
-                        System.out.format(tableFormat, "", " | ", methodsList.get(k).getCallerList().get(d));
+                        System.out.format(tableFormat, "", " | ", methodsOfCurrentClass.get(k).getCallerList().get(d));
                     }
 
                     System.out.println("");
                     System.out.format(tableFormat, div, div, div, div, div);
                     System.out.println("");
                 }
-            }
-
-            System.out.println("");
-
-            System.out.println("//************************( detailed : Called )************************//\n");
-            System.out.format("%20s%10s%20s", mn, " | ", cm);
-            System.out.println("");
-            System.out.format(tableFormat, div, div, div + "\n");
-            //iterate on the methods list and print how many callers and called each method has.
-            for(int k = 0; k < methodsList.size(); k++){
-                String methodName = methodsList.get(k).getMethodName();
-                int called = methodsList.get(k).getCalledMethodsList().size();
-
-                System.out.format(tableFormat, methodName, " | ", "total: " + called);
-
-                for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
-                    System.out.println("");
-                    System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
-                }
-
-
-                System.out.println("");
-                System.out.format(tableFormat, div, div, div, div, div);
-                System.out.println("");
             }
             System.out.println("");
         }
@@ -198,7 +178,7 @@ public class FanIn {
             System.out.println("");
         }
 
-        result.add(methodsList.size());
+        result.add(methodsOfCurrentClass.size());
         result.add(methodCallerCount);
         result.add(deadMethods);
         result.add(oneCaller);

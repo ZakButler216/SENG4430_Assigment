@@ -159,6 +159,7 @@ public class Parser {
 
     public String getClassNameFromCompilationUnit(CompilationUnit cu) {
         String className = cu.getPrimaryTypeName().toString();
+        System.out.println(className);
 
         className = className.substring(className.indexOf("[")+1);
         className = className.substring(0,className.indexOf("]"));

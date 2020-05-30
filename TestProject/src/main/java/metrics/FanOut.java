@@ -1,9 +1,8 @@
-package metrics;
 /*
- * File name:    FanIn.java
+ * File name:    FanOut.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      2.1
+ * Version:      2.2
  * Description:  Fan-out is a software metrics that means:
  *                  - the number of functions that are called by
  *                      function X.
@@ -31,7 +30,11 @@ package metrics;
  *                          to be higher in a large system because the parts of the system need to interact with
  *                          each other. As your project grows, SFOUT/file is likely to increase even if your
  *                          code is well designed.
+ *                  - other resources:
+ *                          - https://portal.tiobe.com/8.5/docs/metrics/index.html
  * */
+
+package metrics;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.visitor.VoidVisitor;
@@ -40,142 +43,77 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FanOut {
-
-    public String getOutputResult() {
-        return outputResult;
-    }
-
-    public void setOutputResult(String outputResult) {
-        this.outputResult = outputResult;
-    }
-
-    private String outputResult;
     public FanOut() {
-        String outputResult = "";
     }
 
     public List<Integer> calculateFanOut(List<FanInOutMethod> methodsList){
-
-        CompilationUnit cu = Parser.getStoredCurrentCompilationUnit();
-        Parser parser = new Parser();
-
-
-
         //populate this int array list with; # total called methods, and average fan out value
         List<Integer> result = new ArrayList<>();
         int totalCalledMethods = 0;
         int averageFanOut = 0;
+        double average = 0;
 
-        String sTotal="";
         //if the file is invalid/ has code errors, or or there are no methods
         if(methodsList.size() <= 0){
-            //System.out.println( "No methods detected. \n");
-            String a1 = "No methods detected. \n\n";
-
-            //System.out.println("");
-            String a2 = "\n";
-
-            sTotal = a1+a2;
+            System.out.println( "No methods detected. \n");
+            System.out.println("");
         }
         else{
-            //System.out.println("///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////");
-            String s1 = "///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////\n";
+            System.out.println("///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////");
+            System.out.println("Fan-out is the number of methods that are called by method X.\n");
 
-            //System.out.println("Fan-out is the number of methods that are called by method X.\n");
-            String s2 = "Fan-out is the number of methods that are called by method X.\n\n";
-
-            //System.out.println("It is ideal to keep the fan-out value on average or below average. The lower the better for code reusability.");
-            String s3 = "It is ideal to keep the fan-out value on average or below average. The lower the better for code reusability.\n";
-
-            //System.out.println("");
-            String s4 = "\n";
+            System.out.println( "It is ideal to keep the fan-out value on average or below average. " +
+                    "\nThe lower fan-out value, the better for code maintainability and reusability.");
+            System.out.println("");
 
             System.out.println("//****************************( summary )****************************//");
-            String s5 = "//****************************( summary )****************************//\n";
 
             String format = "%-40s%s%n";
 
             for(int a = 0; a < methodsList.size(); a++){
-                //System.out.println(methodsList.get(a).getMethodName());
                 totalCalledMethods += methodsList.get(a).getCalledMethodsList().size();
             }
-            //System.out.printf(format, "Total number of called methods: ", totalCalledMethods);
-            String s6 = String.format(format,"Total number of called methods: ",totalCalledMethods);
+            System.out.printf(format, "Total number of called methods: ", totalCalledMethods);
+            System.out.printf(format, "Total number of methods: ", methodsList.size());
 
-
-            String s7="";
-            String s8="";
             //avoid division by zero
             if(methodsList.size() > 0){
+                average = totalCalledMethods/methodsList.size();
                 averageFanOut = totalCalledMethods/methodsList.size();
-                //System.out.printf(format, "Average fan-out value: ", averageFanOut);
-                s7 = String.format(format,"Average fan-out value: ", averageFanOut);
-
-                //System.out.println("");
-                s8="\n";
+                System.out.printf(format, "Average fan-out value: ", average);
+                System.out.println("");
             }
 
-            //System.out.println("//****************************( detailed )****************************//");
-            String s9="//****************************( detailed )****************************//\n";
-
-            String  tableFormat = "%30s%10s%10s",
+            System.out.println("//****************************( detailed )****************************//");
+            String  tableFormat = "%20s%10s%20s",
                     mn = "Method Name",
-                    cm = "# of Methods Called",
+                    cm = "Called Methods",
                     div = "____________________";
-            //System.out.format("%30s%10s%20s", mn, " | ", cm);
-            String s10 = String.format("%30s%10s%20s", mn, " | ", cm);
 
-            //System.out.println("");
-            String s11 = "\n";
+            System.out.format("%20s%10s%20s", mn, " | ", cm);
+            System.out.println("");
+            System.out.format(tableFormat, div, div, div + "\n");
+            //iterate on the methods list and print how many callers and called each method has.
+            for(int k = 0; k < methodsList.size(); k++){
+                String methodName = methodsList.get(k).getMethodName();
+                int called = methodsList.get(k).getCalledMethodsList().size();
 
-            //System.out.format(tableFormat, div, div, div);
-            String s12 = String.format(tableFormat, div, div, div);
+                System.out.format(tableFormat, methodName, " | ", "total: " + called);
 
-            String s13 ="";
+                for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
+                    System.out.println("");
+                    System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
+                }
 
-            for(int b = 0; b < methodsList.size(); b++){
-                String  methodName = methodsList.get(b).getMethodName();
-                int numCalledMethods = methodsList.get(b).getCalledMethodsList().size();
 
-                //System.out.println("");
-                String m1 = "\n";
-
-                //System.out.format(tableFormat, methodName, " | ", numCalledMethods);
-                String m2 = String.format(tableFormat, methodName, " | ", numCalledMethods);
-
-                //System.out.println("");
-                String m3 = "\n";
-
-                //System.out.format(tableFormat, div, div, div);
-                String m4= String.format(tableFormat, div, div, div);
-
-                //(Already commented out by Naneth)
-                //System.out.println("Method Name: " + methodsList.get(b).getMethodName());
-                //System.out.println("Number of methods called: " + methodsList.get(b).getCalledMethodsList().size() + "\n");
-
-                String methodTotal = m1+m2+m3+m4;
-                s13 += methodTotal;
-
+                System.out.println("");
+                System.out.format(tableFormat, div, div, div, div, div);
+                System.out.println("");
             }
-
-            //System.out.println("");
-            String s14="\n";
-
-            sTotal = s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14;
-
-
         }
 
-        setOutputResult(sTotal);
-
         result.add(totalCalledMethods);
-        System.out.println("Total Called Methods is "+totalCalledMethods);
         result.add(averageFanOut);
-        System.out.println("Average Fan Out is "+averageFanOut);
         return result;
     }
-
-
-
-
 }

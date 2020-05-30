@@ -268,21 +268,27 @@ public class Event {
                         totalResult+=cpResult;
                         break;
 
-                    case "c":
+                    case "c":FanInOutParser fioParserOne = new FanInOutParser();
+                        fioParserOne.wholeProjectVisitor(parser.getStoredCompilationUnits());
+
+                        FanIn fi = new FanIn();
+                        fi.calculateFanIn(fioParserOne.getMethodsList(), getCurrentClass());
                         break;
 
                     case "d":
-                        FanInOutParser fioParserOne = new FanInOutParser();
-                        fioParserOne.classSplitter();
+                        FanInOutParser fioParserTwo = new FanInOutParser();
+                        fioParserTwo.singleClassVisitor(cu);
                         FanOut fo = new FanOut();
-                        List<Integer> numericResult = fo.calculateFanOut(fioParserOne.getMethodsList());
-                        String foResult = fo.getOutputResult();
-
-                        totalResult+=foResult;
+                        fo.calculateFanOut(fioParserTwo.getMethodsList());
                         break;
 
                     case "e":
-                        Coupling coupling = new Coupling(Parser.getStoredCompilationUnits());
+                        //System.out.println(Parser.getStoredCurrentCompilationUnit());
+
+                        Coupling coupling = new Coupling(Parser.getStoredCompilationUnits(),parser.getClassNameFromCompilationUnit(cu));
+                        //System.out.print(parser.getClassNameFromCompilationUnit(Parser.getStoredCurrentCompilationUnit()));//);
+                        String couplingResult = coupling.getResults();
+                        totalResult+=couplingResult;
 
                         break;
 
@@ -299,9 +305,9 @@ public class Event {
                     case "h":
                         FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
                         File file = fr.getClassFile(currentClass);
-                        FogIndex fi = new FogIndex(file);
-                        String fiResult = fi.getResults()+"\n";
-                        totalResult+=fiResult;
+                        FogIndex fogIndex = new FogIndex(file);
+                        String fogIndexResult = fogIndex.getResults()+"\n";
+                        totalResult+=fogIndexResult;
                         break;
 
                     case "i":
