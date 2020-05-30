@@ -3,7 +3,7 @@ package metrics;
  * File name:    FanInOutMethod.java
  * Author:       Naneth Sayao
  * Date:         17 May 2020
- * Version:      2.2
+ * Version:      2.3
  * Description:  An object that will hold:
  *                  - one method block
  *                  - record fan-in/fan-out related data
@@ -30,7 +30,8 @@ public class FanInOutMethod {
     //////////////////////////////////////////////////( variables )///////////////////////////////////////////////////
 
     String  methodName,
-            methodBlock;
+            methodBlock,
+            parentClass;
 
     boolean isConstructor,
             isDead;
@@ -43,6 +44,7 @@ public class FanInOutMethod {
         //initialise variables
         methodName = "";
         methodBlock = "";
+        parentClass = "";
 
         isConstructor = false;
 
@@ -58,6 +60,10 @@ public class FanInOutMethod {
 
     public String getMethodBlock() {
         return methodBlock;
+    }
+
+    public String getParentClass() {
+        return parentClass;
     }
 
     public boolean isConstructor() {
@@ -81,6 +87,10 @@ public class FanInOutMethod {
 
     public void setMethodBlock(String methodBlock) {
         this.methodBlock = methodBlock;
+    }
+
+    public void setParentClass(String parentClass) {
+        this.parentClass = parentClass;
     }
 
     public void setConstructor(boolean constructor) {
