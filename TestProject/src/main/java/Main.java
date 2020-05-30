@@ -59,7 +59,7 @@ public class Main {
         Tree t = new Tree(cuList.get(0));
         t.result();*/
 
-        Coupling coupling = new Coupling(cuList, "PA3");
+        Coupling coupling = new Coupling(cuList, "");
         String results = coupling.getResults();
         System.out.println(results);
         //coupling.showResult();
