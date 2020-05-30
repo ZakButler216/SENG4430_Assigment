@@ -1,3 +1,10 @@
+/*
+ * File name:    FanInTest.java
+ * Author:       Naneth Sayao
+ * Date:         26 May 2020
+ * Version:      3.0
+ * Description:  This is a JUnit test class for fan-in
+ * */
 package metrics;
 
 import Team2.Parser;
@@ -37,62 +44,58 @@ class FanInTest {
     }
 
     @Test
-    void testCalculateFanInValidOne() {
+    void testCalculateFanInSimple() {
         //path
         String source = "srcValid";
         String className = "One";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(2);
-        expected.add(2);
+        expected.add(3);
         expected.add(1);
-        expected.add(1);
+        expected.add(2);
         expected.add(0);
         doTest(source, className, expected);
     }
 
     @Test
-    void testCalculateFanInValidTwo() {
+    void testCalculateFanInSimple2() {
         //path
         String source = "srcValid";
         String className = "Two";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(1);
-        expected.add(1);
+        expected.add(2);
         expected.add(0);
-        expected.add(1);
+        expected.add(2);
         expected.add(0);
         doTest(source, className, expected);
     }
 
     @Test
-    void testCalculateFanInValidThree() {
+    void testCalculateFanInNoCallers() {
         //path
         String source = "srcConstructor";
         String className = "Try";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(1);
-        expected.add(0);
-        expected.add(1);
+        expected.add(2);
+        expected.add(2);
         expected.add(0);
         expected.add(0);
         doTest(source, className, expected);
     }
 
     @Test
-    void testCalculateFanInValidFour() {
+    void testCalculateFanInManyMethods() {
         //path
         String source = "srcProject";
         String className = "FanInOutMethod";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(8);
-        expected.add(0);
+        expected.add(9);
         expected.add(0);
         expected.add(3);
-        expected.add(5);
+        expected.add(6);
         doTest(source, className, expected);
     }
 
@@ -103,11 +106,25 @@ class FanInTest {
         String className = "FanOut";
 
         List<Integer> expected = new ArrayList<>();
-        expected.add(1);
-        expected.add(1);
+        expected.add(2);
+        expected.add(0);
+        expected.add(2);
+        expected.add(0);
+        doTest(source, className, expected);
+    }
+
+
+    @Test
+    void testCalculateFanInConstructorCall() {
+        //path
+        String source = "srcValid";
+        String className = "Three";
+
+        List<Integer> expected = new ArrayList<>();
+        expected.add(2);
         expected.add(0);
         expected.add(1);
-        expected.add(0);
+        expected.add(1);
         doTest(source, className, expected);
     }
 }
