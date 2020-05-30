@@ -18,7 +18,7 @@ public class Tree {
     private int depth;
     Node root;
 
-    Tree(CompilationUnit newCu){
+    CherrenSection(CompilationUnit newCu){
         cu = newCu;
         numChildren = 0;
         numNode = 0;
@@ -33,7 +33,7 @@ public class Tree {
         //scanner for the question.
         Scanner scan = new Scanner(System.in);
 
-        javaContent = cu.getChildNodes();
+        javaContent = String.valueOf(cu.getChildNodes());
         if (javaContent.contains("insert")) {
             numNode++;
         }
@@ -94,15 +94,18 @@ public class Tree {
             return rDepth + 1;
     }
 
-    public void result(){
-
-        //print total number of children and number of nodes
-        System.out.println ("Total number of nodes: " + numNode);
-
-        //number of children
-        System.out.println ("Depth of Tree is " + depth);
+    public void NumChildrenresult(){
 
         //depth of tree
         System.out.println ("Number of children are: " + numChildren);
+    }
+
+    public void DepthTreeresult() {
+
+        //print total number of children and number of nodes
+        System.out.println("Total number of nodes: " + numNode);
+
+        //number of children
+        System.out.println("Depth of Tree is " + depth);
     }
 }

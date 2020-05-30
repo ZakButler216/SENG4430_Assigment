@@ -43,7 +43,13 @@ public class Main {
         RFC rfc = new RFC(cu);
         rfc.showResults();
 
-        Tree t = new Tree(cu);
-        t.result();
+
+        CherrenSection t = new CherrenSection(cu);
+
+        //get number of children
+        t.NumChildrenresult();
+
+        //get depth of tree
+        t.DepthTreeresult();
     }
 }
