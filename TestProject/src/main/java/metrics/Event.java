@@ -274,19 +274,20 @@ public class Event {
                         break;
 
                     case "c":
-                        FanInOutParser fioParserOne = new FanInOutParser();
-                        fioParserOne.wholeProjectVisitor(parser.getStoredCompilationUnits());
+                        FanInOutParser fioParserOne = new FanInOutParser(); //prepare fan-in/out parser
+                        fioParserOne.wholeProjectVisitor(parser.getStoredCompilationUnits()); //visit the parsed units
 
-                        FanIn fi = new FanIn();
-                        fi.calculateFanIn(fioParserOne.getMethodsList(), getCurrentClass());
+                        FanIn fi = new FanIn(); //create a new FanIn object
+                        totalResult+= fi.getReport(fioParserOne.getMethodsList(), getCurrentClass());//calculate and get fan-in result
                         break;
 
                     case "d":
-                        FanInOutParser fioParserTwo = new FanInOutParser();
-                        fioParserTwo.singleClassVisitor(cu);
-                        FanOut fo = new FanOut();
-                        fo.calculateFanOut(fioParserTwo.getMethodsList());
+                        FanInOutParser fioParserTwo = new FanInOutParser(); //prepare fan-in/out parser
+                        fioParserTwo.singleClassVisitor(cu); //visit the parsed unit
+                        FanOut fo = new FanOut();//create a new FanOut object
+                        totalResult+= fo.getReport(fioParserTwo.getMethodsList());//calculate and get fan-out result
                         break;
+
 
                     case "e":
                         Coupling coupling = new Coupling(Parser.getStoredCompilationUnits());
