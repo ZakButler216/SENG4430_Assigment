@@ -1,5 +1,3 @@
-package main.java;
-
 public class BST {
     private Node root;
     private int val;

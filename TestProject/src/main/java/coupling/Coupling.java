@@ -1,4 +1,4 @@
-package main.java.coupling;
+package coupling;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -401,7 +401,7 @@ public class Coupling
             results += evalResult[2];
             meaning = "a good";
         }
-        results += " coupling \n";
+        results += " coupling\n";
         results += "This is " + meaning + " result.";
         if(!action.equals(""))
         {

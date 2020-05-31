@@ -1,14 +1,14 @@
-package main.java.programSize;
+package programSize;
 
-import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.CompilationUnit;
-import java.util.List;
-import com.github.javaparser.resolution.UnsolvedSymbolException;
-import java.util.ArrayList;
-import java.util.Optional;
-import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.stmt.Statement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class ProgramSize
 {
@@ -69,7 +69,7 @@ public class ProgramSize
     {
         results += "Program size is measured by the number of statements in a program.\n";
         results += "Note: This metric (program size) is useful when comparing orders of magnitude. ";
-        results += "While it is debatable exactly how to measure \nprogram size, discrepancies of an order of magnitude can be clear indicators of software complexity or man-hours.\n\n";
+        results += "While it is debatable exactly how to measure\nprogram size, discrepancies of an order of magnitude can be clear indicators of software complexity or man-hours.\n\n";
 
         int tableSize = 0;
 
@@ -124,7 +124,7 @@ public class ProgramSize
             grammar = "These results are";
         }
 
-        results += "Note: " + grammar + " either good or bad depending on what the program is doing.";
+        results += "Note: " + grammar + " either good or bad depending on what the program is doing.\n";
 
         return results;
     }

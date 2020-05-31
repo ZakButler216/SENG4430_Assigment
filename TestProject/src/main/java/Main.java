@@ -1,9 +1,5 @@
-package main.java;
-
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,9 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import main.java.coupling.Coupling;
-import main.java.programSize.ProgramSize;
-import main.java.coupling.tests.Node;
+import coupling.Coupling;
+import programSize.ProgramSize;
+//import main.java.coupling.tests.Node;
 
 public class Main {
 

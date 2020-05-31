@@ -1,5 +1,3 @@
-package main.java;
-
 import com.github.javaparser.ast.CompilationUnit;
 
 import java.util.Scanner;

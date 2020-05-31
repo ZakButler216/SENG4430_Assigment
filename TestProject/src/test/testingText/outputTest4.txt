@@ -1,0 +1,11 @@
+Program size is measured by the number of statements in a program.
+Note: This metric (program size) is useful when comparing orders of magnitude. While it is debatable exactly how to measure
+program size, discrepancies of an order of magnitude can be clear indicators of software complexity or man-hours.
+
+                                   Class                        Statements Value
+                                   -----                          --------------
+                                     PA3                                      14
+
+Statements in all classes: 401
+The number of statements in the current class is shown in the above table.
+Note: These results are either good or bad depending on what the program is doing.
