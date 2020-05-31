@@ -3,7 +3,7 @@ package metrics;
  * File name:    FanIn.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      4.3
+ * Version:      4.4
  * Description:  Fan-in is a software metrics that means:
  *                  - a measure of the number of functions or
  *                      methods that call function X.
@@ -43,8 +43,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FanIn {
+    private String report;
 
     public FanIn() {
+        report = "";
+    }
+
+    //getter for the summary and detailed report after calculation
+    public String getReport(List<FanInOutMethod> methodsList, String currentClassName) {
+        calculateFanIn(methodsList, currentClassName);
+        return report;
     }
 
     public List<Integer> calculateFanIn(List<FanInOutMethod> methodsList, String currentClassName){
@@ -61,18 +69,19 @@ public class FanIn {
         int oneCaller = 0;
         int twoOrMoreCaller = 0;
         int deadMethods = 0;
+        report = ""; // clear out the report string
 
         String format = "%-40s%s%n";
 
         //if the file is invalid/ has code errors, or or there are no methods
         if(methodsList.size() > 0){
-            System.out.println("///////////////////////////////////////////( fan-in result )/////////////////////////////////////////////"  +
+            report += ("\n///////////////////////////////////////////( fan-in result )/////////////////////////////////////////////"  +
                     "\nFan-in is the number of methods that calls another method. \nIn short, the number of callers that a method has.\n"   +
                     "\nZero caller may or may not indicate a dead method code."                                                             +
                     "\nOne caller makes the method a candidate to be moved inside the caller method for optimisation."                      +
                     "\nTwo or more callers indicate reuse."                                                                                 +
                     "\nA high the number of callers may mean: \n - good for reuse \n - bad for cross-file coupling \n"                      +
-                    "\n//****************************( summary )****************************//");
+                    "\n//****************************( summary )****************************//\n");
 
             //iterate methodsList to find out total number of a method's caller (#caller number)
             for(int u = 0; u < methodsList.size(); u++){
@@ -127,20 +136,20 @@ public class FanIn {
                 }
             }
 
-            System.out.printf(format, "Total Number of methods: ", methodsOfCurrentClass.size());
-            System.out.printf(format, "Number of possibly dead methods: ", deadMethods);
-            System.out.printf(format, "Number of transferable methods : ", oneCaller);
-            System.out.printf(format, "Number of reused methods: ", twoOrMoreCaller + "\n");
+            report += String.format(format, "Total Number of methods: ", methodsOfCurrentClass.size());
+            report += String.format(format, "Number of possibly dead methods: ", deadMethods);
+            report += String.format(format, "Number of transferable methods : ", oneCaller);
+            report += String.format(format, "Number of reused methods: ", twoOrMoreCaller + "\n");
 
-            System.out.println("//****************************( detailed )****************************//\n");
+            report += "\n//****************************( detailed )****************************//\n";
             String  tableFormat = "%30s%10s%20s",
                     mn = "Method Name + Evaluation",
                     c = "Callers",
                     div = "__________________________";
 
-            System.out.format("%30s%10s%20s", mn, " | ", c);
-            System.out.println("");
-            System.out.format(tableFormat, div, div, div + "\n");
+            report += String.format("%30s%10s%20s", mn, " | ", c);
+            report += "\n";
+            report += String.format(tableFormat, div, div, div + "\n");
 
             //iterate on the methods list and print how many callers and called each method has.
             for(int k = 0; k < methodsOfCurrentClass.size(); k++){
@@ -152,37 +161,37 @@ public class FanIn {
                 int callers = methodsOfCurrentClass.get(k).getCallerList().size();
                 String evaluation = methodsOfCurrentClass.get(k).getEvaluation();
 
-                System.out.format(tableFormat, methodName, " | ", "total: " + callers);
+                report += String.format(tableFormat, methodName, " | ", "total: " + callers);
 
                 //if caller size is zero, can't print evaluation through iteration. Print it separately.
                 if(callers == 0){
-                    System.out.println("");
-                    System.out.format(tableFormat, evaluation, " | ", "");
+                    report += "\n";
+                    report += String.format(tableFormat, evaluation, " | ", "");
                 }
                 else{
                     //iterate on the caller list and print all callers of the current method
                     for(int d = 0; d < methodsOfCurrentClass.get(k).getCallerList().size(); d++){
-                        System.out.println("");
+                        report += "\n";
                         //print evaluation on first iteration
                         if(d == 0){
-                            System.out.format(tableFormat, evaluation, " | ", methodsOfCurrentClass.get(k).getCallerList().get(d));
+                            report += String.format(tableFormat, evaluation, " | ", methodsOfCurrentClass.get(k).getCallerList().get(d));
                         }
                         else{
-                            System.out.format(tableFormat, "", " | ", methodsOfCurrentClass.get(k).getCallerList().get(d));
+                            report += String.format(tableFormat, "", " | ", methodsOfCurrentClass.get(k).getCallerList().get(d));
                         }
 
                     }
                 }
 
-                System.out.println("");
-                System.out.format(tableFormat, div, div, div, div, div);
-                System.out.println("");
+                report += "\n";
+                report += String.format(tableFormat, div, div, div, div, div);
+                report += "\n";
             }
-            System.out.println("");
+            report += "\n";
         }
         else{
-            System.out.println( "Please ensure that the Java file/s have no error and that \n" +
-                    "there is at least one method in the Java file/s.\n");
+            report += "\nPlease ensure that the Java file/s have no error and that \n" +
+                    "there is at least one method in the Java file/s.\n";
         }
 
         result.add(methodsOfCurrentClass.size());
