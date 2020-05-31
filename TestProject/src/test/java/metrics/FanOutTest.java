@@ -56,7 +56,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidOne() {
         //path
-        String source = "srcValid";
+        String source = "src\\test\\resources\\srcValid";
         String className = "One";
 
         List<Integer> expected = new ArrayList<>();
@@ -68,7 +68,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidTwo() {
         //path
-        String source = "srcValid";
+        String source = "src\\test\\resources\\srcValid";
         String className = "Two";
 
         List<Integer> expected = new ArrayList<>();
@@ -80,7 +80,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidThree() {
         //path
-        String source = "srcConstructor";
+        String source = "src\\test\\resources\\srcConstructor";
         String className = "Try";
 
         List<Integer> expected = new ArrayList<>();
@@ -92,7 +92,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidFour() {
         //path
-        String source = "srcProject";
+        String source = "src\\test\\resources\\srcProject";
         String className = "FanInOutMethod";
 
         List<Integer> expected = new ArrayList<>();
@@ -104,7 +104,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidFive() {
         //path
-        String source = "srcProject";
+        String source = "src\\test\\resources\\srcProject";
         String className = "Main";
 
         List<Integer> expected = new ArrayList<>();

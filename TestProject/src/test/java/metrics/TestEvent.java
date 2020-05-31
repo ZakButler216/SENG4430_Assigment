@@ -76,6 +76,7 @@ public class TestEvent {
         //Assert
         Assert.assertEquals(planStored,actualStored);
 
+
     }
 
     @Test
@@ -88,13 +89,14 @@ public class TestEvent {
         String userInput = "new     ";
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         //Act
         Event.processInput(userInput);
 
         //Assert
         Assert.assertEquals("Please enter a directory along with the new command.",outContent.toString().trim());
+
 
     }
 
@@ -108,13 +110,14 @@ public class TestEvent {
         String userInput = "newsrc";
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         //Act
         Event.processInput(userInput);
 
         //Assert
         Assert.assertEquals("Invalid command. Please enter a valid command.",outContent.toString().trim());
+
 
     }
 
@@ -127,13 +130,14 @@ public class TestEvent {
         String userInput = "new nonExistingDirectory";
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         //Act
         Event.processInput(userInput);
 
         //Assert
         Assert.assertEquals("The directory does not exist.",outContent.toString().trim());
+
     }
 
     @Test
@@ -141,11 +145,12 @@ public class TestEvent {
         //Arrange
         Parser parser = new Parser();
         parser.setStoredDirectory(null);
+        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
 
         String userInput = "parse";
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         //Act
         Event.processInput(userInput);
@@ -159,12 +164,13 @@ public class TestEvent {
     public void testProcessInputParseTwo() throws IOException {
         Parser parser = new Parser();
         parser.setStoredDirectory(null);
+        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
 
         String userInput = "new out";
         Event.processInput(userInput);
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         userInput = "parse";
         Event.processInput(userInput);
@@ -188,6 +194,9 @@ public class TestEvent {
 
         Assert.assertEquals(false,Parser.getStoredCompilationUnits().isEmpty());
 
+
+
+
     }
 
     @Test
@@ -195,14 +204,22 @@ public class TestEvent {
         Parser parser = new Parser();
         parser.setStoredDirectory(null);
         List<CompilationUnit> allCompilationUnits = new ArrayList<>();
+        parser.setStoredCompilationUnits(allCompilationUnits);
+        Event.setAllClassesInProgram();
+
+
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         String userInput = "class someClass";
         Event.processInput(userInput);
 
         Assert.assertEquals("No classes stored in program.",outContent.toString().trim());
+
+        parser.setStoredDirectory(null);
+        allCompilationUnits = new ArrayList<>();
+
 
     }
 
@@ -216,12 +233,16 @@ public class TestEvent {
         Event.processInput(userInput);
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         userInput = "class someClass";
         Event.processInput(userInput);
 
         Assert.assertEquals("No classes stored in program.",outContent.toString().trim());
+
+        parser.setStoredDirectory(null);
+        allCompilationUnits = new ArrayList<>();
+
 
     }
 
@@ -238,16 +259,45 @@ public class TestEvent {
         Event.processInput(userInput);
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent,true));
 
         userInput = "class nonExistingClass";
         Event.processInput(userInput);
 
         Assert.assertEquals("The class entered does not match any of the classes stored in the program.",outContent.toString().trim());
+
+        parser.setStoredDirectory(null);
+        allCompilationUnits = new ArrayList<>();
+
+
     }
+
 
     @Test
     public void testProcessInputClassFour() throws IOException {
+        Parser parser = new Parser();
+        parser.setStoredDirectory(null);
+        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
+
+        String userInput = "new src";
+        Event.processInput(userInput);
+
+        userInput = "parse";
+        Event.processInput(userInput);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent,true));
+
+        userInput = "class    ";
+        Event.processInput(userInput);
+
+        Assert.assertEquals("Please enter a class name along with the class command.",outContent.toString().trim());
+
+    }
+
+    /*
+    @Test
+    public void testProcessInputClassFive() throws IOException {
         Parser parser = new Parser();
         parser.setStoredDirectory(null);
         List<CompilationUnit> allCompilationUnits = new ArrayList<>();
@@ -264,31 +314,11 @@ public class TestEvent {
         userInput = "class Main";
         Event.processInput(userInput);
 
+        //Assert.assertEquals("The class entered does not match any of the classes stored in the program.",outContent.toString().trim());
 
-        Assert.assertEquals("The class entered does not match any of the classes stored in the program.",outContent.toString().trim());
     }
 
-    @Test
-    public void testProcessInputClassFive() throws IOException {
-        Parser parser = new Parser();
-        parser.setStoredDirectory(null);
-        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
-
-        String userInput = "new src";
-        Event.processInput(userInput);
-
-        userInput = "parse";
-        Event.processInput(userInput);
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        userInput = "class    ";
-        Event.processInput(userInput);
-
-        Assert.assertEquals("Please enter a class name along with the class command.",outContent.toString().trim());
-    }
-
+     */
 
 
 

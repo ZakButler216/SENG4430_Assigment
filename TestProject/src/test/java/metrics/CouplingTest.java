@@ -13,11 +13,12 @@ public class CouplingTest {
 
     @Test
     public void Coupling1() {
-        String filePath = "C:\\\\Users\\\\geeth\\\\OneDrive\\\\Documents\\\\SQ proj\\\\Prog\\\\src";
+        //String filePath = "C:\\\\Users\\\\geeth\\\\OneDrive\\\\Documents\\\\SQ proj\\\\Prog\\\\src";
+        String filePath = "src";
         String outputTest = "";
 
         try {
-            File myObj = new File(".\\src\\test\\testingText\\outputTest.txt");
+            File myObj = new File(".\\src\\test\\resources\\testingText\\outputTest.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 outputTest += myReader.nextLine() + "\n";
@@ -43,7 +44,7 @@ public class CouplingTest {
         String filePath = "C:\\\\Users\\\\geeth\\\\OneDrive\\\\Documents\\\\SQ proj\\\\Prog\\\\src";
         String outputTest = "";
         try {
-            File myObj = new File(".\\src\\test\\testingText\\outputTest2.txt");
+            File myObj = new File(".\\src\\test\\resources\\testingText\\outputTest2.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 outputTest += myReader.nextLine() + "\n";
