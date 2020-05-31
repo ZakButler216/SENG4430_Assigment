@@ -2,7 +2,7 @@
  * File name:    FanOut.java
  * Author:       Naneth Sayao
  * Date:         24 May 2020
- * Version:      2.3
+ * Version:      2.4
  * Description:  Fan-out is a software metrics that means:
  *                  - the number of functions that are called by
  *                      function X.
@@ -45,7 +45,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FanOut {
+    private String report;
+
     public FanOut() {
+        report = "";
+    }
+
+    //getter for the summary and detailed report after calculation
+    public String getReport(List<FanInOutMethod> methodsList) {
+        calculateFanOut(methodsList);
+        return report;
     }
 
     public List<Integer> calculateFanOut(List<FanInOutMethod> methodsList){
@@ -54,44 +63,44 @@ public class FanOut {
         int totalCalledMethods = 0;
         int averageFanOut = 0;
         double average = 0;
+        report = ""; //clear report
 
         //if the file is invalid/ has code errors, or or there are no methods
         if(methodsList.size() <= 0){
-            System.out.println( "No methods detected. \n");
-            System.out.println("");
+            report = "No methods detected.";
         }
         else{
-            System.out.println("///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////" +
+            report += "\n///////////////////////////////////////////( fan-out result )/////////////////////////////////////////////" +
                     "\nFan-out is the number of methods that are called by method X.\n"                                                     +
                     "\nIt is ideal to keep the fan-out value on average or below average. "                                                 +
                     "\nThe lower fan-out value, the better for code maintainability and reusability."                                       +
-                    "//****************************( summary )****************************//");
+                    "\n//****************************( summary )****************************//\n";
 
             String format = "%-40s%s%n";
 
             for(int a = 0; a < methodsList.size(); a++){
                 totalCalledMethods += methodsList.get(a).getCalledMethodsList().size();
             }
-            System.out.printf(format, "Total number of called methods: ", totalCalledMethods);
-            System.out.printf(format, "Total number of methods: ", methodsList.size());
+            report += String.format(format, "Total number of called methods: ", totalCalledMethods);
+            report += String.format(format, "Total number of methods: ", methodsList.size());
 
             //avoid division by zero
             if(methodsList.size() > 0){
                 average = totalCalledMethods/methodsList.size();
                 averageFanOut = totalCalledMethods/methodsList.size();
-                System.out.printf(format, "Average fan-out value: ", average);
-                System.out.println("");
+                report += String.format(format, "Average fan-out value: ", average);
+                report += "\n";
             }
 
-            System.out.println("//****************************( detailed )****************************//");
+            report += "\n//****************************( detailed )****************************//\n";
             String  tableFormat = "%30s%10s%20s",
                     mn = "Method Name + Grade",
                     cm = "Called Methods",
                     div = "___________________________";
 
-            System.out.format("%30s%10s%20s", mn, " | ", cm);
-            System.out.println("");
-            System.out.format(tableFormat, div, div, div + "\n");
+            report += String.format("%30s%10s%20s", mn, " | ", cm);
+            report += "\n";
+            report += String.format(tableFormat, div, div, div + "\n");
             //iterate on the methods list and print how many callers and called each method has.
             for(int k = 0; k < methodsList.size(); k++){
                 String methodName = methodsList.get(k).getMethodName();
@@ -101,7 +110,7 @@ public class FanOut {
                 if(methodsList.get(k).isConstructor == true){
                     methodName += " (constructor)";
                 }
-                System.out.format(tableFormat, methodName, " | ", "total: " + called);
+                report += String.format(tableFormat, methodName, " | ", "total: " + called);
 
                 //calculate grade. Formula = (average / number of called methods) * 100
                 DecimalFormat df = new DecimalFormat("####0"); //format to 2 decimal places
@@ -136,26 +145,26 @@ public class FanOut {
 
                 //if called methods list is empty, there will be no iteration to print grade. Print it separately.
                 if(called == 0){
-                    System.out.println("");
-                    System.out.format(tableFormat, "1000% BRILLIAN!", " | ", "");
+                    report += "\n";
+                    report += String.format(tableFormat, "1000% BRILLIAN!", " | ", "");
                 }
                 else{
                     for(int e = 0; e < methodsList.get(k).getCalledMethodsList().size(); e++){
-                        System.out.println("");
+                        report += "\n";
                         //only print grade on first iteration
                         if(e == 0){
-                            System.out.format(tableFormat, df.format(grade)+"%" + evalGrade, " | ", methodsList.get(k).getCalledMethodsList().get(e));
+                            report += String.format(tableFormat, df.format(grade)+"%" + evalGrade, " | ", methodsList.get(k).getCalledMethodsList().get(e));
                         }
                         else{
-                            System.out.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
+                            report += String.format(tableFormat, "", " | ", methodsList.get(k).getCalledMethodsList().get(e));
                         }
                     }
                 }
 
 
-                System.out.println("");
-                System.out.format(tableFormat, div, div, div, div, div);
-                System.out.println("");
+                report += "\n";
+                report += String.format(tableFormat, div, div, div, div, div);
+                report += "\n";
             }
         }
 
