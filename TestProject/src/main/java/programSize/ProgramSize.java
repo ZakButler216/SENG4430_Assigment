@@ -13,8 +13,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 public class ProgramSize
 {
     private List<CompilationUnit> cuList;
-    private int linesOfCode;
-    private int sourceLineOfCode;
     private int statementsOfCode;
     private int statementsOfCodeInClass;
     private List<Integer> statementsPerClass;
@@ -25,8 +23,6 @@ public class ProgramSize
     public ProgramSize(List<CompilationUnit> newCuList, String curentClass)
     {
         cuList = newCuList;
-        sourceLineOfCode = 0;
-        linesOfCode = 0;
         statementsOfCode = 0;
         statementsOfCodeInClass = 0;
         parsingThis = curentClass;
