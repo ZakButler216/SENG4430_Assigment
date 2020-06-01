@@ -293,9 +293,15 @@ public class Event {
         //initialize menu to choose from
         String[] menu = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l"};
 
+        boolean couplingAll=false;
+
         //if user inputted *, process all metrics
         if(metricsChosen.equals("*")) {
             metricsChosen = "abcdefghkl";
+        }
+        if(metricsChosen.contains("e*")) {
+            couplingAll = true;
+            metricsChosen.replaceAll("e\\*","e");
         }
 
         //Traverses the menu of options
@@ -335,7 +341,15 @@ public class Event {
                         break;
 
                     case "e":
-                        Coupling coupling = new Coupling(Parser.getStoredCompilationUnits(),parser.getClassNameFromCompilationUnit(cu));
+                        Coupling coupling;
+                        if (couplingAll==true) {
+                             coupling = new Coupling(Parser.getStoredCompilationUnits(),"");
+
+                        } else {
+                             coupling = new Coupling(Parser.getStoredCompilationUnits(),parser.getClassNameFromCompilationUnit(cu));
+
+                        }
+
                         String couplingResult = coupling.getResults();
                         totalResult+=couplingResult;
 
@@ -363,9 +377,13 @@ public class Event {
                         break;
 
                     case "i":
+                        //CherrenSection a = new CherrenSection(cu);
+                        //a.DepthTreeresult();
                         break;
 
                     case "j":
+                        //CherrenSection b = new CherrenSection(cu);
+                        //b.NumChildrenresult();
                         break;
 
                     case "k":

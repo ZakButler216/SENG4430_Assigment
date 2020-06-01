@@ -1,3 +1,5 @@
+
+/*
 package metrics;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -33,3 +35,15 @@ public class IdentifiersTest {
                 "The average length of identifiers is too long and may affect readability.", ident.getResult(cu).trim());
     }
 }
+
+
+
+
+
+ */
+
+
+
+
+
+

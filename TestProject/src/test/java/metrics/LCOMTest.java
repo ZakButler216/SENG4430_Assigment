@@ -25,3 +25,11 @@ public class LCOMTest {
                 "This is an acceptable result.", lcom.getResult(cu).trim());
     }
 }
+
+
+
+
+
+
+
+
