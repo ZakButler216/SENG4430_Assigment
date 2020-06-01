@@ -13,10 +13,10 @@ public class ProgramSizeTest {
 
     @org.junit.Test
     public void ProgramSize1() {
-        String filePath = "C:\\\\Users\\\\geeth\\\\OneDrive\\\\Documents\\\\SQ proj\\\\Prog\\\\src";
+        String filePath = "src\\test\\resources\\Prog\\src";
         String outputTest = "";
         try {
-            File myObj = new File(".\\src\\test\\testingText\\outputTest3.txt");
+            File myObj = new File(".\\src\\test\\resources\\testingText\\outputTest3.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 outputTest += myReader.nextLine() + "\n";
@@ -39,10 +39,10 @@ public class ProgramSizeTest {
 
     @org.junit.Test
     public void ProgramSize2() {
-        String filePath = "C:\\\\Users\\\\geeth\\\\OneDrive\\\\Documents\\\\SQ proj\\\\Prog\\\\src";
+        String filePath = "src\\test\\resources\\Prog\\src";
         String outputTest = "";
         try {
-            File myObj = new File(".\\src\\test\\testingText\\outputTest4.txt");
+            File myObj = new File(".\\src\\test\\resources\\testingText\\outputTest4.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 outputTest += myReader.nextLine()  + "\n";

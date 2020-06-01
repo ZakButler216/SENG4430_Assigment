@@ -370,7 +370,7 @@ public class Coupling
         results += "\n";
         if(!parsingThis.equals(""))
         {
-            results += "The class being tested " + currResult + " loosely coupled.\n\n";
+            results += "The class being tested " + currResult + " loosely coupled. This " + currResult + " a good result.\n\n";
         }
         results += "Total coupling value of program: " + total + "\n";
         results += "Total coupling value of program per class (excluding internal classes): " + totalAvg + "\n";
@@ -401,7 +401,7 @@ public class Coupling
             results += evalResult[2];
             meaning = "a good";
         }
-        results += " coupling \n";
+        results += " coupling\n";
         results += "This is " + meaning + " result.";
         if(!action.equals(""))
         {

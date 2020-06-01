@@ -14,7 +14,7 @@ public class CouplingTest {
     @Test
     public void Coupling1() {
         //String filePath = "C:\\\\Users\\\\geeth\\\\OneDrive\\\\Documents\\\\SQ proj\\\\Prog\\\\src";
-        String filePath = "src";
+        String filePath = "src\\test\\resources\\Prog\\src";
         String outputTest = "";
 
         try {
@@ -41,7 +41,7 @@ public class CouplingTest {
 
     @Test
     public void Coupling2() {
-        String filePath = "C:\\\\Users\\\\geeth\\\\OneDrive\\\\Documents\\\\SQ proj\\\\Prog\\\\src";
+        String filePath = "src\\test\\resources\\Prog\\src";
         String outputTest = "";
         try {
             File myObj = new File(".\\src\\test\\resources\\testingText\\outputTest2.txt");

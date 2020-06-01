@@ -295,7 +295,7 @@ public class Event {
 
         //if user inputted *, process all metrics
         if(metricsChosen.equals("*")) {
-            metricsChosen = "abcdefghijkl";
+            metricsChosen = "abcdefghkl";
         }
 
         //Traverses the menu of options
@@ -370,10 +370,18 @@ public class Event {
 
                     case "k":
                         //Identifiers
+                        Identifiers identifier = new Identifiers();
+                        List<CompilationUnit> allUnits = Parser.getStoredCompilationUnits();
+                        String identiferResult=identifier.getResult(cu)+"\n";
+                        totalResult+=identiferResult;
+
                         break;
 
                     case "l":
                         //LCOM
+                        LCOM lcom = new LCOM();
+                        String lcomResult=lcom.getResult(cu)+"\n";
+                        totalResult+=lcomResult;
                         break;
 
                     default:

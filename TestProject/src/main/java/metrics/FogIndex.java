@@ -177,6 +177,7 @@ public class FogIndex {
                 results += "Your code is very difficult to read, consider refactoring it.";
                 break;
         }
+        results=results+"\n";
         return results;
     }
 
