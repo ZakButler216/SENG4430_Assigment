@@ -9,7 +9,8 @@ import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
 
 
-
+import java.awt.color.ProfileDataException;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class Parser {
 
     static {
         storedCompilationUnits = new ArrayList<>();
-        storedDirectory="";
+        storedDirectory=null;
         storedCurrentCompilationUnit = new CompilationUnit();
     }
 
@@ -45,6 +46,7 @@ public class Parser {
     }
 
     public void setStoredDirectory(String directory) {
+
         storedDirectory = directory;
     }
 
@@ -65,7 +67,6 @@ public class Parser {
      This method gets a list of compilation units from a directory.
      */
     public List<CompilationUnit> getCompilationUnits(String directory) {
-
 
         //initialize an empty list of compilation units
         List<CompilationUnit> allCompilationUnits = new ArrayList<>();
@@ -115,6 +116,8 @@ public class Parser {
         //Traverses the list of all compilation units
         for(int i=0;i<compilationUnits.size();i++) {
 
+            //String packageName = compilationUnitNames.get(i).
+
             //Gets the class name of each compilation unit, which is of form Optional[Classname]
             String className = compilationUnits.get(i).getPrimaryTypeName().toString();
 
@@ -159,6 +162,7 @@ public class Parser {
 
     public String getClassNameFromCompilationUnit(CompilationUnit cu) {
         String className = cu.getPrimaryTypeName().toString();
+        System.out.println(className);
 
         className = className.substring(className.indexOf("[")+1);
         className = className.substring(0,className.indexOf("]"));

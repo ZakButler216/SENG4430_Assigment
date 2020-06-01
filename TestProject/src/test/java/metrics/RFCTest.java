@@ -15,7 +15,9 @@ public class RFCTest {
 
     @Test
     public void test1() throws FileNotFoundException {
-        CompilationUnit cu = StaticJavaParser.parse(new File("src\\test\\RFC_TestClass\\TestThing.java"));
+
+        CompilationUnit cu = StaticJavaParser.parse(new File("src\\test\\resources\\RFC_TestClass\\TestThing.java"));
+
         RFC rfc = new RFC(cu);
         assertEquals(6, rfc.getRfc());
     }

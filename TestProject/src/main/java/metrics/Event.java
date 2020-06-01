@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -57,19 +59,34 @@ public class Event {
      */
     public static boolean processInput(String scanInput) throws IOException {
 
-        if(!scanInput.equals("exit")) {
 
-            checkNew(scanInput);
+        //gets the command
+        String[] container = scanInput.split("\\s");
 
-            checkParse(scanInput);
+        String command = container[0];
 
-            checkClass(scanInput);
-
-            checkEval(scanInput);
-
-            checkView(scanInput);
-
-           return false;
+        //This switch case determines which command to process
+        switch(command) {
+            case "new":
+                checkNew(scanInput);
+                return false;
+            case "parse":
+                checkParse(scanInput);
+                return false;
+            case "class":
+                checkClass(scanInput);
+                return false;
+            case "eval":
+                checkEval(scanInput);
+                return false;
+            case "view":
+                checkView(scanInput);
+                return false;
+            case "exit":
+                return true;
+            default:
+                System.out.println("Invalid command. Please enter a valid command.");
+                return false;
 
         }
 
@@ -119,99 +136,129 @@ public class Event {
     }
 
     public static void checkParse(String scanInput) {
-        if(scanInput.equals("parse")) {
+        
+           //parses all the compilation units in the directory stored
             parseCompilationUnits();
-            System.out.println("Dem units have been parsed :D");
-            System.out.println("Classes are: ");
-            printClassesList();
+
+            if(Parser.getStoredCompilationUnits().size()>0) {
+
+                System.out.println("Dem units have been parsed :D");
+                System.out.println("Classes are: ");
+
+                //prints out all the classes/compilation units for user to see
+                printClassesList();
+
+            }
 
         }
     }
 
     public static void checkNew(String scanInput) {
 
-        String checkCommand="";
-        String input = "";
-
-        try {
-
-            checkCommand = scanInput.substring(0,4);
-
-        } catch(StringIndexOutOfBoundsException e) {
-
-        }
-
-        if(checkCommand.equals("new ")) {
-
-            input = scanInput.substring(4,scanInput.length());
+            String input = scanInput.substring(4,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
-            Parser parser = new Parser();
+            File tmpDir = new File(input);
 
-            //Stores the directory in a static place so anybody can access it
-            parser.setStoredDirectory(input);
-            System.out.println("New directory stored :)");
-            System.out.println("Directory name: "+Parser.getStoredDirectory());
+            //Case user didn't enter a directory along with new command
+            if(input.isBlank()) {
 
-            //Parse compilation units
-            //parseCompilationUnits();
+                System.out.println("Please enter a directory along with the new command.");
 
-        }
+                //Case user enter an invalid directory
+            } else if (!tmpDir.isDirectory()) {
+
+
+                System.out.println("The directory does not exist.");
+
+                //Case user entered a valid directory
+            } else {
+
+                    Parser parser = new Parser();
+
+                    //Stores the directory in a static place so anybody can access it
+                    parser.setStoredDirectory(input);
+
+                    //feedback notification to user
+                    System.out.println("New directory stored :)");
+                    System.out.println("Directory name: " + Parser.getStoredDirectory());
+
+            }
+
+
+
 
     }
 
+   /**
+     This method handles the class command.
+     Class command is for when user wants to set a new class to be evaluated.
+     */
     public static void checkClass(String scanInput) {
-        String checkCommand = "";
-        String input = "";
 
-        try {
-
-            checkCommand = scanInput.substring(0,6);
-
-        } catch(StringIndexOutOfBoundsException e) {
-
-        }
-
-        if(checkCommand.equals("class ")) {
-            input = scanInput.substring(6,scanInput.length());
+            String input = scanInput.substring(6,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
+
+
+            if(allClassesInProgram.isEmpty()) {
+
+                System.out.println("No classes stored in program.");
+
+            } else if (input.isBlank()) {
+
+                System.out.println("Please enter a class name along with the class command.");
+
+            }   else {
+
+                boolean foundClass = false;
+
+            //traverses all the classes in program
             for(int i=0;i<allClassesInProgram.size();i++) {
-                if(input.equalsIgnoreCase(allClassesInProgram.get(i))) {
+
+                //if user's input class matches the class in the for loop
+                if (input.equalsIgnoreCase(allClassesInProgram.get(i))) {
+
+
+
+                    //set it as current class for user to evaluate
                     setCurrentClass(input);
 
+                    //feedback notification to user
                     System.out.println("Current class is now:");
-                    System.out.println(getCurrentClass()+" :DD");
+                    System.out.println(getCurrentClass() + " :DD");
+
+                    foundClass=true;
 
                     break;
                 }
             }
+
+            if(foundClass==false) {
+                System.out.println("The class entered does not match any of the classes stored in the program.");
+            }
+
+
         }
 
 
     }
 
+
+    /**
+     This method handles the evaluate command.
+     Evaluate command is for when user wants to evaluate certain metrics. (Can be 1 to many).
+     */
     public static void checkEval(String scanInput) throws IOException {
 
-        String checkCommand = "";
-        String input = "";
-        try {
 
-            checkCommand = scanInput.substring(0,5);
-
-        } catch(StringIndexOutOfBoundsException e) {
-
-        }
-        if(checkCommand.equals("eval ")) {
-
-            input = scanInput.substring(5,scanInput.length());
+            String input = scanInput.substring(5,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
+            //evaluates metrics
             evaluate(input);
 
-        }
     }
-
     /**
      Preconditions:
      Newly parsed compilation units. Classes all shown on UI
@@ -247,9 +294,15 @@ public class Event {
         //menu to choose from
         String[] menu = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l"};
 
+        boolean couplingAll=false;
+
         //if user inputted *, process all metrics
         if(metricsChosen.equals("*")) {
-            metricsChosen = "abcdefghijkl";
+            metricsChosen = "abcdefghkl";
+        }
+        if(metricsChosen.contains("e*")) {
+            couplingAll = true;
+            metricsChosen.replaceAll("e\\*","e");
         }
 
         //Traverses the menu of options
@@ -290,37 +343,65 @@ public class Event {
 
 
                     case "e":
-                        Coupling coupling = new Coupling(Parser.getStoredCompilationUnits());
+                        Coupling coupling;
+                        if (couplingAll==true) {
+                             coupling = new Coupling(Parser.getStoredCompilationUnits(),"");
+
+                        } else {
+                             coupling = new Coupling(Parser.getStoredCompilationUnits(),parser.getClassNameFromCompilationUnit(cu));
+
+                        }
+
+                        String couplingResult = coupling.getResults();
+                        totalResult+=couplingResult;
 
                         break;
 
                     case "f":
+                        ProgramSize progSize = new ProgramSize(Parser.getStoredCompilationUnits(), parser.getClassNameFromCompilationUnit(cu));
+                        String sizeResults = progSize.getResults();
+                        totalResult+=sizeResults;
                         break;
 
                     case "g":
                         RFC rfc = new RFC(cu);
-                        String rfcResult = rfc.getResults();
+                        String rfcResult = rfc.getResults()+"\n";
                         totalResult+=rfcResult;
                         break;
 
                     case "h":
-                        FogIndex fi = new FogIndex(file);
-                        String fiResult = fi.getResults();
-                        totalResult+=fiResult;
+                        FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
+                        File file = fr.getClassFile(currentClass);
+                        FogIndex fogIndex = new FogIndex(file);
+                        String fogIndexResult = fogIndex.getResults()+"\n";
+                        totalResult+=fogIndexResult;
+
                         break;
 
                     case "i":
+                        //CherrenSection a = new CherrenSection(cu);
+                        //a.DepthTreeresult();
                         break;
 
                     case "j":
+                        //CherrenSection b = new CherrenSection(cu);
+                        //b.NumChildrenresult();
                         break;
 
                     case "k":
                         //Identifiers
+                        Identifiers identifier = new Identifiers();
+                        List<CompilationUnit> allUnits = Parser.getStoredCompilationUnits();
+                        String identiferResult=identifier.getResult(cu)+"\n";
+                        totalResult+=identiferResult;
+
                         break;
 
                     case "l":
                         //LCOM
+                        LCOM lcom = new LCOM();
+                        String lcomResult=lcom.getResult(cu)+"\n";
+                        totalResult+=lcomResult;
                         break;
 
                     default:
@@ -419,21 +500,37 @@ public class Event {
 
     public static void parseCompilationUnits() {
 
-        Parser parser = new Parser();
+        if(Parser.getStoredDirectory()!=null) {
 
-        //Stores the directory in a static place so anybody can access it
-        //parser.setStoredDirectory(directory);
+            Parser parser = new Parser();
 
-        //Gets all compilation units from the directory
-        List<CompilationUnit> compilationUnits = parser.getCompilationUnits(Parser.getStoredDirectory());
-        //This facilitates the action of same directory, but different compilation units
-        //while user using the tool
+            //Stores the directory in a static place so anybody can access it
+            //parser.setStoredDirectory(directory);
 
-        //Stores the compilation units in a static place so anybody (metrics, interface etc) can access it.
-        parser.setStoredCompilationUnits(compilationUnits);
+            //Gets all compilation units from the directory
+            List<CompilationUnit> compilationUnits = parser.getCompilationUnits(Parser.getStoredDirectory());
+            //This facilitates the action of same directory, but different compilation units
+            //while user using the tool
 
-        //This is to print on user interface
-        setAllClassesInProgram();
+            if(compilationUnits.size()==0) {
+
+                System.out.println("No compilation units found in the directory.");
+
+            } else {
+
+                //Stores the compilation units in a static place so anybody (metrics, interface etc) can access it.
+                parser.setStoredCompilationUnits(compilationUnits);
+
+                //This is to print on user interface
+                setAllClassesInProgram();
+            }
+
+        } else {
+
+            System.out.println("Please enter a new directory before parsing compilation units.");
+        }
+
+
 
     }
 
@@ -454,6 +551,7 @@ public class Event {
 
     public static void setCurrentClass(String current) {
         currentClass = current;
+
 
 
     }

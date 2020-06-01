@@ -1,12 +1,22 @@
-package metrics;
 /*
  * File name:    LCOM.java
  * Author:       Tamara Wold
  * Date:         20 May 2020
  * Version:      1.0
  * Description:  Calculates the lack of cohesion of
- *               methods in a string object
+ *               methods (LCOM) of each class for the given data.
+ *               LCOM is based on the single responsibility principle which
+ *               states that a code element should have a single reason to change.
+ *               LCOM is calculated using the formula LCOM = 1 – (sum(MF)/M*F)
+ *               where M is the number of methods in a class, F is the number
+ *               of instance fields in a class, MF is the number of methods of the
+ *               class accessing a particular instance field, and sumMF is the sum of
+ *               MF over all instance fields of the class.
+ *               LCOM takes its values in the range [0-1]. The closer the value is to
+ *               0, the better the cohesion of the class. A class with a LCOM value
+ *               closer to 1 should be re-evaluated as it has a high lack of cohesion.
  * */
+package metrics;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.CallableDeclaration;
@@ -20,6 +30,7 @@ import com.github.javaparser.utils.SourceRoot;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,15 +38,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class LCOM {
 
-    List<List<String>> fieldNames = new ArrayList<>();
-    List<List<String>> methodNames = new ArrayList<>();
-    List<Integer> methodCount = new ArrayList<>();
-    List<Integer> fieldCount = new ArrayList<>();
-    List<Field> fieldObjects = new ArrayList<>();
+    //private List<List<String>> fieldNames = new ArrayList<>();
+    private List<String> fieldNames = new ArrayList<>();
+    //private List<List<String>> methodNames = new ArrayList<>();
+    private List<String> methodNames = new ArrayList<>();
+    //private List<Integer> methodCount = new ArrayList<>();
+    private Integer methodCount;
+    //private List<Integer> fieldCount = new ArrayList<>();
+    private Integer fieldCount;
+    private List<Field> fieldObjects = new ArrayList<>();
     private int index;
-    List<Integer> totalMF = new ArrayList<>();
+    //private List<Integer> totalMF = new ArrayList<>();
+    private Integer totalMF;
 
-    public static void main(String[] args) {
+
+
+    /**
+     *
+     * @param args
+     */
+    /*public static void main(String[] args) {
         Path pathToSource = Paths.get("src/main/java/Test");
         SourceRoot sourceRoot = new SourceRoot(pathToSource);
         try {
@@ -48,72 +70,96 @@ public class LCOM {
         count.Counter(compilations);
     }
 
-    public void Counter (List<CompilationUnit> compUnit) {
-        /* Computes each compilation unit separately.
-         * Finds all methods and instance fields for each unit.
-         * Adds instance names to an array for that unit.
-         */
-        List<CompilationUnit> compilations = compUnit;
-        for (int i = 0; i < compilations.size(); i++) {
+     */
+
+
+    /**
+     * @param
+     */
+    public String getResult (CompilationUnit cu) {
+
+        //List<CompilationUnit> compilations = compUnit;
+
+        //for (int i = 0; i < compilations.size(); i++) {
             List<String> methodList = new ArrayList<>();
             List<String> fieldList = new ArrayList<>();
             AtomicInteger methodsInClass = new AtomicInteger();
             AtomicInteger fieldsInClass = new AtomicInteger();
-            CompilationUnit cu = compilations.get(i);
+            //CompilationUnit cu = compilations.get(i);
             cu.findAll(CallableDeclaration.class).forEach(callableDeclaration -> {
                 methodsInClass.getAndIncrement();
                 methodList.add(callableDeclaration.getNameAsString());
             });
-            methodCount.add(i, methodsInClass.get());
-            int finalI = i;
+            methodCount= methodsInClass.get();
+            //int finalI = i;
             cu.findAll(FieldDeclaration.class).forEach(field -> {
                 field.getVariables().forEach(variable -> {
                     fieldsInClass.getAndIncrement();
                     fieldList.add(variable.getNameAsString());
-                    Field makeField = new Field(variable.getNameAsString(), finalI);
+                    Field makeField = new Field(variable.getNameAsString());
                     fieldObjects.add(makeField);
                 });
             });
-            fieldCount.add(i, fieldsInClass.get());
-            fieldNames.add(fieldList);
-            methodNames.add(methodList);
-        }
+            fieldCount=fieldsInClass.get();
+            fieldNames=fieldList;
+            methodNames=methodList;
+        //}
 
         index = 0;
-        for (CompilationUnit cU: compilations) {
-            cU.findAll(ConstructorDeclaration.class).forEach(constructorDeclaration -> {
+        //for (CompilationUnit cU: compilations) {
+            cu.findAll(ConstructorDeclaration.class).forEach(constructorDeclaration -> {
                 VoidVisitor<Integer> visitor = new VisitConstructor();
                 visitor.visit(constructorDeclaration, index);
             });
 
-            cU.findAll(MethodDeclaration.class).forEach(methodDeclaration -> {
+            cu.findAll(MethodDeclaration.class).forEach(methodDeclaration -> {
                 VoidVisitor<Integer> visitor = new VisitMethod();
                 visitor.visit(methodDeclaration, index);
             });
             index++;
-        }
+        //}
 
-        for (int i = 0; i < compilations.size(); i++) {
-            totalMF.add(i, 0);
+        //for (int i = 0; i < compilations.size(); i++) {
+            totalMF=0;
             for (Field f : fieldObjects) {
-                if (f.getNumber() == (i + 1)) {
-                    int mf = totalMF.get(i);
-                    mf = mf + f.getTotalMF();
-                    totalMF.set(i, mf);
-                }
+                //if (f.getNumber() == (i)) {
+                    //int mf = totalMF.get(i);
+                    //mf = mf + f.getTotalMF();
+                    //totalMF.set(i, mf);
+                totalMF = totalMF+f.getTotalMF();
+                //}
             }
             //LCOM = 1 – (sum(MF)/M*F)
-            double LCOM = 1 - (totalMF.get(i)/(methodCount.get(i)*fieldCount.get(i)));
-            System.out.println("LCOM for class " + i + " : " + LCOM);
-        }
+            DecimalFormat df = new DecimalFormat("#.##");
+            float LCOM = methodCount*fieldCount;
+            LCOM = totalMF/LCOM;
+            LCOM = 1 - LCOM;
+            String formatted = df.format(LCOM);
+
+            String total="";
+            String s1="The lack of cohesion of methods for the class is " + formatted+"\n";
+            String s2="";
+            if (LCOM < 0.5) {
+                s2="This is an acceptable result.\n";
+            }
+            else if (LCOM >= 0.5) {
+                s2="This result is too high. The methods in this class should be revised.\n";
+            }
+
+            total=s1+s2;
+            return total;
+        //}
     }
 
+    /**
+     * Class to create a Field object
+     */
     public class Field {
         private String name;
         private int number;
         private int totalMF;
 
-        public Field(String name, int number) {
+        public Field(String name) {
             this.name = name;
             this.number = number;
             this.totalMF = 0;
@@ -135,6 +181,10 @@ public class LCOM {
         }
     }
 
+    /**
+     * This class visits a method and finds if
+     * the method calls instance fields.
+     */
     public class VisitMethod extends VoidVisitorAdapter<Integer> {
         @Override
         public void visit(MethodDeclaration n, Integer arg) {
@@ -150,6 +200,10 @@ public class LCOM {
         }
     }
 
+    /**
+     * This class visits a given constructor and finds if
+     * the constructor calls instance fields.
+     */
     public class VisitConstructor extends VoidVisitorAdapter<Integer> {
         @Override
         public void visit(ConstructorDeclaration n, Integer arg) {
@@ -165,11 +219,3 @@ public class LCOM {
         }
     }
 }
-
-
-
-
-
-
-
-

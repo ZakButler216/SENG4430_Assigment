@@ -1,9 +1,20 @@
 //Student Author: Zachery Butler
 //Student Number: C3232981
 //Course: SENG4430, UoN, Semester 1, 2020
-//Date last Modified: 30/05/2020
-
+//Date last Modified: 29/05/2020
 package metrics;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+//Student Author: Zachery Butler
+//Student Number: C3232981
+//Course: SENG4430, UoN, Semester 1, 2020
+//Date last Modified: 30/05/2020
 
 import java.io.File;
 import java.io.IOException;
@@ -166,6 +177,7 @@ public class FogIndex {
                 results += "Your code is very difficult to read, consider refactoring it.";
                 break;
         }
+        results=results+"\n";
         return results;
     }
 

@@ -1,3 +1,5 @@
+
+package metrics;
 /*
  * File name:    FanInTest.java
  * Author:       Naneth Sayao
@@ -5,9 +7,7 @@
  * Version:      3.0
  * Description:  This is a JUnit test class for fan-in
  * */
-package metrics;
 
-import Team2.Parser;
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +46,7 @@ class FanInTest {
     @Test
     void testCalculateFanInSimple() {
         //path
-        String source = "srcValid";
+        String source = "src\\test\\resources\\srcValid";
         String className = "One";
 
         List<Integer> expected = new ArrayList<>();
@@ -60,7 +60,7 @@ class FanInTest {
     @Test
     void testCalculateFanInSimple2() {
         //path
-        String source = "srcValid";
+        String source = "src\\test\\resources\\srcValid";
         String className = "Two";
 
         List<Integer> expected = new ArrayList<>();
@@ -74,7 +74,7 @@ class FanInTest {
     @Test
     void testCalculateFanInNoCallers() {
         //path
-        String source = "srcConstructor";
+        String source = "src\\test\\resources\\srcConstructor";
         String className = "Try";
 
         List<Integer> expected = new ArrayList<>();
@@ -88,7 +88,7 @@ class FanInTest {
     @Test
     void testCalculateFanInManyMethods() {
         //path
-        String source = "srcProject";
+        String source = "src\\test\\resources\\srcProject";
         String className = "FanInOutMethod";
 
         List<Integer> expected = new ArrayList<>();
@@ -102,7 +102,7 @@ class FanInTest {
     @Test
     void testCalculateFanInValidFive() {
         //path
-        String source = "srcProject";
+        String source = "src\\test\\resources\\srcProject";
         String className = "FanOut";
 
         List<Integer> expected = new ArrayList<>();
@@ -117,7 +117,7 @@ class FanInTest {
     @Test
     void testCalculateFanInConstructorCall() {
         //path
-        String source = "srcValid";
+        String source = "src\\test\\resources\\srcValid";
         String className = "Three";
 
         List<Integer> expected = new ArrayList<>();
@@ -128,3 +128,4 @@ class FanInTest {
         doTest(source, className, expected);
     }
 }
+

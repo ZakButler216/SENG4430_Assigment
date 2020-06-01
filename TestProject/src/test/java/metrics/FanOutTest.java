@@ -7,7 +7,6 @@
  * */
 package metrics;
 
-import Team2.Parser;
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +20,7 @@ class FanOutTest {
     //this method parses a source and assert expected vs actual
     private void doTest(String source, String className, List<Integer> expected){
         //create a new parser
-        Team2.Parser rootParser = new Parser();
+        Parser rootParser = new Parser();
 
         //array list of compilation units
         //initialise allCU
@@ -57,7 +56,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidOne() {
         //path
-        String source = "srcValid";
+        String source = "src\\test\\resources\\srcValid";
         String className = "One";
 
         List<Integer> expected = new ArrayList<>();
@@ -69,7 +68,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidTwo() {
         //path
-        String source = "srcValid";
+        String source = "src\\test\\resources\\srcValid";
         String className = "Two";
 
         List<Integer> expected = new ArrayList<>();
@@ -81,7 +80,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidThree() {
         //path
-        String source = "srcConstructor";
+        String source = "src\\test\\resources\\srcConstructor";
         String className = "Try";
 
         List<Integer> expected = new ArrayList<>();
@@ -93,7 +92,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidFour() {
         //path
-        String source = "srcProject";
+        String source = "src\\test\\resources\\srcProject";
         String className = "FanInOutMethod";
 
         List<Integer> expected = new ArrayList<>();
@@ -105,7 +104,7 @@ class FanOutTest {
     @Test
     void testCalculateFanOutValidFive() {
         //path
-        String source = "srcProject";
+        String source = "src\\test\\resources\\srcProject";
         String className = "Main";
 
         List<Integer> expected = new ArrayList<>();
@@ -114,3 +113,4 @@ class FanOutTest {
         doTest(source, className, expected);
     }
 }
+

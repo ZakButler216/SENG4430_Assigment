@@ -36,10 +36,14 @@ public class Coupling
     private boolean packages, findAllTypes;
     private ArrayList<Set<String>> coupledClasses;
     private ArrayList<Set<String>> innerClasses;
+    private String parsingThis;
+    private String results;
     //private String rootPackage;
 
-    public Coupling(List<CompilationUnit> newCuList) //the full name plus the packname must be unique within a program
+    public Coupling(List<CompilationUnit> newCuList, String curentClass) //the full name plus the packname must be unique within a program
     {
+        results = "";
+        parsingThis = curentClass;
         minPath = "";
         classCouple = new LinkedList<Integer>();
         paths = new LinkedList<String>();
@@ -69,8 +73,7 @@ public class Coupling
             //System.out.println("Root package is: " + rootPackage.get());
         } else {
             packages = false;
-            System.out.println("No root package. Cooupling results might not be accurate.");
-            System.out.println();
+            results += "No root package. Coupling results might not be accurate.\n\n";
         }
 
         /*
@@ -100,7 +103,7 @@ public class Coupling
                     if(!paths.contains(ptn.get()))
                         paths.add(ptn.get());
                     else
-                        System.out.println("Error: When there are no packages each class must have unique class names. Multiple classes named " + ptn.get() + ".\n Coupling results might not be accurate.");
+                        results += "Error: When there are no packages each class must have unique class names. Multiple classes named " + ptn.get() + ".\n Coupling results might not be accurate.\n\n";
                 } else {
                     paths.add("null");
                 }
@@ -159,20 +162,14 @@ public class Coupling
             findImports(cu);
             findAllTypes(cu);
             findAllTypes = false;
-/*
-            content = cu.getChildNodes().toString();*/
+
             index++;
         }
-        printResults();
-        //printContent();
+        //printResults();
     }
 
     public void incrementClass(int i, String pkgName, String className)
     {
-        /*
-        Main is not incrementing when Node is import into it, but Node is incrementing
-        Both incrementClass(i) and fileName are called so do we need checks for both set and set2?
-         */
         Set<String> set = coupledClasses.get(index);
         Set<String> set2 = coupledClasses.get(i);
         if(!findAllTypes)
@@ -220,13 +217,21 @@ public class Coupling
         int j=0;
         for(int i = 2; i<=paths.size()+1; i++)
         {
-            table[i] = new String[] { paths.get(j), classCouple.get(j).toString()};
+            String path = paths.get(j);
+
+            if(path.contains("\\.{4}") && path.length()>40) //if path too long to print
+            {
+                String[] spliting = path.split(".");
+                path = spliting[spliting.length - 3] + "." + spliting[spliting.length - 2] + "." + spliting[spliting.length - 1];
+            }
+
+            table[i] = new String[] { path, classCouple.get(j).toString()};
             j++;
         }
 
 
         for (final Object[] row : table) {
-            System.out.format("%15s%15s\n", row);
+            System.out.format("%40s%40s\n", row);
         }
 
         int total = 0;
@@ -252,22 +257,158 @@ public class Coupling
         System.out.println("Final evaluation is based on this loosely coupled ratio.");
         System.out.println();
 
-        float eval = looselyCoupled/cuList.size();
+        float eval = 0;
+
+        if(looselyCoupled!=0)
+            eval = looselyCoupled/cuList.size();
+
+        String meaning = "";
+        String action = "";
 
         System.out.print("Final Evaluation of Program: ");
         if(eval<0.4)
         {
             System.out.print(evalResult[0]);
+            meaning = "a bad";
+            action = "greatly reduced.";
         } else if(totalAvg>=0.4 && totalAvg<=0.6)
         {
             System.out.print(evalResult[1]);
+            meaning = "an average";
+            action = "reduced further.";
         } else if(totalAvg>0.6)
         {
             System.out.print(evalResult[2]);
+            meaning = "a good";
         }
-        System.out.print(" coupling");
-        System.out.println();
+        System.out.println(" coupling");
+        System.out.print("This is " + meaning + " result.");
+        if(!action.equals(""))
+        {
+            System.out.print(" Coupling needs to be " + action);
+        }
+        System.out.println("");
 
+    }
+
+    public String getResults()
+    {
+        int tableSize = 0;
+
+        if(parsingThis.equals("")) {
+            tableSize = paths.size()+2;
+        } else {
+            tableSize = 3;
+        }
+
+        final Object[][] table = new String[tableSize][];
+
+        table[0] = new String[] { "Class", "Coupling Value"};
+        table[1] = new String[] { "-----", "--------------"};
+
+
+        int j=0;
+        for(int i = 2; i<=paths.size()+1; i++)
+        {
+            String path = paths.get(j);
+
+            if(path.contains("\\.{4}") && path.length()>40) //if path too long to print
+            {
+                String[] spliting = path.split(".");
+                path = spliting[spliting.length - 3] + "." + spliting[spliting.length - 2] + "." + spliting[spliting.length - 1];
+            }
+
+            if(parsingThis.equals("")) //if printing all classes
+            {
+                table[i] = new String[] { path, classCouple.get(j).toString()};
+            } else { //if printing one class
+                if(path.contains(parsingThis)) //only print result if path contains class, excludes packages
+                {
+                    table[2] = new String[] { path, classCouple.get(j).toString()};
+                    break;
+                }
+            }
+
+            j++;
+        }
+
+
+        for (final Object[] row : table) {
+            results += String.format("%40s%40s\n", row);;
+        }
+
+        int total = 0;
+        int totalAvg = 0;
+        int looselyCoupled = 0;
+        boolean currCoupled = false;
+        String[] evalResult = {"High", "Medium", "Low"};
+
+        int ind = 0;
+        for(int c: classCouple)
+        {
+            total += c;
+            if(c <= 4)
+            {
+
+                looselyCoupled++;
+                if(paths.get(ind).contains(parsingThis))
+                    currCoupled = true;
+            }
+            ind++;
+        }
+
+        totalAvg = total/cuList.size();
+        String currResult = "";
+
+        if(currCoupled)
+        {
+            currResult = "is";
+        } else {
+            currResult = "is not";
+        }
+
+        results += "\n";
+        if(!parsingThis.equals(""))
+        {
+            results += "The class being tested " + currResult + " loosely coupled. This " + currResult + " a good result.\n\n";
+        }
+        results += "Total coupling value of program: " + total + "\n";
+        results += "Total coupling value of program per class (excluding internal classes): " + totalAvg + "\n";
+        results += "Loosely coupled classes (excluding internal classes): " + looselyCoupled + "/" + cuList.size() + " classes" + "\n";
+        results += "Final evaluation is based on this loosely coupled ratio." + "\n\n";
+        results += "Final Evaluation of Program: ";
+
+        float eval = 0;
+
+        if(looselyCoupled!=0)
+            eval = looselyCoupled/cuList.size();
+
+        String meaning = "";
+        String action = "";
+
+        if(eval<0.4)
+        {
+            results += evalResult[0];
+            meaning = "a bad";
+            action = "greatly reduced.";
+        } else if(totalAvg>=0.4 && totalAvg<=0.6)
+        {
+            results += evalResult[1];
+            meaning = "an average";
+            action = "reduced further.";
+        } else if(totalAvg>0.6)
+        {
+            results += evalResult[2];
+            meaning = "a good";
+        }
+        results += " coupling\n";
+        results += "This is " + meaning + " result.";
+        if(!action.equals(""))
+        {
+            results += " Coupling needs to be " + action + "\n";
+        }
+
+        return results;
     }
 
     public void checkResolve(String className, String pkgName)
@@ -420,9 +561,6 @@ public class Coupling
                     }
                 } else if (t.isReferenceType()) { //shouldn't be an array now
                     //System.out.println(t.resolve().asReferenceType().getQualifiedName()); //qualified name incl
-                    // udes both package and class name here, uncomment
-                    if(fileName.equals("Internal Stage") && t.resolve().asReferenceType().getQualifiedName().equals("Item"))
-                        System.out.println("resolved class name: " + t.resolve().asReferenceType().getQualifiedName());
                     checkResolve(t.resolve().asReferenceType().getQualifiedName()); //check coupling
                 }
             } catch (UnsolvedSymbolException e) {

@@ -1,0 +1,18 @@
+Program size is measured by the number of statements in a program.
+Note: This metric (program size) is useful when comparing orders of magnitude. While it is debatable exactly how to measure
+program size, discrepancies of an order of magnitude can be clear indicators of software complexity or man-hours.
+
+                                   Class                        Statements Value
+                                   -----                          --------------
+                              BeginStage                                      42
+                              Simulation                                     125
+                                   Stage                                      35
+                                   Event                                      22
+                                EndStage                                      47
+                           InternalStage                                      56
+                         InterStageQueue                                      37
+                                    Item                                      23
+                                     PA3                                      14
+
+Statements in all classes: 401
+Note: This result is either good or bad depending on what the program is doing.
