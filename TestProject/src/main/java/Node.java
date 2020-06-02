@@ -1,44 +1,65 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Node {
-    private int data;
-    private Node parent;
-    private Node left;
-    private Node right;
+    private String name;
+    private String parent;
+    private boolean isMain;
 
-    public Node(int element){
-        data = element;
-        left = null;
-        right = null;
+    // List of children
+    private List<Node> children;
+
+    Node(String name)
+    {
+        this.name = name;
+        parent = "";
+        isMain = false;
+        children = new ArrayList<>();
     }
 
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getParent() {
+    public String getParent() {
         return parent;
     }
 
-    public Node getRight() {
-        return right;
+    public Node getChild(int i) {
+        return children.get(i);
     }
 
-    public int getData() {
-        return data;
+    public Node getChild(String name)
+    {
+        for (int i = 0; i < children.size(); i++)
+        {
+            if (children.get(i).getName().equals(name))
+            {
+                return children.get(i);
+            }
+        }
+        return null;
     }
 
-    public void setParent(Node parent) {
+    public int getNumChildren()
+    {
+        return children.size();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setParent(String parent) {
         this.parent = parent;
     }
 
-    public void setLeft(Node left) {
-        this.left = left;
+    public void addChild(Node child) {
+        this.children.add(child);
     }
 
-    public void setRight(Node right) {
-        this.right = right;
+    public void setMain(boolean main) {
+        isMain = main;
     }
 
-    public void setData(int data) {
-        this.data = data;
+    public boolean isMain()
+    {
+        return isMain;
     }
 }
