@@ -205,6 +205,9 @@ public class Event {
 
                 System.out.println("No classes stored in program.");
 
+
+                //add one for if havent chosen current class
+
             } else if (input.isBlank()) {
 
                 System.out.println("Please enter a class name along with the class command.");
@@ -369,17 +372,61 @@ public class Event {
                         break;
 
                     case "h":
+
                         FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
-                        File file = fr.getClassFile(currentClass);
+
+                        //Split from package coz error when include package
+                        String[] splitPackageClass = currentClass.split("\\.");
+                        String justClass = splitPackageClass[1];
+
+                        //doesn't identify class by package
+                        File file = fr.getClassFile(justClass);
                         FogIndex fogIndex = new FogIndex(file);
                         String fogIndexResult = fogIndex.getResults()+"\n";
                         totalResult+=fogIndexResult;
                         break;
 
-                    case "i":
-                        //CherrenSection a = new CherrenSection(cu);
-                        //a.DepthTreeresult();
+                    case "i":/*
+                        String filePath;
+                        System.out.println("One");
+                        String dir = Parser.getStoredDirectory();
+                        //String dir = "C:\\Users\\Cliff\\eclipse-workspace\\Java Project 4\\src\\data";
+                        System.out.println("Two");
+                        List<String> results = new ArrayList<String>();
+                        System.out.println("Three");
+                        //test file (Animals)
+                        File path = new File(dir);
+                        System.out.println("Four");
+                        File[] files = path.listFiles();
+                        System.out.println("Five");
+                        //get all classes in the folder
+                        for (File ifile : files) {
+                            System.out.println("Six");
+                            if (ifile.isFile()) {
+                                System.out.println("Seven");
+                                if (ifile.getName().contains(".java")) {
+                                    System.out.println("Eight");
+                                    results.add(ifile.getName().substring(0, ifile.getName().length() - 5));
+                                    System.out.println("File "+ifile.getName());
+                                }
+                            }
+                        }
+                        CherrenSection t = new CherrenSection();
+                        System.out.println("Nine");
+                        for (int a = 0; a < results.size(); a++) {
+                            System.out.println("Ten");
+                            filePath = results.get(i);
+                            System.out.println("Eleven");
+                            CompilationUnit cu2 = StaticJavaParser.parse(files[i]);
+                            System.out.println("Twelve");
+                            t.readFile(cu2, results.get(i));
+                            System.out.println("a "+a);
+                        }
+
+                        t.buildTree();
+                        t.getNumChildren();
                         break;
+                        */
 
                     case "j":
                         //CherrenSection b = new CherrenSection(cu);

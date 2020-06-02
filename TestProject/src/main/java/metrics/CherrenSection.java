@@ -1,14 +1,13 @@
 package metrics;
-
 import com.github.javaparser.ast.CompilationUnit;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CherrenSection {
 
-    BST tree = new BST();
+    Tree tree;
 
     private final CompilationUnit cu;
     private String javaContent;
@@ -17,95 +16,92 @@ public class CherrenSection {
     private int number;
     private int depth;
     Node root;
+    private int count;
+    private String parentClass;
+    private List<Node> fileList;
+    //CompilationUnit newCu, String node
 
-    CherrenSection(CompilationUnit newCu){
-        cu = newCu;
+    CherrenSection() {
+        cu = null;
         numChildren = 0;
         numNode = 0;
         javaContent = "";
         depth = 0;
-
-        setup();
+        count = 0;
+        fileList = new ArrayList<Node>();
     }
 
-    public void setup() {
+    public void readFile(CompilationUnit cu, String fileName) {
 
         //scanner for the question.
         Scanner scan = new Scanner(System.in);
-
         javaContent = String.valueOf(cu.getChildNodes());
-        if (javaContent.contains("insert")) {
-            numNode++;
+
+        Node temp = new Node(fileName);
+
+        //define which one is main class and which one is inherited class
+        if (javaContent.contains("static void main")) {
+            temp.setMain(true);
+        } else if (javaContent.contains("extends")) {
+            int indexExtends = javaContent.indexOf("extends") + 8;
+            int indexBrac = javaContent.indexOf("{");
+            temp.setParent(javaContent.substring(indexExtends, indexBrac).trim());
         }
 
-        //copy BST
-        Pattern p = Pattern.compile("\\d+");
-        Matcher m = p.matcher(javaContent);
-        while(m.find()) {
-            root = new Node(Integer.parseInt(m.group(1)));
-            for(int i = 2; i < m.group().length(); i++){
-                BST.insert(root, Integer.parseInt(m.group(i)));
+        fileList.add(temp);
+    }
+
+    //Function to build the tree once all files are read in as nodes
+    public Tree buildTree() {
+        tree = new Tree();
+
+        //Find the root and set it
+        for (int i = 0; i < fileList.size(); i++) {
+            if (fileList.get(i).isMain()) {
+                tree.insert(fileList.get(i));
+                fileList.remove(i);
+                break;
             }
         }
 
-        //depth of tree
-        depth = maxDepth(root);
-
-        //ask for the node that user want to check for the number of children
-        System.out.println ("Which node do you want to check for the number of children?");
-        number = Integer.parseInt(scan.nextLine());
-        numChildren = numOfChildren(tree.search(number, root));
-    }
-
-    //number of children
-    public int numOfChildren(Node node) {
-        int temp = 0;
-        if (node.getLeft() != null) {
-            temp = numOfChildren(node.getLeft());
+        //Add children of the root (files that have no parent classes)
+        for (int i = 0; i < fileList.size(); i++) {
+            if (fileList.get(i).getParent().equals("") || fileList.get(i).getParent().equals(tree.getRoot().getName())) {
+                tree.insert(fileList.get(i));
+                fileList.remove(i);
+                i--;
+            }
         }
-        if (node.getRight() != null) {
-            temp = numOfChildren(node.getRight());
-        }
-        return temp + 1;
-    }
 
-    //depth of tree
-    private int maxDepth(Node node)
-    {
-        int lDepth = 0;
-        int rDepth = 0;
-
-        if (node == null)
-            return 0;
-        else
+        //make sure all nodes are added to the tree
+        //add the remain nodes to the tree
+        boolean ifNodeRemain;
+        int counter = 0;
+        while (fileList.size() != 0)
         {
-            // compute the depth of each subtree
-            if (node.getLeft() != null) {
-                lDepth = maxDepth(node.getLeft());
+            ifNodeRemain = tree.insert(fileList.get(counter));
+
+            if (ifNodeRemain)
+            {
+                counter++;
             }
-            if (node.getRight() != null) {
-                rDepth = maxDepth(node.getRight());
+            else
+            {
+                fileList.remove(counter);
+                counter = 0;
             }
         }
-        // use the larger one
-        if (lDepth > rDepth)
-            return lDepth + 1;
-        else
-            return rDepth + 1;
+
+        return tree;
     }
 
-    public void NumChildrenresult(){
-
-        //depth of tree
-        System.out.println ("Number of children are: " + numChildren);
+    public int getNumChildren()
+    {
+        return tree.getNumOfChildren();
     }
 
-    public void DepthTreeresult() {
-
-        //print total number of children and number of nodes
-        System.out.println("Total number of nodes: " + numNode);
-
-        //number of children
-        System.out.println("Depth of Tree is " + depth);
+    public int getMaxDepth()
+    {
+        return tree.maxDepth();
     }
 }

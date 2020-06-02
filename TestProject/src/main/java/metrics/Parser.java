@@ -108,6 +108,7 @@ public class Parser {
     /**
      This method gets a list of classes/compilation unit names as String
      */
+    //modified due to package.className change
     public List<String> getClassesAsString(List<CompilationUnit> compilationUnits) {
 
         //Initializes new list to store compilation unit names
@@ -125,8 +126,13 @@ public class Parser {
             className = className.substring(className.indexOf("[")+1);
             className = className.substring(0,className.indexOf("]"));
 
+            String packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
+
+            String totalName = packageName+"."+className;
+
+
             //Add to list
-            compilationUnitNames.add(className);
+            compilationUnitNames.add(totalName);
         }
 
         //return list
@@ -134,10 +140,12 @@ public class Parser {
     }
 
 
+
     /**
      This method gets a compilation unit from a list of compilation units,
      by searching via it's class name.
      */
+    //modified due to package.className change
     public CompilationUnit getCompilationUnitByName(List<CompilationUnit> compilationUnits, String compilationUnitName) {
 
         //Traverses the list of all compilation units
@@ -150,8 +158,12 @@ public class Parser {
             className = className.substring(className.indexOf("[")+1);
             className = className.substring(0,className.indexOf("]"));
 
+            String packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
+
+            String totalName = packageName+"."+className;
+
             //If name searched equals class name, return the compilation unit
-            if(className.equalsIgnoreCase(compilationUnitName)) {
+            if(totalName.equalsIgnoreCase(compilationUnitName)) {
                 return compilationUnits.get(i);
             }
         }
@@ -160,14 +172,19 @@ public class Parser {
         return null;
     }
 
+    //modified due to package.className change
     public String getClassNameFromCompilationUnit(CompilationUnit cu) {
         String className = cu.getPrimaryTypeName().toString();
-        System.out.println(className);
+        //System.out.println(className);
 
         className = className.substring(className.indexOf("[")+1);
         className = className.substring(0,className.indexOf("]"));
 
-        return className;
+        String packageName = cu.getPackageDeclaration().get().getName().toString();
+
+        String totalName = packageName+"."+className;
+
+        return totalName;
     }
 
     /**

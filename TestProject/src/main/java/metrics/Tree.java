@@ -1,108 +1,128 @@
-package metrics;
-
-import com.github.javaparser.ast.CompilationUnit;
-
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package  metrics;
 
 public class Tree {
+    private Node root;
 
-    BST tree = new BST();
-
-    private final CompilationUnit cu;
-    private String javaContent;
-    private int numChildren;
-    private int numNode;
-    private int number;
-    private int depth;
-    Node root;
-
-    Tree(CompilationUnit newCu){
-        cu = newCu;
-        numChildren = 0;
-        numNode = 0;
-        javaContent = "";
-        depth = 0;
-
-        setup();
+    public Tree()
+    {
+        root = null;
     }
 
-    public void setup() {
+    public static Node search(Node node, String parentName){
+        if (node==null)
+            return null;
+        else
+        {
+            for (int i = 0; i < node.getNumChildren(); i++)
+            {
+                if(node.getChild(parentName) != null)
+                {
+                    return node.getChild(parentName);
+                }
+            }
 
-        //scanner for the question.
-        Scanner scan = new Scanner(System.in);
-
-        //javaContent = cu.getChildNodes();
-        if (javaContent.contains("insert")) {
-            numNode++;
-        }
-
-        //copy BST
-        Pattern p = Pattern.compile("\\d+");
-        Matcher m = p.matcher(javaContent);
-        while(m.find()) {
-            root = new Node(Integer.parseInt(m.group(1)));
-            for(int i = 2; i < m.group().length(); i++){
-                BST.insert(root, Integer.parseInt(m.group(i)));
+            for (int i = 0; i < node.getNumChildren(); i++)
+            {
+                Node temp = search(node.getChild(i), parentName);
+                if (temp != null && temp.getName().equals(parentName))
+                {
+                    return temp;
+                }
             }
         }
-
-        //depth of tree
-        depth = maxDepth(root);
-
-        //ask for the node that user want to check for the number of children
-        System.out.println ("Which node do you want to check for the number of children?");
-        number = Integer.parseInt(scan.nextLine());
-        numChildren = numOfChildren(tree.search(number, root));
+        return null;
     }
 
-    //number of children
-    public int numOfChildren(Node node) {
+    //number of children (return to CherrenSection)
+    public int getNumOfChildren()
+    {
         int temp = 0;
-        if (node.getLeft() != null) {
-            temp = numOfChildren(node.getLeft());
+        for (int i = 0; i < root.getNumChildren(); i++)
+        {
+            temp += getNumOfChildren(root.getChild(i));
         }
-        if (node.getRight() != null) {
-            temp = numOfChildren(node.getRight());
+        return temp;
+    }
+
+    public int getNumOfChildren(Node node) {
+        int temp = 0;
+        if (node != null) {
+            for (int i = 0; i < node.getNumChildren(); i++)
+            {
+                temp += getNumOfChildren(node.getChild(i));
+            }
+            return temp + 1;
         }
-        return temp + 1;
+        return 0;
+    }
+
+    //max of Depth (return to CherrenSection)
+    public int maxDepth()
+    {
+        int maxDepth = 0;
+        int tempDepth = 0;
+
+        for (int i = 0; i < root.getNumChildren(); i++)
+        {
+            tempDepth = maxDepth(root.getChild(i));
+
+            if (tempDepth > maxDepth)
+            {
+                maxDepth = tempDepth;
+            }
+        }
+        maxDepth++;
+
+        return maxDepth;
     }
 
     //depth of tree
-    private int maxDepth(Node node)
+    public int maxDepth(Node node)
     {
-        int lDepth = 0;
-        int rDepth = 0;
+        int maxDepth = 0;
+        int tempDepth = 0;
 
         if (node == null)
             return 0;
         else
         {
-            // compute the depth of each subtree
-            if (node.getLeft() != null) {
-                lDepth = maxDepth(node.getLeft());
+            for (int i = 0; i < node.getNumChildren(); i++)
+            {
+                tempDepth = maxDepth(node.getChild(i));
+
+                if (tempDepth > maxDepth)
+                {
+                    maxDepth = tempDepth;
+                }
             }
-            if (node.getRight() != null) {
-                rDepth = maxDepth(node.getRight());
-            }
+            maxDepth++;
         }
-        // use the larger one
-        if (lDepth > rDepth)
-            return lDepth + 1;
-        else
-            return rDepth + 1;
+        return maxDepth;
     }
 
-    public void result(){
+    //    // method to insert a new Node
+    public boolean insert(Node node){
+        if (this.root == null)
+            this.root = node;
 
-        //print total number of children and number of nodes
-        System.out.println ("Total number of nodes: " + numNode);
+            //If no parent, then normal class attached to the main class
+        else if(node.getParent().equals("") || node.getParent().equals(root.getName())) {
+            root.addChild(node);
+        }
+        //Else, node is a child of a previously used node
+        else {
+            //Do search function
+            Node temp = search(root, node.getParent());
+            if (temp == null)
+            {
+                return true;
+            }
+            temp.addChild(node);
+        }
+        return false;
+    }
 
-        //number of children
-        System.out.println ("Depth of Tree is " + depth);
-
-        //depth of tree
-        System.out.println ("Number of children are: " + numChildren);
+    public Node getRoot() {
+        return root;
     }
 }
