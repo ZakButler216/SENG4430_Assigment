@@ -1,12 +1,10 @@
-package main.java;
-
 import com.github.javaparser.ast.CompilationUnit;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class Tree {
+public class CherrenSection{
 
     BST tree = new BST();
 
@@ -32,20 +30,25 @@ public class Tree {
 
         //scanner for the question.
         Scanner scan = new Scanner(System.in);
-
         javaContent = String.valueOf(cu.getChildNodes());
-        if (javaContent.contains("insert")) {
-            numNode++;
-        }
 
         //copy BST
-        Pattern p = Pattern.compile("\\d+");
-        Matcher m = p.matcher(javaContent);
-        while(m.find()) {
-            root = new Node(Integer.parseInt(m.group(1)));
-            for(int i = 2; i < m.group().length(); i++){
-                BST.insert(root, Integer.parseInt(m.group(i)));
+        //copy all numbers into an array list
+        String numbersLine = javaContent.replaceAll("[^0-9]+", " ");
+        String[] strArray = numbersLine.split(" ");
+        List<Integer> intArrayList = new ArrayList<>();
+
+        for (String string : strArray) {
+            if (!string.equals("")) {
+                intArrayList.add(Integer.parseInt(string));
             }
+        }
+
+        //create BST
+        root = new Node(intArrayList.get(0));
+        tree.insert(root, intArrayList.get(0));
+        for (int i = 2; i < intArrayList.size(); i++){
+            tree.insert(root, intArrayList.get(i));
         }
 
         //depth of tree
@@ -54,19 +57,22 @@ public class Tree {
         //ask for the node that user want to check for the number of children
         System.out.println ("Which node do you want to check for the number of children?");
         number = Integer.parseInt(scan.nextLine());
-        numChildren = numOfChildren(tree.search(number, root));
+        numChildren = numOfChildren(tree.search(number, root).getLeft()) + numOfChildren(tree.search(number, root).getRight());
     }
 
     //number of children
     public int numOfChildren(Node node) {
         int temp = 0;
-        if (node.getLeft() != null) {
-            temp = numOfChildren(node.getLeft());
+        if (node != null) {
+            if (node.getLeft() != null) {
+                temp += numOfChildren(node.getLeft());
+            }
+            if (node.getRight() != null) {
+                temp += numOfChildren(node.getRight());
+            }
+            return temp + 1;
         }
-        if (node.getRight() != null) {
-            temp = numOfChildren(node.getRight());
-        }
-        return temp + 1;
+        return 0;
     }
 
     //depth of tree
@@ -97,13 +103,10 @@ public class Tree {
     public void NumChildrenresult(){
 
         //depth of tree
-        System.out.println ("Number of children are: " + numChildren);
+        System.out.println ("Number of child nodes are: " + numChildren);
     }
 
     public void DepthTreeresult() {
-
-        //print total number of children and number of nodes
-        System.out.println("Total number of nodes: " + numNode);
 
         //number of children
         System.out.println("Depth of Tree is " + depth);
