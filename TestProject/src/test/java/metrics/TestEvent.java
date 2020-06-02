@@ -206,6 +206,7 @@ public class TestEvent {
         List<CompilationUnit> allCompilationUnits = new ArrayList<>();
         parser.setStoredCompilationUnits(allCompilationUnits);
         Event.setAllClassesInProgram();
+        Event.setCurrentClass("");
 
 
 
@@ -228,6 +229,7 @@ public class TestEvent {
         Parser parser = new Parser();
         parser.setStoredDirectory(null);
         List<CompilationUnit> allCompilationUnits = new ArrayList<>();
+        Event.setCurrentClass("");
 
         String userInput = "new src";
         Event.processInput(userInput);
@@ -251,6 +253,7 @@ public class TestEvent {
         Parser parser = new Parser();
         parser.setStoredDirectory(null);
         List<CompilationUnit> allCompilationUnits = new ArrayList<>();
+        Event.setCurrentClass("");
 
         String userInput = "new src";
         Event.processInput(userInput);
@@ -278,6 +281,7 @@ public class TestEvent {
         Parser parser = new Parser();
         parser.setStoredDirectory(null);
         List<CompilationUnit> allCompilationUnits = new ArrayList<>();
+        Event.setCurrentClass("");
 
         String userInput = "new src";
         Event.processInput(userInput);
@@ -292,6 +296,26 @@ public class TestEvent {
         Event.processInput(userInput);
 
         Assert.assertEquals("Please enter a class name along with the class command.",outContent.toString().trim());
+
+    }
+
+    @Test
+    public void testProcessInputClassFive() throws IOException {
+        Parser parser = new Parser();
+        parser.setStoredDirectory(null);
+        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
+        Event.setCurrentClass("");
+
+        String userInput = "new src";
+        Event.processInput(userInput);
+
+        userInput = "parse";
+        Event.processInput(userInput);
+
+        userInput = "class metrics.Main";
+        Event.processInput(userInput);
+
+        Assert.assertEquals("metrics.Main",Event.getCurrentClass());
 
     }
 

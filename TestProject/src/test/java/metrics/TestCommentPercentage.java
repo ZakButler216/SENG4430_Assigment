@@ -21,20 +21,22 @@ public class TestCommentPercentage {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        System.out.println(allCompilationUnits.size());
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        //System.out.println(allCompilationUnits.size());
+        //System.out.println(allCompilationUnits.get(0).getPrimaryTypeName());
+        //System.out.println(parser.getClassNameFromCompilationUnit(allCompilationUnits.get(0)));
 
-        //CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCOne_Main");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCOne_Main");
         //System.out.println(cu.getPrimaryTypeName());
 
 
-        //CommentPercentage cp = new CommentPercentage();
+        CommentPercentage cp = new CommentPercentage();
 
         //Act (Invoke method and capture result)
-        //int linesOfCode = cp.countCode(cu);
+        int linesOfCode = cp.countCode(cu);
 
         //Assert (Check)
-        //Assert.assertEquals(linesOfCode,24);
+        Assert.assertEquals(linesOfCode,24);
 
 
 
@@ -48,8 +50,8 @@ public class TestCommentPercentage {
     public void testOneTestCaseOneCountComments() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCOne_Main");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCOne_Main");
         CommentPercentage cp = new CommentPercentage();
 
         int numOfComments = cp.countComments(cu);
@@ -64,8 +66,8 @@ public class TestCommentPercentage {
     @Test
     public void testOneTestCaseOneCommentPercentage() {
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCOne_Main");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCOne_Main");
         CommentPercentage cp = new CommentPercentage();
 
         double gottenPercentage = cp.getCommentPercentageForOneCompilationUnit(cu);
@@ -86,8 +88,8 @@ public class TestCommentPercentage {
     public void testTwoAisleCountCode() {
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Aisle");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Aisle");
         CommentPercentage cp = new CommentPercentage();
 
         //Act (Invoke method and capture result)
@@ -106,8 +108,8 @@ public class TestCommentPercentage {
     public void testTwoAisleCountComments() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Aisle");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Aisle");
         CommentPercentage cp = new CommentPercentage();
 
         int numOfComments = cp.countComments(cu);
@@ -123,8 +125,8 @@ public class TestCommentPercentage {
     public void testTwoAisleCommentPercentage() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Aisle");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Aisle");
         CommentPercentage cp = new CommentPercentage();
 
         double gottenPercentage = cp.getCommentPercentageForOneCompilationUnit(cu);
@@ -147,8 +149,8 @@ public class TestCommentPercentage {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Item");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Item");
         CommentPercentage cp = new CommentPercentage();
 
         //Act (Invoke method and capture result)
@@ -168,8 +170,8 @@ public class TestCommentPercentage {
     public void testThreeItemCountComments() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Item");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Item");
         CommentPercentage cp = new CommentPercentage();
 
         int numOfComments = cp.countComments(cu);
@@ -185,8 +187,8 @@ public class TestCommentPercentage {
     public void testThreeItemCommentPercentage() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Item");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Item");
         CommentPercentage cp = new CommentPercentage();
 
         double gottenPercentage = cp.getCommentPercentageForOneCompilationUnit(cu);
@@ -207,8 +209,8 @@ public class TestCommentPercentage {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Main");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Main");
         CommentPercentage cp = new CommentPercentage();
 
         //Act (Invoke method and capture result)
@@ -226,8 +228,8 @@ public class TestCommentPercentage {
     public void testFourMainCountComments() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Main");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Main");
         CommentPercentage cp = new CommentPercentage();
 
         int numOfComments = cp.countComments(cu);
@@ -243,8 +245,8 @@ public class TestCommentPercentage {
     public void testFourMainCommentPercentage() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Main");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Main");
         CommentPercentage cp = new CommentPercentage();
 
         double gottenPercentage = cp.getCommentPercentageForOneCompilationUnit(cu);
@@ -265,8 +267,8 @@ public class TestCommentPercentage {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Supermarket");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Supermarket");
         CommentPercentage cp = new CommentPercentage();
 
         //Act (Invoke method and capture result)
@@ -284,8 +286,8 @@ public class TestCommentPercentage {
     public void testFiveSupermarketCountComments() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Supermarket");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Supermarket");
         CommentPercentage cp = new CommentPercentage();
 
         int numOfComments = cp.countComments(cu);
@@ -301,8 +303,8 @@ public class TestCommentPercentage {
     public void testFiveSupermarketCommentPercentage() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Supermarket");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Supermarket");
         CommentPercentage cp = new CommentPercentage();
 
         double gottenPercentage = cp.getCommentPercentageForOneCompilationUnit(cu);
@@ -322,11 +324,11 @@ public class TestCommentPercentage {
     public void testSixTestCaseTwoCommentPercentage() {
 
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
-        CompilationUnit cuAisle = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Aisle");
-        CompilationUnit cuMain = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Main");
-        CompilationUnit cuItem = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Item");
-        CompilationUnit cuSupermarket = parser.getCompilationUnitByName(allCompilationUnits,"CP_TCTwo_Supermarket");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
+        CompilationUnit cuAisle = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Aisle");
+        CompilationUnit cuMain = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Main");
+        CompilationUnit cuItem = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Item");
+        CompilationUnit cuSupermarket = parser.getCompilationUnitByName(allCompilationUnits,"comment_percentage.CP_TCTwo_Supermarket");
 
         List<CompilationUnit> testCaseTwoCompilationUnits = new ArrayList<>();
 

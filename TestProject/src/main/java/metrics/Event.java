@@ -156,24 +156,31 @@ public class Event {
      */
     public static void checkNew(String scanInput) {
 
-            String input = scanInput.substring(4,scanInput.length());
-            input = input.replaceAll("\\s\\s+","");
+            //if(!scanInput.contains("\\s")) {
+            //    System.out.println("Please enter a directory along with the new command.");
+            //}
 
-            File tmpDir = new File(input);
-
-            //Case user didn't enter a directory along with new command
-            if(input.isBlank()) {
-
-                System.out.println("Please enter a directory along with the new command.");
-
-                //Case user enter an invalid directory
-            } else if (!tmpDir.isDirectory()) {
+            try {
+                String input = scanInput.substring(4, scanInput.length());
+                input = input.replaceAll("\\s\\s+", "");
 
 
-                System.out.println("The directory does not exist.");
+                File tmpDir = new File(input);
 
-                //Case user entered a valid directory
-            } else {
+
+                //Case user didn't enter a directory along with new command
+                if (input.isBlank()) {
+
+                    System.out.println("Please enter a directory along with the new command.");
+
+                    //Case user enter an invalid directory
+                } else if (!tmpDir.isDirectory()) {
+
+
+                    System.out.println("The directory does not exist.");
+
+                    //Case user entered a valid directory
+                } else {
 
                     Parser parser = new Parser();
 
@@ -183,6 +190,11 @@ public class Event {
                     //feedback notification to user
                     System.out.println("New directory stored :)");
                     System.out.println("Directory name: " + Parser.getStoredDirectory());
+
+                }
+            } catch (StringIndexOutOfBoundsException e) {
+
+                System.out.println("Please enter a directory along with the new command.");
 
             }
 
@@ -204,9 +216,6 @@ public class Event {
             if(allClassesInProgram.isEmpty()) {
 
                 System.out.println("No classes stored in program.");
-
-
-                //add one for if havent chosen current class
 
             } else if (input.isBlank()) {
 

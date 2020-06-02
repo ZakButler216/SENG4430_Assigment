@@ -126,9 +126,19 @@ public class Parser {
             className = className.substring(className.indexOf("[")+1);
             className = className.substring(0,className.indexOf("]"));
 
-            String packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
 
-            String totalName = packageName+"."+className;
+            String packageName ="";
+            String totalName="";
+            if(compilationUnits.get(i).getPackageDeclaration().isPresent()) {
+                packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
+            } else {
+                packageName="empty";
+            }
+                //System.out.println(compilationUnits.get(i).getPackageDeclaration().isPresent());
+                //System.out.println(compilationUnits.get(i).getPackageDeclaration());
+
+
+            totalName = packageName+"."+className;
 
 
             //Add to list
@@ -158,9 +168,15 @@ public class Parser {
             className = className.substring(className.indexOf("[")+1);
             className = className.substring(0,className.indexOf("]"));
 
-            String packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
+            String packageName ="";
+            String totalName="";
+            if(compilationUnits.get(i).getPackageDeclaration().isPresent()) {
+                packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
+            } else {
+                packageName="empty";
+            }
 
-            String totalName = packageName+"."+className;
+            totalName = packageName+"."+className;
 
             //If name searched equals class name, return the compilation unit
             if(totalName.equalsIgnoreCase(compilationUnitName)) {
@@ -180,9 +196,15 @@ public class Parser {
         className = className.substring(className.indexOf("[")+1);
         className = className.substring(0,className.indexOf("]"));
 
-        String packageName = cu.getPackageDeclaration().get().getName().toString();
+        String packageName ="";
+        String totalName="";
+        if(cu.getPackageDeclaration().isPresent()) {
+            packageName = cu.getPackageDeclaration().get().getName().toString();
+        } else {
+            packageName="empty";
+        }
 
-        String totalName = packageName+"."+className;
+        totalName = packageName+"."+className;
 
         return totalName;
     }

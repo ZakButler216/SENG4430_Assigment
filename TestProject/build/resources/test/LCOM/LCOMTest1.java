@@ -7,3 +7,6 @@ public class LCOMTest1 {
         int c = 10;
     }
 }
+
+
+
