@@ -1,5 +1,3 @@
-package main.java;
-
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
@@ -31,18 +29,6 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
-        List<String> lineList = readFileInList(filePath);
-        /*
-        System.out.println("Fog Index Results:");
-        FogIndex fogIndex = new FogIndex(lineList);
-        fogIndex.showResults();
-
-        System.out.println("\n");
-         */
-        //System.out.println("Response For a Class Results");
-        RFC rfc = new RFC(cu);
-        rfc.showResults();
-
 
         CherrenSection t = new CherrenSection(cu);
 

@@ -1,5 +1,3 @@
-package main.java;
-
 public class BST {
     private Node root;
     private int val;
@@ -23,17 +21,29 @@ public class BST {
     }
 
     // method to insert a new Node
-    public static Node insert(Node root, int x){
-        if (root == null)
-            return new Node(x);
+    public Node insert(Node root, int x){
+        if (this.root == null)
+            this.root = root;
 
             // x is greater. Should be inserted to right
-        else if(x>root.getData())
-            root.setRight(insert(root.getRight(),x));
+        else if(x>root.getData()) {
+            if (root.getRight() == null) {
+                root.setRight(new Node(x));
+            }
+            else {
+                root.setRight(insert(root.getRight(), x));
+            }
+        }
+        // x is smaller should be inserted to left
+        else {
+            if (root.getLeft() == null) {
+                root.setLeft(new Node(x));
+            }
+            else {
+                root.setLeft(insert(root.getLeft(), x));
+            }
 
-            // x is smaller should be inserted to left
-        else
-            root.setLeft(insert(root.getLeft(),x));
+        }
         return root;
     }
 
