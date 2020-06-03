@@ -1,18 +1,11 @@
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     private static String filePath;
@@ -20,14 +13,14 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         List<String> results = new ArrayList<String>();
 
-        //test file (Tree)
+        //File path for test data (Tree)
 //        File path = new File("src/test/java/Tree_TestData/src/");
 
-        //test file (Animals)
+        //Test data test_animals
         File path = new File("src/test_animals/");
         File[] files = path.listFiles();
 
-        //get all classes in the folder
+        //get all java file's name
         for (File file : files) {
             if (file.isFile()) {
                 if (file.getName().contains(".java")) {
@@ -36,6 +29,7 @@ public class Main {
             }
         }
 
+        //call CherrenSection
         CherrenSection t = new CherrenSection();
         for (int i = 0; i < results.size(); i++) {
             filePath = results.get(i);
@@ -45,11 +39,16 @@ public class Main {
 
         t.buildTree();
 
+        Scanner scanner = new Scanner(System.in);
 
-//       get number of children
-        System.out.println("Number of children in the file list: " + t.getNumChildren());
+        System.out.println("Please insert the class name (Not include '. java') that you want to check for the number of children: ");
+        String classToCheckChildren = scanner.nextLine();
+        //get number of children
+        System.out.println(t.getNumChildren(classToCheckChildren));
 
-//       get depth of tree
-        System.out.println("Max depth in the file list: " + t.getMaxDepth());
+        System.out.println("Please insert the class name (Not include '. java') that you want to check for the depth: ");
+        String classToCheckDepth = scanner.nextLine();
+        //get depth of tree
+        System.out.println(t.getMaxDepth(classToCheckDepth));
     }
 }
