@@ -22,9 +22,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"daysClosed");
 
@@ -47,9 +47,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"iceCreamPrice");
 
@@ -71,9 +71,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"delivery");
 
@@ -95,9 +95,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"workingHours");
 
@@ -120,9 +120,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"flavourOnDiscount");
 
@@ -144,9 +144,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"salariesExpensesPerWeek");
 
@@ -170,9 +170,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"voucher");
 
@@ -195,9 +195,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"scoops");
 
@@ -221,9 +221,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"countHoursWorked");
 
@@ -245,9 +245,9 @@ public class TestCyclomaticComplexity {
     public void testTenTry_CatchPredicate() {
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"catchMethod");
 
@@ -269,9 +269,9 @@ public class TestCyclomaticComplexity {
     public void testElevenTry_CatchPredicateWithThrowFinally() {
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"tryThrowFinally");
 
@@ -293,9 +293,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"electricityBillPerMonth");
 
@@ -317,9 +317,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"incomePerMonth");
 
@@ -341,9 +341,9 @@ public class TestCyclomaticComplexity {
 
         //Arrange (Arrange everything needed to run)
         Parser parser = new Parser();
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCOne_IceCreamShop");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCOne_IceCreamShop");
 
         MethodDeclaration aMethod = parser.getMethodByName(cu,"countPriceForSingleFlavour");
 
@@ -402,9 +402,9 @@ public class TestCyclomaticComplexity {
 
         Parser parser = new Parser();
 
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCTwo_IncidentBean");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCTwo_IncidentBean");
 
         CyclomaticComplexity cc = new CyclomaticComplexity();
 
@@ -486,9 +486,9 @@ public class TestCyclomaticComplexity {
 
         Parser parser = new Parser();
 
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCTwo_PostIncidentBean");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCTwo_PostIncidentBean");
 
         CyclomaticComplexity cc = new CyclomaticComplexity();
 
@@ -564,9 +564,9 @@ public class TestCyclomaticComplexity {
 
         Parser parser = new Parser();
 
-        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("C:\\Users\\Cliff\\Documents\\GitHub\\SENG4430_Assigment\\TestCases");
+        List<CompilationUnit> allCompilationUnits = parser.getCompilationUnits("src\\test\\resources\\srcTest");
 
-        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"CC_TCTwo_UserBean");
+        CompilationUnit cu = parser.getCompilationUnitByName(allCompilationUnits,"cyclomatic_complexity.CC_TCTwo_UserBean");
 
         CyclomaticComplexity cc = new CyclomaticComplexity();
 

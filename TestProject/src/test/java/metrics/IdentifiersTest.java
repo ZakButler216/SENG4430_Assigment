@@ -1,4 +1,3 @@
-
 /*
 package metrics;
 import com.github.javaparser.ast.CompilationUnit;
@@ -40,10 +39,5 @@ public class IdentifiersTest {
 
 
 
+
  */
-
-
-
-
-
-
