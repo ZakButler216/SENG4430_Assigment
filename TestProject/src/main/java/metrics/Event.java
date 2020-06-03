@@ -109,8 +109,6 @@ public class Event {
                 view(input);
             }
 
-
-
         } catch(StringIndexOutOfBoundsException e) {
             System.out.println("Please enter something to view, along with the view command.");
         }
@@ -423,15 +421,20 @@ public class Event {
                         break;
 
                     case "h":
-
                         FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
 
-                        //Split from package coz error when include package
-                        String[] splitPackageClass = currentClass.split("\\.");
-                        String justClass = splitPackageClass[1];
+                        String fogIndexClassName = currentClass;
+
+                        if(currentClass.contains(".")) {
+
+                            //Split from package coz error when include package
+                            String[] splitPackageClass = fogIndexClassName.split("\\.");
+                            String justClass = splitPackageClass[1];
+                            fogIndexClassName = justClass;
+                        }
 
                         //doesn't identify class by package
-                        File file = fr.getClassFile(justClass);
+                        File file = fr.getClassFile(fogIndexClassName);
                         FogIndex fogIndex = new FogIndex(file);
                         String fogIndexResult = fogIndex.getResults()+"\n";
                         totalResult+=fogIndexResult;

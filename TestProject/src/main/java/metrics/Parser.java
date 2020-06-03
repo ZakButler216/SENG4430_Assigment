@@ -130,15 +130,10 @@ public class Parser {
             String packageName ="";
             String totalName="";
             if(compilationUnits.get(i).getPackageDeclaration().isPresent()) {
-                packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
-            } else {
-                packageName="empty";
+                packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString()+".";
             }
-                //System.out.println(compilationUnits.get(i).getPackageDeclaration().isPresent());
-                //System.out.println(compilationUnits.get(i).getPackageDeclaration());
 
-
-            totalName = packageName+"."+className;
+            totalName = packageName+className;
 
 
             //Add to list
@@ -171,12 +166,10 @@ public class Parser {
             String packageName ="";
             String totalName="";
             if(compilationUnits.get(i).getPackageDeclaration().isPresent()) {
-                packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString();
-            } else {
-                packageName="empty";
+                packageName = compilationUnits.get(i).getPackageDeclaration().get().getName().toString()+".";
             }
 
-            totalName = packageName+"."+className;
+            totalName = packageName+className;
 
             //If name searched equals class name, return the compilation unit
             if(totalName.equalsIgnoreCase(compilationUnitName)) {
@@ -199,12 +192,9 @@ public class Parser {
         String packageName ="";
         String totalName="";
         if(cu.getPackageDeclaration().isPresent()) {
-            packageName = cu.getPackageDeclaration().get().getName().toString();
-        } else {
-            packageName="empty";
+            packageName = cu.getPackageDeclaration().get().getName().toString()+".";
         }
-
-        totalName = packageName+"."+className;
+        totalName = packageName+className;
 
         return totalName;
     }
