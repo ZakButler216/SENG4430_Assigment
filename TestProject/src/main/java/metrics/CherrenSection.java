@@ -1,4 +1,5 @@
 package metrics;
+
 import com.github.javaparser.ast.CompilationUnit;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ public class CherrenSection {
     private int count;
     private String parentClass;
     private List<Node> fileList;
-    //CompilationUnit newCu, String node
 
     CherrenSection() {
         cu = null;
@@ -33,7 +33,7 @@ public class CherrenSection {
 
     public void readFile(CompilationUnit cu, String fileName) {
 
-        //scanner for the question.
+        //scanner for the java file.
         Scanner scan = new Scanner(System.in);
         javaContent = String.valueOf(cu.getChildNodes());
 
@@ -95,13 +95,27 @@ public class CherrenSection {
         return tree;
     }
 
-    public int getNumChildren()
+    //get the number of Children for a certain class
+    public String getNumChildren(String className)
     {
-        return tree.getNumOfChildren();
+        int children = tree.getNumOfChildren(className);
+
+        if (children == -1)
+        {
+            return "File does not exist in directory.";
+        }
+        return ("Number of inherited children: " + tree.getNumOfChildren(className));
     }
 
-    public int getMaxDepth()
+    //get the inheritance depth for a certain class
+    public String getMaxDepth(String className)
     {
-        return tree.maxDepth();
+        int depth = tree.maxDepth(className);
+
+        if (depth == -1)
+        {
+            return "File does not exist in directory.";
+        }
+        return ("Depth of file in inheritance: " + tree.maxDepth(className));
     }
 }

@@ -94,12 +94,27 @@ public class Event {
      */
     public static void checkView(String scanInput) {
 
+        try {
+
+
+
             //gets the rest of the input
             String input = scanInput.substring(5,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
-            //calls the view method
-            view(input);
+            if(input.isBlank()) {
+                System.out.println("Please enter something to view, along with the view command.");
+            } else {
+                //calls the view method
+                view(input);
+            }
+
+
+
+        } catch(StringIndexOutOfBoundsException e) {
+            System.out.println("Please enter something to view, along with the view command.");
+        }
+
 
     }
 
@@ -124,6 +139,8 @@ public class Event {
                 printCommands();
                 break;
             default:
+                System.out.println("Invalid item. Please enter a valid item to view.");
+                System.out.println("Options are metrics (\"metrics\"), current class(\"current\"), all classes(\"all\"), program commands(\"commands\").");
                 break;
 
         }
@@ -208,9 +225,11 @@ public class Event {
      */
     public static void checkClass(String scanInput) {
 
+        try {
+
+
             String input = scanInput.substring(6,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
-
 
 
             if(allClassesInProgram.isEmpty()) {
@@ -225,11 +244,11 @@ public class Event {
 
                 boolean foundClass = false;
 
-            //traverses all the classes in program
-            for(int i=0;i<allClassesInProgram.size();i++) {
+                //traverses all the classes in program
+                for(int i=0;i<allClassesInProgram.size();i++) {
 
-                //if user's input class matches the class in the for loop
-                if (input.equalsIgnoreCase(allClassesInProgram.get(i))) {
+                    //if user's input class matches the class in the for loop
+                    if (input.equalsIgnoreCase(allClassesInProgram.get(i))) {
 
 
 
@@ -243,14 +262,19 @@ public class Event {
                     foundClass=true;
 
                     break;
+                    }
                 }
-            }
 
             if(foundClass==false) {
                 System.out.println("The class entered does not match any of the classes stored in the program.");
             }
 
 
+            }
+
+
+        } catch(StringIndexOutOfBoundsException e) {
+            System.out.println("Please enter a class name along with the class command.");
         }
 
 
@@ -263,11 +287,29 @@ public class Event {
     public static void checkEval(String scanInput) throws IOException {
 
 
+        try {
             String input = scanInput.substring(5,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
-            //evaluates metrics
-            evaluate(input);
+            if(input.isBlank()) {
+                System.out.println("Please enter something to evaluate along with the eval command.");
+            }
+            else if (currentClass.equalsIgnoreCase("")) {
+
+                System.out.println("Please choose a current class before evaluating metrics.");}
+
+            else {
+
+                //evaluates metrics
+                evaluate(input);
+
+            }
+
+
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.println("Please enter something to evaluate along with the eval command.");
+        }
+
 
     }
 
@@ -395,47 +437,34 @@ public class Event {
                         totalResult+=fogIndexResult;
                         break;
 
-                    case "i":/*
-                        String filePath;
-                        System.out.println("One");
-                        String dir = Parser.getStoredDirectory();
-                        //String dir = "C:\\Users\\Cliff\\eclipse-workspace\\Java Project 4\\src\\data";
-                        System.out.println("Two");
-                        List<String> results = new ArrayList<String>();
-                        System.out.println("Three");
-                        //test file (Animals)
-                        File path = new File(dir);
-                        System.out.println("Four");
+                    case "i":
+                        List<String> aResults = new ArrayList<String>();
+                        File path = new File(Parser.getStoredDirectory());
                         File[] files = path.listFiles();
-                        System.out.println("Five");
-                        //get all classes in the folder
-                        for (File ifile : files) {
-                            System.out.println("Six");
-                            if (ifile.isFile()) {
-                                System.out.println("Seven");
-                                if (ifile.getName().contains(".java")) {
-                                    System.out.println("Eight");
-                                    results.add(ifile.getName().substring(0, ifile.getName().length() - 5));
-                                    System.out.println("File "+ifile.getName());
+
+                        //get all java file's name
+                        for (File aFile : files) {
+                            if (aFile.isFile()) {
+                                if (aFile.getName().contains(".java")) {
+                                    aResults.add(aFile.getName().substring(0, aFile.getName().length() - 5));
                                 }
                             }
                         }
+
+                        String filePath="";
                         CherrenSection t = new CherrenSection();
-                        System.out.println("Nine");
-                        for (int a = 0; a < results.size(); a++) {
-                            System.out.println("Ten");
-                            filePath = results.get(i);
-                            System.out.println("Eleven");
-                            CompilationUnit cu2 = StaticJavaParser.parse(files[i]);
-                            System.out.println("Twelve");
-                            t.readFile(cu2, results.get(i));
-                            System.out.println("a "+a);
+                        for (int j = 0; j < aResults.size(); j++) {
+                            filePath = aResults.get(i);
+                            cu = StaticJavaParser.parse(files[i]);
+                            t.readFile(cu, aResults.get(i));
                         }
 
                         t.buildTree();
-                        t.getNumChildren();
+
+                        System.out.println(t.getNumChildren(currentClass));
+
                         break;
-                        */
+
 
                     case "j":
                         //CherrenSection b = new CherrenSection(cu);

@@ -1,18 +1,38 @@
 plugins {
     id 'java'
+    //id 'net.bytebuddy.byte-buddy-gradle-plugin' version 'LATEST'
 }
+/*
+configurations {
+    examplePlugin "foo:bar:1.0"
+}
+
+byteBuddy {
+    transformation {
+        plugin = "com.example.junit.HookInstallingPlugin"
+        classPath = configurations.examplePlugin
+    }
+}
+
+ */
 
 group 'org.example'
 version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
+
+//repositories { jcenter() }
+//dependencies { testImplementation 'org.mockito:mockito-core:2.7.22' }
 
 dependencies {
     //testCompile group: 'junit', name: 'junit', version: '4.12'
     //testImplementation('junit:junit:4.12')
     implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.15.18'
+
+    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-ws', version: '1.4.7.RELEASE'
 
     //For JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
@@ -21,6 +41,20 @@ dependencies {
     //For JUnit 3 and 4
     testCompileOnly 'junit:junit:4.12'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+
+    //For Mockito
+    //testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    compile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
+    //testCompile 'org.mockito:mockito-core:2.6.3'
+    //testImplementation 'org.mockito:mockito-core:2.7.22'
+
+    //compile 'net.bytebuddy:byte-buddy:LATEST'
+
+    //compile net.bytebuddy:byte-buddy:1.7.1
+
+    //compile group: 'org.mockito', name: 'mockito-core', version: '2.13.0'
+    //testCompile('org.springframework.boot:spring-boot-starter-test')
 
     //For String utils
     //compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'

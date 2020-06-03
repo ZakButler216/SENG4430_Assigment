@@ -1,4 +1,4 @@
-package  metrics;
+package metrics;
 
 public class Tree {
     private Node root;
@@ -11,6 +11,10 @@ public class Tree {
     public static Node search(Node node, String parentName){
         if (node==null)
             return null;
+        else if (node.getName().equals(parentName))
+        {
+            return node;
+        }
         else
         {
             for (int i = 0; i < node.getNumChildren(); i++)
@@ -34,26 +38,33 @@ public class Tree {
     }
 
     //number of children (return to CherrenSection)
-    public int getNumOfChildren()
+    public int getNumOfChildren(String fileName)
     {
-        int temp = 0;
-        for (int i = 0; i < root.getNumChildren(); i++)
+        Node file = search(root, fileName);
+        if (file == null)
         {
-            temp += getNumOfChildren(root.getChild(i));
+            return -1;
         }
-        return temp;
+        return file.getNumChildren();
     }
 
-    public int getNumOfChildren(Node node) {
-        int temp = 0;
-        if (node != null) {
-            for (int i = 0; i < node.getNumChildren(); i++)
-            {
-                temp += getNumOfChildren(node.getChild(i));
-            }
-            return temp + 1;
+
+    public int maxDepth(String fileName)
+    {
+        Node file = search(root, fileName);
+        int depth = 0;
+
+        if (file == null)
+        {
+            return -1;
         }
-        return 0;
+
+        while (file != null && !file.getParent().equals(""))
+        {
+            file = search(root, file.getParent());
+            depth++;
+        }
+        return depth;
     }
 
     //max of Depth (return to CherrenSection)
@@ -61,6 +72,7 @@ public class Tree {
     {
         int maxDepth = 0;
         int tempDepth = 0;
+
 
         for (int i = 0; i < root.getNumChildren(); i++)
         {
@@ -100,7 +112,7 @@ public class Tree {
         return maxDepth;
     }
 
-    //    // method to insert a new Node
+    // method to insert a new Node
     public boolean insert(Node node){
         if (this.root == null)
             this.root = node;
