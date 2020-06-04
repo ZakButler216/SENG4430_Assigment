@@ -15,7 +15,7 @@ No root package. Coupling results might not be accurate.
 Total coupling value of program: 194
 Total coupling value of program per class (excluding internal classes): 21
 Loosely coupled classes (excluding internal classes): 1/9 classes
-Final evaluation is based on this loosely coupled ratio.
+Final evaluation is based on this loosely coupled ratio. A class is loosely coupled when their coupling value is less than or equal to 4.
 
 Final Evaluation of Program: High coupling
 This is a bad result. Coupling needs to be greatly reduced.
