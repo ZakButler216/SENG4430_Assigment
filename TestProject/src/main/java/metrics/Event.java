@@ -285,7 +285,7 @@ public class Event {
     public static void checkEval(String scanInput) throws IOException {
 
 
-        //try {
+        try {
             String input = scanInput.substring(5,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
@@ -304,9 +304,9 @@ public class Event {
             }
 
 
-       // } catch (StringIndexOutOfBoundsException e) {
-       //     System.out.println("Please enter something to evaluate along with the eval command.");
-       // }
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.println("Please enter something to evaluate along with the eval command.");
+        }
 
 
     }
@@ -441,14 +441,17 @@ public class Event {
                         break;
 
                     case "i":
-                        List<String> aResults = new ArrayList<String>();
-                        File path = new File(Parser.getStoredDirectory());
-                        File[] files = path.listFiles();
+                        /*List<String> aResults = new ArrayList<String>();
+                        FolderReader folderNumChildren = new FolderReader(new File(parser.getStoredDirectory()));
+                        ArrayList<File> allFiles = folderNumChildren.getFileList();
+                        //File path = new File(Parser.getStoredDirectory());
+                        //File[] files = path.listFiles();
 
                         //get all java file's name
-                        for (File aFile : files) {
+                        for (File aFile : allFiles) {
                             if (aFile.isFile()) {
                                 if (aFile.getName().contains(".java")) {
+                                    System.out.println(aFile.getName());
                                     aResults.add(aFile.getName().substring(0, aFile.getName().length() - 5));
                                 }
                             }
@@ -457,19 +460,56 @@ public class Event {
                         String filePath="";
                         CherrenSection t = new CherrenSection();
                         for (int j = 0; j < aResults.size(); j++) {
-                            filePath = aResults.get(i);
-                            cu = StaticJavaParser.parse(files[i]);
-                            t.readFile(cu, aResults.get(i));
+                            System.out.println(aResults.get(j));
+                            filePath = aResults.get(j);
+                            cu = StaticJavaParser.parse(allFiles.get(j));
+                            t.readFile(cu, aResults.get(j));
                         }
 
                         t.buildTree();
 
                         System.out.println(t.getNumChildren(currentClass));
 
+                         */
+
+                        CherrenSection numSection = new CherrenSection();
+                        numSection.setup(parser.getStoredDirectory());
+
+                        String classToCheckChildren=currentClass;
+
+                        if(currentClass.contains(".")) {
+
+                            //Split from package coz error when include package
+                            String[] splitPackageClass = classToCheckChildren.split("\\.");
+                            String justClass = splitPackageClass[1];
+                            classToCheckChildren = justClass;
+                        }
+                        //System.out.println(numSection.getNumChildren(classToCheckChildren));
+                        String numChildrenResult = numSection.getNumChildren(classToCheckChildren)+"\n";
+                        totalResult+=numChildrenResult;
+
+
                         break;
 
-
                     case "j":
+
+                        CherrenSection depthSection = new CherrenSection();
+                        depthSection.setup(parser.getStoredDirectory());
+
+                        String classToCheckInheritanceDepth=currentClass;
+
+                        if(currentClass.contains(".")) {
+
+                            //Split from package coz error when include package
+                            String[] splitPackageClass = classToCheckInheritanceDepth.split("\\.");
+                            String justClass = splitPackageClass[1];
+                            classToCheckInheritanceDepth = justClass;
+                        }
+
+                        String depthInheritanceTreeResult = depthSection.getMaxDepth(classToCheckInheritanceDepth)+"\n";
+                        totalResult+=depthInheritanceTreeResult;
+
+
                         //CherrenSection b = new CherrenSection(cu);
                         //b.NumChildrenresult();
                         break;

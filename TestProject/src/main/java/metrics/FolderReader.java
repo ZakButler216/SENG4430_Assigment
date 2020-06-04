@@ -46,4 +46,8 @@ public class FolderReader {
         }
         return classFile;
     }
+
+    public ArrayList<File> getFileList() {
+        return fileList;
+    }
 }
