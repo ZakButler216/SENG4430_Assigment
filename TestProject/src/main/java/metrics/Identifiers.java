@@ -35,8 +35,8 @@ public class Identifiers {
     public String getResult(CompilationUnit compilationUnit) {
         AtomicInteger identifierCount = new AtomicInteger();
         AtomicInteger totalStringCount = new AtomicInteger();
-        //Parse each compilation unit
-        //for (compilationUnit) {
+        //Parse compilation unit
+
             String compToString = compilationUnit.toString();
             parse(compToString).walk(node -> {
                 String identifier = "";
@@ -55,7 +55,7 @@ public class Identifiers {
                     totalStringCount.addAndGet(stringCount);
                 }
             });
-        //}
+
         //Calculate the average length of identifiers
         int tSC = totalStringCount.get();
         int iC = identifierCount.get();
@@ -77,55 +77,5 @@ public class Identifiers {
         return total;
     }
 
-    /*
-    public static void main(String[] args) {
-        Path pathToSource = Paths.get("src/main/java/Test");
-        SourceRoot sourceRoot = new SourceRoot(pathToSource);
-        try {
-            sourceRoot.tryToParse();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<CompilationUnit> compilations = sourceRoot.getCompilationUnits();
 
-        AtomicInteger identifierCount = new AtomicInteger();
-        AtomicInteger totalStringCount = new AtomicInteger();
-        //Parse each compilation unit
-        for (CompilationUnit cu: compilations) {
-            String compToString = cu.toString();
-            parse(compToString).walk(node -> {
-                String identifier = "";
-                int stringCount = 0;
-
-                //Check if node is an identifier, if yes increment identifier
-                //count and count how many characters are in the identifier
-                if (node instanceof NodeWithIdentifier) {
-                    identifier = ((NodeWithIdentifier<?>) node).getIdentifier();
-                    identifierCount.getAndIncrement();
-                    for (int j = 0; j < identifier.length(); j++) {
-                        if (identifier.charAt(j) != ' ') {
-                            stringCount++;
-                        }
-                    }
-                    totalStringCount.addAndGet(stringCount);
-                }
-            });
-        }
-        //Calculate the average length of identifiers
-        int tSC = totalStringCount.get();
-        int iC = identifierCount.get();
-        int average = tSC/iC;
-        System.out.println("The average length of identifiers is: " + average);
-        if (average == 6 || average == 7 || average == 8 || average == 9) {
-            System.out.println("This is an acceptable average length of identifiers.");
-        }
-        else if (average < 6) {
-            System.out.println("The average length of identifiers is too short and not informative enough.");
-        }
-        else if (average > 9) {
-            System.out.println("The average length of identifiers is too long and may affect readability.");
-        }
-    }
-
-     */
 }

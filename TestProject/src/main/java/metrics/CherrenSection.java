@@ -28,6 +28,7 @@ public class CherrenSection {
     private String parentClass;
     private List<Node> fileList;
     private static String filePath;
+    private List<File> javaFilesList;
 
     CherrenSection(){
         cu = null;
@@ -37,11 +38,12 @@ public class CherrenSection {
         depth = 0;
         count = 0;
         fileList = new ArrayList<Node>();
+        javaFilesList = new ArrayList<>();
     }
 
     public void setup(String directory) throws FileNotFoundException {
         List<String> results = new ArrayList<String>();
-        List<File> fileList = new ArrayList<>();
+        //List<File> javaFilesList = new ArrayList<>();
 
         Parser parser = new Parser();
         FolderReader fr = new FolderReader(new File(directory));
@@ -58,19 +60,19 @@ public class CherrenSection {
         for (File file : allFiles) {
             if (file.isFile()) {
                 if (file.getName().contains(".java")) {
-                    fileList.add(file);
+                    javaFilesList.add(file);
                     //results.add(file.getName().substring(0, file.getName().length() - 5));
                 }
             }
         }
 
-        for (int i = 0; i < fileList.size(); i++) {
+        for (int i = 0; i < javaFilesList.size(); i++) {
             //filePath = results.get(i);
             //System.out.println(filePath);
             //System.out.println(results.get(i));
-            CompilationUnit cu = StaticJavaParser.parse(new FileInputStream(fileList.get(i)));
-            //System.out.println("Reading file "+fileList.get(i).getName());
-            readFile(cu, fileList.get(i).getName().substring(0, fileList.get(i).getName().length() - 5));
+            CompilationUnit cu = StaticJavaParser.parse(new FileInputStream(javaFilesList.get(i)));
+            //System.out.println("Reading file "+javaFilesList.get(i).getName());
+            readFile(cu, javaFilesList.get(i).getName().substring(0, javaFilesList.get(i).getName().length() - 5));
         }
 
         buildTree();
@@ -88,18 +90,32 @@ public class CherrenSection {
 
         boolean hasExtends = false;
 
+
         if(cu.getTypes().isNonEmpty()) {
 
             List<ClassOrInterfaceDeclaration> classList = cu.getTypes().get(0).findAll(ClassOrInterfaceDeclaration.class);
             NodeList<ClassOrInterfaceType> extendedList = classList.get(0).getExtendedTypes();
             if (extendedList.isNonEmpty()) {
-                hasExtends = true;
+
+                for(int i=0;i<Parser.getStoredCompilationUnits().size();i++) {
+
+                    List<ClassOrInterfaceDeclaration> classDeclarationList =
+                            Parser.getStoredCompilationUnits().get(i).getTypes().get(0).findAll(ClassOrInterfaceDeclaration.class);
+
+                    if(extendedList.get(0).getName().equals(classDeclarationList.get(0).getName())) {
+
+                        hasExtends = true;
+                    }
+                }
+
             }
         }
 
+        //System.out.println("Has extends "+hasExtends);
         //define which one is main class and which one is inherited class
         if (javaContent.contains("static void main")) {
             temp.setMain(true);
+
         } else if (javaContent.contains("extends")&& hasExtends) {
             //System.out.println("File name "+fileName);
             int indexExtends = javaContent.indexOf("extends") + 8;

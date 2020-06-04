@@ -11,6 +11,8 @@ public class NumOfChildrenTest {
     @Test //JUnit test num of children
     void numChildren() throws FileNotFoundException {
         String dir="src\\test\\resources\\srcInheritance";
+        Parser parser = new Parser();
+        parser.setStoredCompilationUnits(parser.getCompilationUnits(dir));
         CherrenSection m = new CherrenSection();
         m.setup(dir);
 

@@ -13,6 +13,8 @@ public class DepthOfInheritanceTreeTest {
     void DepthTree() throws FileNotFoundException {
 
         String dir="src\\test\\resources\\srcInheritance";
+        Parser parser = new Parser();
+        parser.setStoredCompilationUnits(parser.getCompilationUnits(dir));
         CherrenSection m = new CherrenSection();
         m.setup(dir);
 

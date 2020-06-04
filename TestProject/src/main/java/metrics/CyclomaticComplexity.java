@@ -1,5 +1,11 @@
 package metrics;
 
+/**
+ File Name: CyclomaticComplexity.java
+ Author: Cliff Ng
+ Description: A class which provides utility to find cyclomatic complexity software quality metric.
+ */
+
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import com.github.javaparser.ast.CompilationUnit;
