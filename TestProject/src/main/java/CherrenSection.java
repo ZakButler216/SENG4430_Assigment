@@ -1,5 +1,8 @@
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,8 +21,9 @@ public class CherrenSection {
     private int count;
     private String parentClass;
     private List<Node> fileList;
+    private static String filePath;
 
-    CherrenSection() {
+    CherrenSection(){
         cu = null;
         numChildren = 0;
         numNode = 0;
@@ -27,6 +31,35 @@ public class CherrenSection {
         depth = 0;
         count = 0;
         fileList = new ArrayList<Node>();
+    }
+
+    public void setup() throws FileNotFoundException {
+        List<String> results = new ArrayList<String>();
+
+        //File path for test data (Tree)
+//        File path = new File("src/test/java/Tree_TestData/src/");
+
+        //Test data test_animals
+        File path = new File("src/test_animals/");
+        File[] files = path.listFiles();
+
+        //get all java file's name
+        for (File file : files) {
+            if (file.isFile()) {
+                if (file.getName().contains(".java")) {
+                    results.add(file.getName().substring(0, file.getName().length() - 5));
+                }
+            }
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            filePath = results.get(i);
+            CompilationUnit cu = StaticJavaParser.parse(files[i]);
+            readFile(cu, results.get(i));
+        }
+
+        buildTree();
+
     }
 
     public void readFile(CompilationUnit cu, String fileName) {
@@ -105,7 +138,20 @@ public class CherrenSection {
         return ("Number of inherited children: " + tree.getNumOfChildren(className));
     }
 
+    //get the number of Children for a certain class
+    public int getNumChildrenInt(String className)
+    {
+        int children = tree.getNumOfChildren(className);
+
+        if (children == -1)
+        {
+            return -1;
+        }
+        return tree.getNumOfChildren(className);
+    }
+
     //get the inheritance depth for a certain class
+    //For JUnit Purposes
     public String getMaxDepth(String className)
     {
         int depth = tree.maxDepth(className);
@@ -115,5 +161,18 @@ public class CherrenSection {
             return "File does not exist in directory.";
         }
         return ("Depth of file in inheritance: " + tree.maxDepth(className));
+    }
+
+    //get the inheritance depth for a certain class
+    //For JUnit purposes
+    public int getMaxDepthInt(String className)
+    {
+        int depth = tree.maxDepth(className);
+
+        if (depth == -1)
+        {
+            return -1;
+        }
+        return tree.maxDepth(className);
     }
 }
