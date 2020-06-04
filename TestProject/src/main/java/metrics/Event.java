@@ -285,7 +285,7 @@ public class Event {
     public static void checkEval(String scanInput) throws IOException {
 
 
-        try {
+        //try {
             String input = scanInput.substring(5,scanInput.length());
             input = input.replaceAll("\\s\\s+","");
 
@@ -304,9 +304,9 @@ public class Event {
             }
 
 
-        } catch (StringIndexOutOfBoundsException e) {
-            System.out.println("Please enter something to evaluate along with the eval command.");
-        }
+       // } catch (StringIndexOutOfBoundsException e) {
+       //     System.out.println("Please enter something to evaluate along with the eval command.");
+       // }
 
 
     }

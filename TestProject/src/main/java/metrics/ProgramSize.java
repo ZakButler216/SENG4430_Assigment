@@ -99,7 +99,7 @@ public class ProgramSize
             {
                 table[i] = new String[] { path, statementsPerClass.get(j).toString()};
             } else { //if printing one class
-                if(path.contains(parsingThis)) //only print result if path contains class, excludes packages
+                if(path.equals(parsingThis)) //only print result if path contains class, excludes packages
                 {
                     table[2] = new String[] { path, statementsPerClass.get(j).toString()};
                     break;

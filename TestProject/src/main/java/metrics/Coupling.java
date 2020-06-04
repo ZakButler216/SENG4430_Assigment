@@ -56,27 +56,25 @@ public class Coupling
         findAllTypes = false;
         rootPackage = cu.getPackageDeclaration();
 
-        for(CompilationUnit comp: cuList)
+        for(CompilationUnit comp: cuList) //initialise lists
         {
-            //System.out.println(comp.getPrimaryTypeName()); //testing
-            classCouple.add(0);
+            classCouple.add(0); //initialise coupling values
             coupledClasses.add(new HashSet<>());
             innerClasses.add(new HashSet<>());
         }
         for(CompilationUnit comp: cuList)
         {
-            findInnerClassParent(comp);
+            findInnerClassParent(comp); //set up inner classes for each class
         }
-        //find file name
-        if(rootPackage.isPresent()) {
+
+        if(rootPackage.isPresent()) { //set up whether there are packages
             packages = true;
-            //System.out.println("Root package is: " + rootPackage.get());
         } else {
             packages = false;
             results += "No root package. Coupling results might not be accurate.\n\n";
         }
 
-        /*
+        /* Plan:
         1. create variable to track C, have list of C vars for every class
         2. increment twice when finding the class (once for the class its in, once for the class it resolved to)
             2.1. find obj/method -> increment class its in -> resolve it -> find class it resolved to -> increment class it belonged to
@@ -93,7 +91,7 @@ public class Coupling
             if (pd.isPresent()) {
                 if(ptn.isPresent())
                 {
-                    paths.add(pd.get().getName().toString()+"."+ptn.get());
+                    paths.add(pd.get().getName().toString()+"."+ptn.get()); //initialise qualified names
                 } else {
                     paths.add("null");
                 }
@@ -101,11 +99,11 @@ public class Coupling
                 if(ptn.isPresent())
                 {
                     if(!paths.contains(ptn.get()))
-                        paths.add(ptn.get());
-                    else
+                        paths.add(ptn.get()); //initialise qualified names for when theres no packages
+                    else //error
                         results += "Error: When there are no packages each class must have unique class names. Multiple classes named " + ptn.get() + ".\n Coupling results might not be accurate.\n\n";
                 } else {
-                    paths.add("null");
+                    paths.add("null"); //error
                 }
             }
         }
@@ -118,7 +116,7 @@ public class Coupling
             String[] levels = p.split("\\.");
             if(levels.length<minLength)
             {
-                minLength = levels.length;
+                minLength = levels.length; //set up minimum longest path length based on packages' level
             }
         }
 
@@ -138,7 +136,7 @@ public class Coupling
 
         String test = paths.get(0);
 
-        for(int j = 0; j<maxCommonLevel; j++)
+        for(int j = 0; j<maxCommonLevel; j++) //find minimum longest path
         {
             minPath += test.split("\\.")[j];
             if(j!=maxCommonLevel && j!=maxCommonLevel-1)
@@ -146,28 +144,32 @@ public class Coupling
         }
 
 
-        for(int i =0; i<cuList.size(); i++) //cuList.size() is param
+        for(int i =0; i<cuList.size(); i++)
         {
             cu = cuList.get(i);
 
             if(cu.getPrimaryTypeName().isPresent())
-                fileName = cu.getPrimaryTypeName().get().toString();
+                fileName = cu.getPrimaryTypeName().get().toString(); //set up current class name
             else
-                fileName = "";
+                fileName = ""; //error
 
             findFieldVarType(cu);
             findVarType(cu);
             findMethodCallClass(cu);
-            findAllTypes = true;
+            findAllTypes = true; //for exceptions
             findImports(cu);
             findAllTypes(cu);
             findAllTypes = false;
 
             index++;
         }
-        //printResults();
     }
 
+    /*
+    Preconditions: must have at least class name and index, i, where paths.get(i) is path of cuList.get(i)
+    Postconditions: increments coupling value for class at paths.get(i) as well as paths.get(index) where paths.get(index) is same as fileName
+    so paths.get(i). and paths.get(index) are coupled together
+     */
     public void incrementClass(int i, String pkgName, String className)
     {
         Set<String> set = coupledClasses.get(index);
@@ -206,6 +208,10 @@ public class Coupling
         }
     }
 
+    /*
+    Preconditions: Coupling results have been determined
+    Postconditions: Prints results straight to console
+     */
     public void printResults()
     {
 
@@ -219,10 +225,11 @@ public class Coupling
         {
             String path = paths.get(j);
 
-            if(path.contains("\\.{4}") && path.length()>40) //if path too long to print
+            if(path.length()>40) //if path too long to print
             {
                 String[] spliting = path.split(".");
-                path = spliting[spliting.length - 3] + "." + spliting[spliting.length - 2] + "." + spliting[spliting.length - 1];
+                if(path.contains("\\.{2}"))
+                    path = spliting[spliting.length - 2] + "." + spliting[spliting.length - 1]; //only print class name and last pkg name
             }
 
             table[i] = new String[] { path, classCouple.get(j).toString()};
@@ -241,10 +248,10 @@ public class Coupling
 
         for(int c: classCouple)
         {
-            total += c;
+            total += c; //sum coupling values
             if(c <= 4)
             {
-                looselyCoupled++;
+                looselyCoupled++; //sum classes that count as being loosely couples
             }
         }
 
@@ -254,7 +261,7 @@ public class Coupling
         System.out.println("Total coupling value of program: " + total);
         System.out.println("Total coupling value of program per class (excluding internal classes): " + totalAvg);
         System.out.println("Loosely coupled classes (excluding internal classes): " + looselyCoupled + "/" + cuList.size() + " classes");
-        System.out.println("Final evaluation is based on this loosely coupled ratio.");
+        System.out.println("Final evaluation is based on this loosely coupled ratio. A class is loosely coupled when their coupling value is less than or equal to 4.");
         System.out.println();
 
         float eval = 0;
@@ -291,6 +298,10 @@ public class Coupling
 
     }
 
+    /*
+    Preconditions: Coupling results have been determined
+    Postconditions: Returns a string containing formatted results
+     */
     public String getResults()
     {
         int tableSize = 0;
@@ -322,7 +333,7 @@ public class Coupling
             {
                 table[i] = new String[] { path, classCouple.get(j).toString()};
             } else { //if printing one class
-                if(path.contains(parsingThis)) //only print result if path contains class, excludes packages
+                if(path.equals(parsingThis)) //only print result if path contains class, excludes packages
                 {
                     table[2] = new String[] { path, classCouple.get(j).toString()};
                     break;
@@ -351,7 +362,7 @@ public class Coupling
             {
 
                 looselyCoupled++;
-                if(paths.get(ind).contains(parsingThis))
+                if(paths.get(ind).equals(parsingThis))
                     currCoupled = true;
             }
             ind++;
@@ -375,7 +386,7 @@ public class Coupling
         results += "Total coupling value of program: " + total + "\n";
         results += "Total coupling value of program per class (excluding internal classes): " + totalAvg + "\n";
         results += "Loosely coupled classes (excluding internal classes): " + looselyCoupled + "/" + cuList.size() + " classes" + "\n";
-        results += "Final evaluation is based on this loosely coupled ratio." + "\n\n";
+        results += "Final evaluation is based on this loosely coupled ratio. A class is loosely coupled when their coupling value is less than or equal to 4." + "\n\n";
         results += "Final Evaluation of Program: ";
 
         float eval = 0;
@@ -411,14 +422,18 @@ public class Coupling
         return results;
     }
 
+    /*
+    Preconditions: Have a valid class name and package name
+    Postconditions: Checks if trying to resolve a class that's coupled to fileName
+     */
     public void checkResolve(String className, String pkgName)
     {
         for(int i=0; i<paths.size(); i++)
         {
-            if(paths.get(i).equals(pkgName))
+            if(paths.get(i).equals(pkgName)) //if it's an inner class of fileName
             {
                 Set<String> s = innerClasses.get(i);
-                if(s.contains(pkgName+"."+className))
+                if(s.contains(pkgName+"."+className)) //if trying to resolve an inner class, do nothing
                 {
                     return;
                 }
@@ -454,16 +469,19 @@ public class Coupling
                 }
             } else if (fileName.equals(className)) //diff classes - same class name diff pkg name
             {
-                if(!paths.get(index).substring(0, paths.get(index).lastIndexOf('.')).contains(pkgName) && pkgName.startsWith(minPath))
+                if(paths.get(index).lastIndexOf('.')!=-1)
                 {
-                    for(int i =0; i<paths.size(); i++)
+                    if(!paths.get(index).substring(0, paths.get(index).lastIndexOf('.')).contains(pkgName) && pkgName.startsWith(minPath))
                     {
-                        String str = paths.get(i).substring(paths.get(i).lastIndexOf('.')+1);
-                        if(str.equals(className) && paths.get(i).contains(pkgName))
+                        for(int i =0; i<paths.size(); i++)
                         {
-                            incrementClass(index, pkgName, className); //increment this class
-                            incrementClass(i, pkgName, className); //increment that class
-                            break;
+                            String str = paths.get(i).substring(paths.get(i).lastIndexOf('.')+1);
+                            if(str.equals(className) && paths.get(i).contains(pkgName))
+                            {
+                                incrementClass(index, pkgName, className); //increment this class
+                                incrementClass(i, pkgName, className); //increment that class
+                                break;
+                            }
                         }
                     }
                 }
@@ -486,8 +504,6 @@ public class Coupling
     private void findMethodCallClass(CompilationUnit cu) {
         cu.findAll(MethodCallExpr.class).forEach(m -> { //for each method call
             try {
-                //System.out.println("Class: " + m.resolve().getClass());
-                //System.out.println("Class: " + m.resolve().getPackageName() + "." + m.resolve().getClassName() + " for " + m);
                 if(m.resolve().getClassName().contains("."))
                 {
                     checkResolve(m.resolve().getPackageName()+"."+m.resolve().getClass()); //class is inner class
@@ -495,15 +511,12 @@ public class Coupling
                     checkResolve(m.resolve().getClassName(),  m.resolve().getPackageName()); //check coupling
                 }
             } catch (UnsolvedSymbolException e) {
-                //System.out.println("Method call unsolvable for " + m + "\n"); //for method calls made in lambda expr
                 //unsolvable
             } catch (UnsupportedOperationException e) {
-                //System.out.println("wtf? " + e); //v.getVariables
+                //error
             } catch (RuntimeException e) {
-                //System.out.println("y u do dis? " + e);
-                //System.out.println("For: " + m);
+                //error
             }
-            //System.out.println();
         });
     }
 
@@ -520,33 +533,27 @@ public class Coupling
     private <T extends Node & NodeWithVariables<T>> void findVarTypeHelper(CompilationUnit cu, Class<T> cType, String printOut) {
         cu.findAll(cType).forEach(v -> { //for each expression
             v.getVariables().forEach(d -> { //for each declaration
-                //System.out.print("Type: " + d.resolve().getType().asArrayType().getComponentType()); //arrays count as a different type
                 try {
                     if (d.getType().isArrayType()) { //array types are also reference types so check it first
                         ResolvedType arrType = d.resolve().getType().asArrayType().getComponentType();
                         if (arrType.isReferenceType()) { //check in case it's an array of primitives
-                            //System.out.println(" (qualified name: " + arrType.asReferenceType().getQualifiedName() + ")"); //this also gets rid of the array part, uncomment, qualified name = pkgname+classname
+                            //this also gets rid of the array part
                             checkResolve(arrType.asReferenceType().getQualifiedName()); //check coupling
                         }
                     } else if (d.getType().isReferenceType()) { //shouldn't be an array now
-                        //System.out.println(" (qualified name: " + d.resolve().getType().asReferenceType().getQualifiedName() + ")"); //qualified name includes both package and class name here, uncomment
                         if(fileName.equals("Internal Stage") && d.resolve().getType().asReferenceType().getQualifiedName().equals("Item"))
-                            //System.out.println("resolved class name: " + d.resolve().getType().asReferenceType().getQualifiedName());
                             checkResolve(d.resolve().getType().asReferenceType().getQualifiedName()); //check coupling
                     } else if (d.getType().getClass().toString().equals("class com.github.javaparser.ast.type.PrimitiveType"))
-                    {
-                        //System.out.println(" (qualified name: " + d.resolve().getType().toString() + ")");
+                    { //do nothing
                     } else {
-                        //System.out.println("Leaving out: " + v);
+                        //do nothing
                     }
                 } catch (UnsolvedSymbolException e) {
-                    //System.out.print(printOut + " unsolvable for " + " " + v); //unsolvable
+                    //unsolvable
                 } catch (UnsupportedOperationException e) {
-                    //System.out.print("\nfindVarTypeHelper wtf? " + printOut + " " + e);
+                    //error, do nothing
                 }
-                //System.out.println();
             });
-            //System.out.println();
         });
     }
 
@@ -556,17 +563,16 @@ public class Coupling
                 if (t.isArrayType()) { //array types are also reference types so check it first
                     ResolvedType arrType = t.resolve().asArrayType().getComponentType();
                     if (arrType.isReferenceType()) { //check in case it's an array of primitives
-                        //System.out.println(arrType.asReferenceType().getQualifiedName()); //this also gets rid of the array part, uncomment
+                        //this also gets rid of the array part
                         checkResolve(arrType.asReferenceType().getQualifiedName()); //check coupling
                     }
                 } else if (t.isReferenceType()) { //shouldn't be an array now
-                    //System.out.println(t.resolve().asReferenceType().getQualifiedName()); //qualified name incl
                     checkResolve(t.resolve().asReferenceType().getQualifiedName()); //check coupling
                 }
             } catch (UnsolvedSymbolException e) {
-                //System.out.println("Unsolvable: " + t);
+                //unsolvable
             } catch (UnsupportedOperationException e) {
-                //System.out.println("\nwtf? " + e);
+                //do nothing
             }
         });
     }
@@ -574,9 +580,7 @@ public class Coupling
     // assumes that all imports are used
     private void findImports(CompilationUnit cu) {
         cu.findAll(ImportDeclaration.class).forEach(i -> {
-            //System.out.print(i.getName());
             if (i.isAsterisk()) {
-                //System.out.print(" (package) " + i.getName());
                 //do nothing
             } else {
                 for(String s: paths)
@@ -586,7 +590,6 @@ public class Coupling
                         Set<String> set = coupledClasses.get(index);
                         if(!set.contains(i.getName().toString()) && !fileName.equals(i.getName().toString()))
                         {
-                            //System.out.println(" (package) " + i.getName() + " " + coupledClasses.get(index) + " " +s + " " + fileName);
                             checkResolve(i.getName().toString());
                         }
                     }
