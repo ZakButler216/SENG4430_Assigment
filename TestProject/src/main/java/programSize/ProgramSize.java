@@ -1,5 +1,13 @@
 package programSize;
 
+/*
+ * File name:    ProgramSize.java
+ * Author:       Geethma Wijenayake
+ * Date:         29 May 2020
+ * Version:      1.0
+ * Description:  Calculates program size metric for every class in the list of classes passed into it.
+ * */
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.PackageDeclaration;
@@ -8,7 +16,7 @@ import com.github.javaparser.ast.stmt.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional; 
+import java.util.Optional;
 
 public class ProgramSize
 {
@@ -36,18 +44,18 @@ public class ProgramSize
         {
             ptn = c.getPrimaryTypeName();
             pd = c.getPackageDeclaration();
-            if (pd.isPresent()) {
+            if (pd.isPresent()) {  //if there are packages, add qualified name to paths
                 if(ptn.isPresent())
                 {
-                    paths.add(pd.get().getName().toString()+"."+ptn.get());
+                    paths.add(pd.get().getName().toString()+"."+ptn.get()); //add path
                 } else {
                     paths.add("null");
                 }
-            } else {
+            } else { //if no packages, just add class name to paths
                 if(ptn.isPresent())
                 {
                     if(!paths.contains(ptn.get()))
-                        paths.add(ptn.get());
+                        paths.add(ptn.get()); //add path
                     else
                         results += "Error: When there are no packages each class must have unique class names. Multiple classes named " + ptn.get() + ".\n Size results might not be accurate.\n\n";
                 } else {
@@ -58,13 +66,17 @@ public class ProgramSize
 
         for(CompilationUnit cu: cuList)
         {
-            findStatementClass(cu);
-            findFieldVarType(cu);
-            statementsPerClass.add(statementsOfCodeInClass);
+            findStatementClass(cu); //finds all statements
+            findFieldVarType(cu); //finds all declarations
+            statementsPerClass.add(statementsOfCodeInClass); //adds total to list of totals
             statementsOfCodeInClass = 0;
         }
     }
 
+    /*
+    Preconditions: Program size results have been determined
+    Postconditions: Returns a string containing formatted results
+     */
     public String getResults()
     {
         results += "Program size is measured by the number of statements in a program.\n";
@@ -89,17 +101,18 @@ public class ProgramSize
         {
             String path = paths.get(j);
 
-            if(path.contains("\\.{4}") && path.length()>40) //if path too long to print
+            if(path.length()>40) //if path too long to print
             {
-                String[] spliting = path.split(".");
-                path = spliting[spliting.length - 3] + "." + spliting[spliting.length - 2] + "." + spliting[spliting.length - 1];
+                String[] splitting = path.split(".");
+                if(path.contains("\\.{2}"))
+                    path = splitting[splitting.length - 2] + "." + splitting[splitting.length - 1];
             }
 
             if(parsingThis.equals("")) //if printing all classes
             {
                 table[i] = new String[] { path, statementsPerClass.get(j).toString()};
             } else { //if printing one class
-                if(path.contains(parsingThis)) //only print result if path contains class, excludes packages
+                if(path.equals(parsingThis)) //only print result if path contains class, excludes packages
                 {
                     table[2] = new String[] { path, statementsPerClass.get(j).toString()};
                     break;
@@ -110,7 +123,7 @@ public class ProgramSize
         }
 
         for (final Object[] row : table) {
-            results += String.format("%40s%40s\n", row);;
+            results += String.format("%40s%40s\n", row); //format table
         }
 
         results += "\n";
@@ -129,21 +142,33 @@ public class ProgramSize
         return results;
     }
 
+    /*
+    Preconditions: Contains valid compilation unit in parameter
+    Postconditions: Increments number of statements for cu if there are statements in class
+     */
     private void findStatementClass(CompilationUnit cu) {
-        cu.findAll(Statement.class).forEach(s -> { //for each method call
-            statementsOfCode++;
-            statementsOfCodeInClass++;
+        cu.findAll(Statement.class).forEach(s -> { //for each statement
+            statementsOfCode++; //increment statement count for whole program
+            statementsOfCodeInClass++; //increment statement count for class (cu)
         });
     }
 
+    /*
+    Preconditions: Contains valid compilation unit in parameter
+    Postconditions:  Increments number of statements for cu if there are field declarations (any declarations) in class
+     */
     private void findFieldVarType(CompilationUnit cu) {
         findVarTypeHelper(cu, FieldDeclaration.class);
     }
 
+    /*
+    Preconditions: Contains valid compilation unit in parameter
+    Postconditions:  Increments number of statements for cu if there are 'cType's in class
+     */
     private <T extends Node> void findVarTypeHelper(CompilationUnit cu, Class<T> cType) {
         cu.findAll(cType).forEach(v -> { //for each declaration
-            statementsOfCode++;
-            statementsOfCodeInClass++;
+            statementsOfCode++; //increment statement count for whole program
+            statementsOfCodeInClass++; //increment statement count for class (cu)
         });
     }
 }
