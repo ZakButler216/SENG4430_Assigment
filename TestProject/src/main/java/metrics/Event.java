@@ -601,6 +601,8 @@ public class Event {
         System.out.println("\"eval cd\" to evaluate fan in and fan out for current class.");
         System.out.println("\"eval bfh\" to evaluate comment percentage, program size, and fog index for current class.");
         System.out.println("\"eval *\" to evaluate all 12 metrics for current class.");
+        System.out.println("Note: For coupling, you can choose to evaluate coupling for a class (\"e\"), " +
+                "or coupling for the whole program(\"e*\")");
         System.out.println("(To view the metrics list, input \"view metrics\")");
         System.out.println();
 
