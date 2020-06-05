@@ -1,5 +1,12 @@
 package metrics;
 
+/**
+ File Name: Event.java
+ Author: Cliff Ng
+ Description: As this is an event driven application, this class provides control flow for events.
+ */
+
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
@@ -345,7 +352,7 @@ public class Event {
 
         //if user inputted *, process all metrics
         if(metricsChosen.equals("*")) {
-            metricsChosen = "abcdefghkl";
+            metricsChosen = "abcdefghijkl";
         }
         if(metricsChosen.contains("e*")) {
             couplingAll = true;
@@ -361,18 +368,22 @@ public class Event {
                 //Action: insert metric action here
                 switch(menu[i]) {
 
+
+                        //Cyclomatic Complexity
                     case "a":
                         CyclomaticComplexity cc = new CyclomaticComplexity();
                         String ccResult = cc.getResult(cu);
                         totalResult+=ccResult;
                         break;
 
+                        //Comment Percentage
                     case "b":
                         CommentPercentage cp = new CommentPercentage();
                         String cpResult = cp.getResult(cu);
                         totalResult+=cpResult;
                         break;
 
+                        //Fan In
                     case "c":
                         FanInOutParser fioParserOne = new FanInOutParser(); //prepare fan-in/out parser
                         fioParserOne.wholeProjectVisitor(parser.getStoredCompilationUnits()); //visit the parsed units
@@ -381,6 +392,7 @@ public class Event {
                         totalResult+= fi.getReport(fioParserOne.getMethodsList(), getCurrentClass());//calculate and get fan-in result
                         break;
 
+                        //Fan Out
                     case "d":
                         FanInOutParser fioParserTwo = new FanInOutParser(); //prepare fan-in/out parser
                         fioParserTwo.singleClassVisitor(cu); //visit the parsed unit
@@ -388,6 +400,7 @@ public class Event {
                         totalResult+= fo.getReport(fioParserTwo.getMethodsList());//calculate and get fan-out result
                         break;
 
+                        //Coupling
                     case "e":
                         Coupling coupling;
                         if (couplingAll==true) {
@@ -403,12 +416,14 @@ public class Event {
 
                         break;
 
+                        //Program Size
                     case "f":
                         ProgramSize progSize = new ProgramSize(Parser.getStoredCompilationUnits(), parser.getClassNameFromCompilationUnit(cu));
                         String sizeResults = progSize.getResults();
                         totalResult+=sizeResults;
                         break;
 
+                        //Response for a Class
                     case "g":
                         RFC rfc = new RFC(cu);
                         String rfcResult = rfc.getResults()+"\n";
@@ -416,6 +431,7 @@ public class Event {
 
                         break;
 
+                        //Fog Index
                     case "h":
                         FolderReader fr = new FolderReader(new File(parser.getStoredDirectory()));
 
@@ -423,55 +439,62 @@ public class Event {
 
                         if(currentClass.contains(".")) {
 
-                            //Split from package coz error when include package
                             String[] splitPackageClass = fogIndexClassName.split("\\.");
                             String justClass = splitPackageClass[1];
                             fogIndexClassName = justClass;
                         }
 
-                        //doesn't identify class by package
                         File file = fr.getClassFile(fogIndexClassName);
                         FogIndex fogIndex = new FogIndex(file);
                         String fogIndexResult = fogIndex.getResults()+"\n";
                         totalResult+=fogIndexResult;
                         break;
 
+                        //Number of Children
                     case "i":
-                        List<String> aResults = new ArrayList<String>();
-                        File path = new File(Parser.getStoredDirectory());
-                        File[] files = path.listFiles();
 
-                        //get all java file's name
-                        for (File aFile : files) {
-                            if (aFile.isFile()) {
-                                if (aFile.getName().contains(".java")) {
-                                    aResults.add(aFile.getName().substring(0, aFile.getName().length() - 5));
-                                }
-                            }
+                        CherrenSection numSection = new CherrenSection();
+                        numSection.setup(parser.getStoredDirectory());
+
+                        String classToCheckChildren=currentClass;
+
+                        if(currentClass.contains(".")) {
+
+                            String[] splitPackageClass = classToCheckChildren.split("\\.");
+                            String justClass = splitPackageClass[1];
+                            classToCheckChildren = justClass;
                         }
 
-                        String filePath="";
-                        CherrenSection t = new CherrenSection();
-                        for (int j = 0; j < aResults.size(); j++) {
-                            filePath = aResults.get(i);
-                            cu = StaticJavaParser.parse(files[i]);
-                            t.readFile(cu, aResults.get(i));
-                        }
+                        String numChildrenResult = numSection.getNumChildren(classToCheckChildren)+"\n";
+                        totalResult+=numChildrenResult;
 
-                        t.buildTree();
-
-                        System.out.println(t.getNumChildren(currentClass));
 
                         break;
 
-
+                        //Depth of Inheritance Tree
                     case "j":
-                        //CherrenSection b = new CherrenSection(cu);
-                        //b.NumChildrenresult();
+
+                        CherrenSection depthSection = new CherrenSection();
+                        depthSection.setup(parser.getStoredDirectory());
+
+                        String classToCheckInheritanceDepth=currentClass;
+
+                        if(currentClass.contains(".")) {
+
+                            String[] splitPackageClass = classToCheckInheritanceDepth.split("\\.");
+                            String justClass = splitPackageClass[1];
+                            classToCheckInheritanceDepth = justClass;
+                        }
+
+                        String depthInheritanceTreeResult = depthSection.getMaxDepth(classToCheckInheritanceDepth)+"\n";
+                        totalResult+=depthInheritanceTreeResult;
+
+
                         break;
 
+                        //Length of Identifiers
                     case "k":
-                        //Identifiers
+
                         Identifiers identifier = new Identifiers();
                         List<CompilationUnit> allUnits = Parser.getStoredCompilationUnits();
                         String identiferResult=identifier.getResult(cu)+"\n";
@@ -479,8 +502,9 @@ public class Event {
 
                         break;
 
+                        //Lack of Cohesion in Methods
                     case "l":
-                        //LCOM
+
                         LCOM lcom = new LCOM();
                         String lcomResult=lcom.getResult(cu)+"\n";
                         totalResult+=lcomResult;
@@ -573,6 +597,8 @@ public class Event {
         System.out.println("\"eval cd\" to evaluate fan in and fan out for current class.");
         System.out.println("\"eval bfh\" to evaluate comment percentage, program size, and fog index for current class.");
         System.out.println("\"eval *\" to evaluate all 12 metrics for current class.");
+        System.out.println("Note: For coupling, you can choose to evaluate coupling for a class (\"e\"), " +
+                "or coupling for the whole program(\"e*\")");
         System.out.println("(To view the metrics list, input \"view metrics\")");
         System.out.println();
 

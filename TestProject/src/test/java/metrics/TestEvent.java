@@ -16,32 +16,17 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
-
+/**
+ This class tests the control flow of the program.
+ It focuses on the main commands: new, parse, class, view, eval, and exit.
+ */
 public class TestEvent {
 
-    /*
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
-    private final PrintStream originalErr = System.err;
 
-    @Before
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
-    }
-
-    @After
-    public void restoreStreams() {
-        System.setOut(originalOut);
-        System.setErr(originalErr);
-    }
-
-
+    /**
+     Command tested: new
+     Event: user enters a new valid directory name
      */
-
-
-
     @Test
     public void testProcessInputNewOne() throws IOException {
 
@@ -63,6 +48,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: new
+     Event: user enters a new valid directory name but with spaces in between
+     */
     @Test
     public void testProcessInputNewTwo() throws IOException {
 
@@ -83,6 +72,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: new
+     Event: user enters new command but without a directory name
+     */
     @Test
     public void testProcessInputNewThree() throws IOException {
 
@@ -104,6 +97,12 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: new
+     Event: user enters an invalid command.
+     Note: All commands that start with words other than new or parse or class or eval or view or exit
+     are considered invalid commands.
+     */
     @Test
     public void testProcessInputNewFour() throws IOException {
 
@@ -125,6 +124,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: new
+     Event: user enters a directory name that doesn't exist.
+     */
     @Test
     public void testProcessInputNewFive() throws IOException {
         //Arrange
@@ -144,6 +147,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: parse
+     Event: user parses compilation units before entering a directory.
+     */
     @Test
     public void testProcessInputParseOne() throws IOException {
         //Arrange
@@ -164,6 +171,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: parse
+     Event: user tries to parse compilation units from a directory which doesn't contain any compilation units.
+     */
     @Test
     public void testProcessInputParseTwo() throws IOException {
         Parser parser = new Parser();
@@ -184,6 +195,10 @@ public class TestEvent {
     }
 
 
+    /**
+     Command tested: parse
+     Event: user tries to parses compilation units.
+     */
     @Test
     public void testProcessInputParseThree() throws IOException {
 
@@ -203,6 +218,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: class
+     Event: user sets a current class when there are no classes stored in program yet.
+     */
     @Test
     public void testProcessInputClassOne() throws IOException {
         Parser parser = new Parser();
@@ -228,6 +247,11 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: class
+     Event: user sets a current class when there are no classes stored in program yet,
+     but a directory has been set.
+     */
     @Test
     public void testProcessInputClassTwo() throws IOException {
         Parser parser = new Parser();
@@ -252,6 +276,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: class
+     Event: after classes are set in the program, user tries to set a non existing class as current.
+     */
     @Test
     public void testProcessInputClassThree() throws IOException {
         Parser parser = new Parser();
@@ -280,6 +308,10 @@ public class TestEvent {
     }
 
 
+    /**
+     Command tested: class
+     Event: after classes are set in the program, user utilizes the class command without entering the class name.
+     */
     @Test
     public void testProcessInputClassFour() throws IOException {
         Parser parser = new Parser();
@@ -303,6 +335,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: class
+     Event: after classes are set in the program, user sets a valid current class.
+     */
     @Test
     public void testProcessInputClassFive() throws IOException {
         Parser parser = new Parser();
@@ -323,6 +359,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: view
+     Event: user enters view command without entering an item to view.
+     */
     @Test
     public void testProcessInputViewOne() throws IOException {
         Parser parser = new Parser();
@@ -350,6 +390,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: view
+     Event: user enters view command without entering an item to view, with added spaces.
+     */
     @Test
     public void testProcessInputViewTwo() throws IOException {
         Parser parser = new Parser();
@@ -377,6 +421,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: view
+     Event: user tries to view a non existing item.
+     */
     @Test
     public void testProcessInputViewThree() throws IOException {
         Parser parser = new Parser();
@@ -406,6 +454,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: view
+     Event: user views a valid item.
+     */
     @Test
     public void testProcessInputViewFour() throws IOException {
         Parser parser = new Parser();
@@ -433,6 +485,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: exit
+     Event: user exits the program.
+     */
     @Test
     public void testProcessInputExitOne() throws IOException {
         Parser parser = new Parser();
@@ -447,6 +503,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: eval
+     Event: user enters eval command without entering a metric to evaluate.
+     */
     @Test
     public void testProcessInputEvalOne() throws IOException {
         Parser parser = new Parser();
@@ -466,6 +526,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: eval
+     Event: user enters eval command without entering a metric to evaluate, with added spaces.
+     */
     @Test
     public void testProcessInputEvalTwo() throws IOException {
         Parser parser = new Parser();
@@ -484,6 +548,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: eval
+     Event: user enters eval command without choosing a current class to evaluate.
+     */
     @Test
     public void testProcessInputEvalThree() throws IOException {
         Parser parser = new Parser();
@@ -507,6 +575,10 @@ public class TestEvent {
 
     }
 
+    /**
+     Command tested: eval
+     Event: user enters eval command with a metric to evaluate.
+     */
     @Test
     public void testProcessInputEvalFour() throws IOException {
         Parser parser = new Parser();
@@ -534,83 +606,6 @@ public class TestEvent {
         Assert.assertEquals(true,!obtainedOutput.isBlank());
 
     }
-
-    /*
-    @Test
-    public void testProcessInputEvalFour() throws IOException {
-        Parser parser = new Parser();
-        parser.setStoredDirectory(null);
-        List<CompilationUnit> allCompilationUnits = new ArrayList<>();
-        Event.setCurrentClass("");
-
-        //String userInput = "new src";
-        //Event.processInput(userInput);
-
-        //userInput = "parse";
-        //Event.processInput(userInput);
-
-        //userInput="class metrics.Main";
-        //Event.processInput(userInput);
-
-        CyclomaticComplexity cc = mock(CyclomaticComplexity.class);
-        Event ev = mock(Event.class);
-        String userInput = "new src";
-        ev.processInput(userInput);
-        userInput = "parse";
-        ev.processInput(userInput);
-        userInput="class metrics.Main";
-        ev.processInput(userInput);
-        userInput = "eval a";
-        ev.processInput(userInput);
-
-        //List<String> mockList = mock(List.class);
-        //CyclomaticComplexity cc = mock(CyclomaticComplexity.class);
-        //cc.getResult(any());
-
-        //CommentPercentage cp = mock(CommentPercentage.class);
-        //cp.getResult((any()));
-        //List<String> mockList = mock(CyclomaticComplexity.class);
-
-        //userInput="eval a";
-        //Event.processInput(userInput);
-        Mockito.verify(cc).getResult(any());
-
-        //ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        //System.setOut(new PrintStream(outContent,true));
-
-        //userInput = "eval a";
-        //Event.processInput(userInput);
-
-        //CyclomaticComplexity cc = Mock(CyclomaticComplexity.class);
-
-
-
-        //Assert.assertEquals("Please choose a current class before evaluating metrics.",outContent.toString().trim());
-
-    }
-
-     */
-
-    /*
-    @Test
-public void testDoFoo() {
-  Bar bar = mock(Bar.class);
-  BarFactory myFactory = new BarFactory() {
-    public Bar createBar() { return bar;}
-  };
-
-  Foo foo = new Foo(myFactory);
-  foo.foo();
-
-  verify(bar, times(1)).someMethod();
-}
-     */
-
-
-
-
-
-
 
 
 

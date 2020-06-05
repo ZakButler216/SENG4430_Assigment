@@ -1,15 +1,22 @@
-
 package metrics;
+
+/**
+ File Name: Main.java
+ Author: Cliff Ng
+ Description: The user interface of the application.
+ */
 
 
 import com.github.javaparser.ast.CompilationUnit;
-
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ This class provides the interface view for the application.
+ */
 public class Main {
 
 

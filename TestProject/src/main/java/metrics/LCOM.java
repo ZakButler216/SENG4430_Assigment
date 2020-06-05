@@ -38,60 +38,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class LCOM {
 
-    //private List<List<String>> fieldNames = new ArrayList<>();
+
     private List<String> fieldNames = new ArrayList<>();
-    //private List<List<String>> methodNames = new ArrayList<>();
+
     private List<String> methodNames = new ArrayList<>();
-    //private List<Integer> methodCount = new ArrayList<>();
+
     private Integer methodCount;
-    //private List<Integer> fieldCount = new ArrayList<>();
+
     private Integer fieldCount;
     private List<Field> fieldObjects = new ArrayList<>();
     private int index;
-    //private List<Integer> totalMF = new ArrayList<>();
+
     private Integer totalMF;
 
 
-
-    /**
-     *
-     * @param args
-     */
-    /*public static void main(String[] args) {
-        Path pathToSource = Paths.get("src/main/java/Test");
-        SourceRoot sourceRoot = new SourceRoot(pathToSource);
-        try {
-            sourceRoot.tryToParse();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<CompilationUnit> compilations = sourceRoot.getCompilationUnits();
-        LCOM count = new LCOM();
-        count.Counter(compilations);
-    }
-
-     */
-
-
-    /**
-     * @param
-     */
     public String getResult (CompilationUnit cu) {
 
-        //List<CompilationUnit> compilations = compUnit;
 
-        //for (int i = 0; i < compilations.size(); i++) {
             List<String> methodList = new ArrayList<>();
             List<String> fieldList = new ArrayList<>();
             AtomicInteger methodsInClass = new AtomicInteger();
             AtomicInteger fieldsInClass = new AtomicInteger();
-            //CompilationUnit cu = compilations.get(i);
+
             cu.findAll(CallableDeclaration.class).forEach(callableDeclaration -> {
                 methodsInClass.getAndIncrement();
                 methodList.add(callableDeclaration.getNameAsString());
             });
             methodCount= methodsInClass.get();
-            //int finalI = i;
+
             cu.findAll(FieldDeclaration.class).forEach(field -> {
                 field.getVariables().forEach(variable -> {
                     fieldsInClass.getAndIncrement();
@@ -103,10 +77,10 @@ public class LCOM {
             fieldCount=fieldsInClass.get();
             fieldNames=fieldList;
             methodNames=methodList;
-        //}
+
 
         index = 0;
-        //for (CompilationUnit cU: compilations) {
+
             cu.findAll(ConstructorDeclaration.class).forEach(constructorDeclaration -> {
                 VoidVisitor<Integer> visitor = new VisitConstructor();
                 visitor.visit(constructorDeclaration, index);
@@ -117,19 +91,14 @@ public class LCOM {
                 visitor.visit(methodDeclaration, index);
             });
             index++;
-        //}
 
-        //for (int i = 0; i < compilations.size(); i++) {
             totalMF=0;
             for (Field f : fieldObjects) {
-                //if (f.getNumber() == (i)) {
-                    //int mf = totalMF.get(i);
-                    //mf = mf + f.getTotalMF();
-                    //totalMF.set(i, mf);
+
                 totalMF = totalMF+f.getTotalMF();
-                //}
+
             }
-            //LCOM = 1 – (sum(MF)/M*F)
+
             DecimalFormat df = new DecimalFormat("#.##");
             float LCOM = methodCount*fieldCount;
             LCOM = totalMF/LCOM;
@@ -148,7 +117,7 @@ public class LCOM {
 
             total=s1+s2;
             return total;
-        //}
+
     }
 
     /**

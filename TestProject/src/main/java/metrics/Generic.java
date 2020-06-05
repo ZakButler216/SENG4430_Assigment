@@ -1,5 +1,11 @@
 package metrics;
 
+/**
+ File Name: Generics.java
+ Author: Cliff Ng
+ Description: A class which provides generic functionalities that anyone could use.
+ */
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -10,8 +16,7 @@ import com.github.javaparser.printer.YamlPrinter;
 import java.util.List;
 
 /**
- This class is for generic functions that everybody can use
- Feel free to add to it
+ This class is for generic functions
  */
 public class Generic {
 

@@ -1,5 +1,11 @@
 package metrics;
 
+/**
+ File Name: Parser.java
+ Author: Cliff Ng
+ Description: A class which provides all functionalities in relation to parsing java files.
+ */
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -19,7 +25,7 @@ import java.util.List;
 import java.io.IOException;
 
 /**
- This class is for everything related to Parsing the file(s).
+ This class is for everything related to parsing the file(s).
  */
 public class Parser {
 
