@@ -125,7 +125,6 @@ public class FanInOutParser {
 
             //save the class name into the object
             String packageName = allCU.get(i).getPackageDeclaration().get().getName().toString()+".";
-  System.out.println(packageName);
             currentClassName = allCU.get(i).getPrimaryTypeName().toString();
 
             //Trim the string from Optional[Classname] to Classname
