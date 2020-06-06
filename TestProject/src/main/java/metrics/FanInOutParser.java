@@ -3,12 +3,11 @@ package metrics;
  * File name:    FanInOutParser.java
  * Author:       Naneth Sayao
  * Date:         29 May 2020
- * Version:      9.0
+ * Version:      10.1
  * Description:  A specific parser for the fan-in and fan-out metrics.
  *                  This parser will use the 'Parser' class written by Cliff.
  * */
 
-import Team2.Parser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -125,13 +124,19 @@ public class FanInOutParser {
             //now we want to separate each methods and save them in a FanInOutMethod object
 
             //save the class name into the object
+            String packageName = "";
+            if(allCU.get(i).getPackageDeclaration().isPresent()) {
+                packageName = allCU.get(i).getPackageDeclaration().get().getName().toString()+".";
+            }
             currentClassName = allCU.get(i).getPrimaryTypeName().toString();
 
             //Trim the string from Optional[Classname] to Classname
             currentClassName = currentClassName.substring(currentClassName.indexOf("[")+1);
             currentClassName = currentClassName.substring(0,currentClassName.indexOf("]"));
 
-            //System.out.println(currentClassName);
+            //add the package name
+            currentClassName = packageName + currentClassName;
+                    //System.out.println(currentClassName);
 
             //create visitor for normal methods
             VoidVisitor<?> methodVisitor = new MethodVisitor();
@@ -142,12 +147,19 @@ public class FanInOutParser {
             //now we want to separate each methods and save them in a FanInOutMethod object
 
             //save the class name into the object
-            currentClassName = allCU.get(j).getPrimaryTypeName().toString();
+            String packageName = "";
+            if(allCU.get(j).getPackageDeclaration().isPresent()) {
+                packageName = allCU.get(j).getPackageDeclaration().get().getName().toString()+".";
+            }
+            //save the class name into the object
+            currentClassName = packageName + allCU.get(j).getPrimaryTypeName().toString();
 
             //Trim the string from Optional[Classname] to Classname
             currentClassName = currentClassName.substring(currentClassName.indexOf("[")+1);
             currentClassName = currentClassName.substring(0,currentClassName.indexOf("]"));
 
+            //add the package name
+            currentClassName = packageName + currentClassName;
             //create visitor for normal methods
             VoidVisitor<?> constructorVisitor = new ConstructorVisitor();
             constructorVisitor.visit(allCU.get(j), null);
