@@ -1,19 +1,19 @@
+package metrics;
 /*
  * File name:    FanInOutParser.java
  * Author:       Naneth Sayao
  * Date:         29 May 2020
- * Version:      8.2
+ * Version:      10.0
  * Description:  A specific parser for the fan-in and fan-out metrics.
  *                  This parser will use the 'Parser' class written by Cliff.
  * */
-
-package Team2;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class FanInOutParser {
     private List<FanInOutMethod> methodsList = new ArrayList<>();
+    private String currentClassName = "";
 
     //This inner class separates the methods of one class and puts the methods in a static array list
     public class MethodVisitor extends VoidVisitorAdapter<Void> {
@@ -40,6 +41,7 @@ public class FanInOutParser {
             //update values of FanInOutMethod object
             temp.setMethodName(md.getNameAsString());
             temp.setMethodBlock(md.toString());
+            temp.setParentClass(currentClassName);
 
             methodSplitter(temp);
         }
@@ -56,9 +58,10 @@ public class FanInOutParser {
             FanInOutMethod temp = new FanInOutMethod();
 
             //update values of FanInOutMethod object
-            temp.setMethodName(md.getNameAsString() + " (constructor)");
+            temp.setMethodName(md.getNameAsString());
             temp.setMethodBlock(md.toString());
-            temp.setConstructor(true); //for calculating dead methods (fan in), exclude constructors
+            temp.setParentClass(currentClassName);
+            temp.setConstructor(true); //for identifying constructors
 
             methodSplitter(temp);
 
@@ -76,30 +79,62 @@ public class FanInOutParser {
         //add dummy class declaration to surround method coz it won't compile code with error
         CompilationUnit cu2 = StaticJavaParser.parse("public class Dummy {" + temp.getMethodBlock() + "}");
 
-        //visit each method
+        //visit each method call expression
         cu2.findAll(MethodCallExpr.class).forEach(mce -> {
             //save the method name to the FanInMethod object's ArrayList of method calls
             temp.getCalledMethodsList().add(mce.getNameAsString());
+        });
+
+        //visit each object creation / constructor calls
+        cu2.findAll(ObjectCreationExpr.class).forEach(mce -> {
+            //save the method name to the FanInMethod object's ArrayList of method calls
+            temp.getCalledMethodsList().add(mce.getTypeAsString());
         });
 
         //add temp to methodsList
         methodsList.add(temp);
     }
 
-    //This method separates the Java classes in the source
-    public void classSplitter(String source){
+    /*
+     * Use this method if parsing only one class or .java file
+     * This method separates the methods and constructors in the source
+     */
+    public void singleClassVisitor(CompilationUnit cu){
         //clear our methodsList
         methodsList = new ArrayList<>();
 
-        //create a new parser
-        Parser rootParser = new Parser();
+        //create visitor for normal methods
+        VoidVisitor<?> methodVisitor = new FanInOutParser.MethodVisitor();
+        methodVisitor.visit(cu, null);
 
-        //array list of compilation units
-        //initialise allCU
-        List<CompilationUnit> allCU = rootParser.getCompilationUnits(source);
+        //create visitor for normal methods
+        VoidVisitor<?> constructorVisitor = new FanInOutParser.ConstructorVisitor();
+        constructorVisitor.visit(cu, null);
+    }
+
+    /*
+     * Use this method if parsing a whole project
+     * This method separates the Java classes in the source
+     */
+    public void wholeProjectVisitor(List<CompilationUnit> allCU){
+        //clear our methodsList
+        methodsList = new ArrayList<>();
 
         for(int i = 0; i < allCU.size(); i++){
             //now we want to separate each methods and save them in a FanInOutMethod object
+
+            //save the class name into the object
+            String packageName = allCU.get(i).getPackageDeclaration().get().getName().toString()+".";
+  System.out.println(packageName);
+            currentClassName = allCU.get(i).getPrimaryTypeName().toString();
+
+            //Trim the string from Optional[Classname] to Classname
+            currentClassName = currentClassName.substring(currentClassName.indexOf("[")+1);
+            currentClassName = currentClassName.substring(0,currentClassName.indexOf("]"));
+
+            //add the package name
+            currentClassName = packageName + currentClassName;
+                    //System.out.println(currentClassName);
 
             //create visitor for normal methods
             VoidVisitor<?> methodVisitor = new MethodVisitor();
@@ -109,6 +144,18 @@ public class FanInOutParser {
         for(int j = 0; j < allCU.size(); j++){
             //now we want to separate each methods and save them in a FanInOutMethod object
 
+            //save the class name into the object
+            String packageName = allCU.get(j).getPackageDeclaration().get().getName().toString()+".";
+ System.out.println(packageName);
+            //save the class name into the object
+            currentClassName = packageName + allCU.get(j).getPrimaryTypeName().toString();
+
+            //Trim the string from Optional[Classname] to Classname
+            currentClassName = currentClassName.substring(currentClassName.indexOf("[")+1);
+            currentClassName = currentClassName.substring(0,currentClassName.indexOf("]"));
+
+            //add the package name
+            currentClassName = packageName + currentClassName;
             //create visitor for normal methods
             VoidVisitor<?> constructorVisitor = new ConstructorVisitor();
             constructorVisitor.visit(allCU.get(j), null);
