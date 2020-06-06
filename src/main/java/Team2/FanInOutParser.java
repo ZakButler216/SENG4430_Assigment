@@ -3,7 +3,7 @@ package metrics;
  * File name:    FanInOutParser.java
  * Author:       Naneth Sayao
  * Date:         29 May 2020
- * Version:      10.0
+ * Version:      10.1
  * Description:  A specific parser for the fan-in and fan-out metrics.
  *                  This parser will use the 'Parser' class written by Cliff.
  * */
@@ -124,7 +124,10 @@ public class FanInOutParser {
             //now we want to separate each methods and save them in a FanInOutMethod object
 
             //save the class name into the object
-            String packageName = allCU.get(i).getPackageDeclaration().get().getName().toString()+".";
+            String packageName = "";
+            if(allCU.get(i).getPackageDeclaration().isPresent()) {
+                packageName = allCU.get(i).getPackageDeclaration().get().getName().toString()+".";
+            }
             currentClassName = allCU.get(i).getPrimaryTypeName().toString();
 
             //Trim the string from Optional[Classname] to Classname
@@ -144,7 +147,10 @@ public class FanInOutParser {
             //now we want to separate each methods and save them in a FanInOutMethod object
 
             //save the class name into the object
-            String packageName = allCU.get(j).getPackageDeclaration().get().getName().toString()+".";
+            String packageName = "";
+            if(allCU.get(j).getPackageDeclaration().isPresent()) {
+                packageName = allCU.get(j).getPackageDeclaration().get().getName().toString()+".";
+            }
             //save the class name into the object
             currentClassName = packageName + allCU.get(j).getPrimaryTypeName().toString();
 
