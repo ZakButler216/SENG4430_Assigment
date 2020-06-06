@@ -2,15 +2,12 @@
  * File name:    FanInTest.java
  * Author:       Naneth Sayao
  * Date:         26 May 2020
- * Version:      2.1
- * Description:  Test fan-in with data that are;
- *                  - valid,
- *                  - invalid, and
- *                  - empty.
+ * Version:      3.1
+ * Description:  This is a JUnit test class for fan-in
  * */
+package metrics;
 
-package Team2;
-
+import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -20,69 +17,113 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FanInTest {
 
-    private void doTest(String s1, List<Integer> expected){
+    //this method parses a source and assert expected vs actual
+    private void doTest(String source, String className, List<Integer> expected){
+        //create a new parser
+        Parser rootParser = new Parser();
+
+        //array list of compilation units
+        //initialise allCU
+        List<CompilationUnit> allCU = rootParser.getCompilationUnits(source);
+
         //make fan in/out parser
         FanInOutParser fioParser = new FanInOutParser();
 
-        fioParser.classSplitter(s1);
+        //clear our methodsList
+        //fioParser.clearMethodsList();
+        fioParser.wholeProjectVisitor(allCU);
 
         //make new FanIn object
         FanIn fi = new FanIn();
         //execute fan out method of FanOut object and save result
-        List<Integer> result = fi.calculateFanIn(fioParser.getMethodsList());
+        List<Integer> result = fi.calculateFanIn(fioParser.getMethodsList(), className);
         for(int a = 0; a < expected.size(); a++){
             assertEquals(expected.get(a), result.get(a));
         }
     }
 
-    /*
-     * This test is for a valid test
-     * Should PASS
-     * */
     @Test
-    void testCalculateFanInValid() {
+    void testCalculateFanInSimple() {
         //path
-        String s1 = "srcValid";
+        String source = "srcValid";
+        String className = "One";
 
         List<Integer> expected = new ArrayList<>();
+        expected.add(3);
+        expected.add(1);
+        expected.add(2);
+        expected.add(0);
+        doTest(source, className, expected);
+    }
+
+    @Test
+    void testCalculateFanInSimple2() {
+        //path
+        String source = "srcValid";
+        String className = "Two";
+
+        List<Integer> expected = new ArrayList<>();
+        expected.add(2);
+        expected.add(0);
+        expected.add(2);
+        expected.add(0);
+        doTest(source, className, expected);
+    }
+
+    @Test
+    void testCalculateFanInNoCallers() {
+        //path
+        String source = "srcConstructor";
+        String className = "Try";
+
+        List<Integer> expected = new ArrayList<>();
+        expected.add(2);
+        expected.add(2);
+        expected.add(0);
+        expected.add(0);
+        doTest(source, className, expected);
+    }
+
+    @Test
+    void testCalculateFanInManyMethods() {
+        //path
+        String source = "srcProject";
+        String className = "Team2.FanInOutMethod";
+
+        List<Integer> expected = new ArrayList<>();
+        expected.add(9);
+        expected.add(0);
+        expected.add(3);
         expected.add(6);
-        expected.add(3);
-        expected.add(0);
-        expected.add(3);
-        expected.add(0);
-        doTest(s1, expected);
+        doTest(source, className, expected);
     }
 
     @Test
-    void testCalculateFanInInvalidFile() {
+    void testCalculateFanInValidFive() {
         //path
-        String s1 = "srcInvalidFile";
+        String source = "srcProject";
+        String className = "Team2.FanOut";
 
         List<Integer> expected = new ArrayList<>();
+        expected.add(2);
         expected.add(0);
+        expected.add(2);
         expected.add(0);
-        expected.add(0);
-        expected.add(0);
-        expected.add(0);
-        doTest(s1, expected);
+        doTest(source, className, expected);
     }
 
-    /*
-     * This test is for an empty source. There are no Java files.
-     * Should PASS
-     * */
+
     @Test
-    void testCalculateFanInEmpty() {
+    void testCalculateFanInConstructorCall() {
         //path
-        String s1 = "srcEmptyNoFile";
+        String source = "srcValid";
+        String className = "Three";
 
         List<Integer> expected = new ArrayList<>();
+        expected.add(2);
         expected.add(0);
-        expected.add(0);
-        expected.add(0);
-        expected.add(0);
-        expected.add(0);
-        doTest(s1, expected);
+        expected.add(1);
+        expected.add(1);
+        doTest(source, className, expected);
     }
-
 }
